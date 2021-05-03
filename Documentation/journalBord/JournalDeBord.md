@@ -34,3 +34,18 @@
 ### Heure: 14:10
 > Je sauvgarde ce que j'ai fais sur github et je prend ma pause
 
+### Heure: 14:45
+> Je reprend les products backlog
+
+### Heure: 15:18
+> Je ne suis pas sûr d'avoir créé tous les products backlog nécessairent mais je passe désormais à l'affichage du plan prévisionnel, que j'ai fais sur excel, en markdwon
+
+### Heure: 15:40
+> Après avoir essayé plusieurs méthodes pour convertir le tableau excel en markdwon je décide de prendre une capture d'écran car le rendu en markdown et en pdf ne me plaît pas 
+
+### Heure: 16:12
+> Depuis 15:40 j'essaie exporter une image en markdown mais je n'arrive pas
+
+### Heure: 16:25
+> Finalement j'ai enfin réussi à mettre une image dans markdown
+> Je vais passé aux sauvgardes et je vais mettre à jour le plan effectif
