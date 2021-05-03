@@ -172,21 +172,70 @@
 > Après la lecture du tpi, j'ai appelé mon formateur afin de lui poser des questions sur l'énoncer.
 
 ### 4.2. Planifier
-> Au début du projet, j'ai découpé le travail que je devais faire pour savoir ce qu'est-ce qui est le plus important.
-> Pour tous les points 
+> Au début du projet, j'ai découpé le travail que je devais faire pour savoir ce qui est le plus important, et savoir ce qui peut possiblement poser plus de problème.
+> Pour tous les points de l'énoncé, j'ai fixé une priorité afin d'avoir un ordre d'importance pour réaliser les taches que j'ai a faire. Les niveaux sont:
+> * B, Bloquant, X
+> * C, Critique, !
+> * I, Important, +
+> * S, Secondaire, - 
+
+> Après avoir découpé mon travail, j'ai stocké chaque partie dans un product backlog.
+> Une fois terminé, j'ai créé un planing prévisionnel afin d'avoir une ligne directrice.
 
 
 ### 4.3. Décider
+> Lors de la réalisation de mon projet j'ai  courement du prendre des décisions et faire des choix. 
+> Quand je dois faire un choix je réfléchis longuement afin de prendre la meilleur décision possible. Il arrive, des fois, que certains choix soient compliqués à prendre, alors, lorsque j'ai un doute j'en fais part à mon formateur.
 
 ### 4.4. Réaliser
+> Après avoir prit les décisions qui me semble juste, je continue sur le travail qui m'a posé problème précédement (Implémentation de code ou rédaction de la documentation).
 
 ### 4.5. Contrôler
+> Dès qu'une fonctionnalité est terminé je vais immédiatement la tester dans plusieurs cas différent pour être sur que la fonctionnalité fonctionne bien.
+> Lorsque le site web est terminé, je teste l'ensemble des fonctionnalitées du site.
 
 ### 4.6. Evaluer
+> Pour finir, j'applique cette dernière étape pour pouvoir savoir ce qui peut être améliorable. Grace au journal de bord, ou je note tous ce que je fais, je peux relire tous ce que j'ai fais la journé et donc voir ou il y a des points améliorables.
 
 ## 5. Planification
 
 ### 5.1. Product Backlog
+
+| Nom         | 1: Créer un tournois                                                          |
+| ----------- | ----------------------------------------------------------------------------- |
+| Description | En tant qu'utilisateur je peux créer un tournois en remplissant un formulaire |
+| Priorité    | B: Bloquant X                                                                 |
+
+| Nom         | 2: Rechercher un tournois                                                        |
+| ----------- | -------------------------------------------------------------------------------- |
+| Description | En tant qu'utilisateur je peux rechercher un tournois via une barre de recherche |
+| Priorité    | S: Secondaire -                                                                  |
+
+| Nom         | 3: Modifier un tournois                                                                |
+| ----------- | -------------------------------------------------------------------------------------- |
+| Description | En tant qu'utilisateur je peux modifier les conditions d'un tournois après sa création |
+| Priorité    | S: Secondaire -                                                                        |
+
+
+| Nom         | 4: Supprimer un tournois                             |
+| ----------- | ---------------------------------------------------- |
+| Description | En tant qu'utilisateur je peux supprimer un tournois |
+| Priorité    | I: Important +                                       |
+
+| Nom         | 5: Enregistrer les résultats des matches                       |
+| ----------- | -------------------------------------------------------------- |
+| Description | En tant qu'utilisateur je peux sauvgarder le résultat du match |
+| Priorité    | I: Important +                                                 |
+
+| Nom         | 6: Planifier les matches                                     |
+| ----------- | ------------------------------------------------------------ |
+| Description | En tant qu'utilisateur je peux planifier la date des matches |
+| Priorité    | I: Important +                                               |
+
+| Nom         | 7: Rechercher un joueur                                                                         |
+| ----------- | ----------------------------------------------------------------------------------------------- |
+| Description | En tant qu'utilisateur je peux rechercher un joueur et savoir dans quel tournois il est inscrit |
+| Priorité    | I: Important +                                                                                  |
 
 ### 5.2. Diagramme de Gantt
 
