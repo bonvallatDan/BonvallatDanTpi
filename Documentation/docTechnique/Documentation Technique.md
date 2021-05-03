@@ -21,7 +21,7 @@
   - [4.6. Evaluer](#46-evaluer)
 - [5. Planification](#5-planification)
   - [5.1. Product Backlog](#51-product-backlog)
-  - [5.2. Diagramme de Gantt](#52-diagramme-de-gantt)
+  - [5.2. Plan previsionnel](#52-plan-previsionnel)
 - [6. Analyse Fonctionnelle](#6-analyse-fonctionnelle)
   - [6.1. Interface graphique](#61-interface-graphique)
     - [6.1.1. Page...](#611-page)
@@ -156,6 +156,7 @@
 > « joueurs »
 > La page affiche la liste des joueurs.
 > Les actions disponibles : rechercher, voir un joueur.
+> 
 > « matchs »
 > La page affiche la liste des matchs du tournoi sélectionné.
 > Les actions disponibles : rechercher, planifier, répartir les joueurs et voir un match.
@@ -237,7 +238,14 @@
 | Description | En tant qu'utilisateur je peux rechercher un joueur et savoir dans quel tournois il est inscrit |
 | Priorité    | I: Important +                                                                                  |
 
-### 5.2. Diagramme de Gantt
+
+### 5.2. Plan previsionnel 
+
+> Voici le plan prévisionnel que j'ai réalisé
+
+
+![Getting Started](/TPI/BonvallatDanTpi/Documentation/planPrévisionnel/PlanPrévisionnel.jpg)
+
 
 ## 6. Analyse Fonctionnelle
 
