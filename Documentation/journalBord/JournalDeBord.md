@@ -87,3 +87,26 @@
 ### Heure: 11:29
 > Je termine la création de la base de donnée maintenant
 > Je sauvgarde mon travail et je pars en pause de midi
+
+### Heure: 12:47
+> Je passe désormais au devloppement de la page tournois, la page principale
+
+### Heure: 13:23
+> Après avoir cherché un outil me permettant de faire une maquette du site je decide finalement de le faire papier crayon pour plus de facilité
+
+### Heure: 13:53
+> J'ai terminé la maquette sur papier
+![maquette](maquette.JPG)
+> Je passe maintenant au squelette de mon site
+
+### Heure: 14:45
+> Alors que je cherchais une template pour mon squelette de site, après la pause, qui a commencé a 14:15 et s'est terminé à 14:35, un de mes camarades m'a donné un lien pour un site qui propose des template [(Start Bootstrap)](https://startbootstrap.com/templates)
+> J'implémente alors dans ma page squelette la template
+
+### Heure: 14:58
+> Je rencontre un nouveau problème
+> Je n'ai pas toutes les permissions dans mes dossiers alors je dois changer les permissions
+
+### Heure: 16:09
+> Le problème a été résolu et la template resemble a ça
+![Squelette](squelette.PNG)
