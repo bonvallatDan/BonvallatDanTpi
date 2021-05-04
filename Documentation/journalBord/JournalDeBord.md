@@ -49,3 +49,41 @@
 ### Heure: 16:25
 > Finalement j'ai enfin réussi à mettre une image dans markdown
 > Je vais passé aux sauvgardes et je vais mettre à jour le plan effectif
+
+# Jour de bord 
+## Date: 04.05.2021
+### Heure: 07:34
+
+> Je commence par la création du modele conceptuel
+> J'utilise mysql avec un serveur apache qui se trouve sur debian, alors je lance le serveur 
+
+### Heure: 07:53
+> Après avoir bien analyse le modèle conceptuel qui m'a été fournit dans l'énoncé je decide de le refaire avec tout les détails qui manquent dans l'example
+
+### Heure: 09:08
+> Après quelques problèmes, j'arrive a un modele qui me plaît
+> Au tout début j'avais un mcd qui ressemblait à ça
+![1erMCD](1erMCD.JPG)
+
+> J'ai ensuite demandé au prof qui nous garde, si c'était un bon mcd
+> Il m'a expliqué qu'il y avait mieux à faire et ma conseillé
+> Nous sommes arrivés à ça
+![ProfMCD](ProfMCD.JPG)
+
+> Ensuite j'ai rajouté les champs qu'il fallait et ça donne ça
+![2eMCD](2eMCD.JPG)
+> Je passe à la création du mcd dans la base de donnée
+
+### Heure: 10:10
+> Après la pause de 9:40, qui dure jusqu'à 10:05, un de mes camarades m'a fait remarqué qu'il y a de la redondance avec la surface du terrain et le type de tournois dans la table catégorie alors j'ai légèrement modifié le dernier mcd que j'ai fais
+![3eMCD](3eMCD.JPG)
+
+### Heure: 11:16
+> J'ai bientôt terminé la création de ma base de donnée, je pensais que ça me prendrait beaucoup moins de temps
+> Je me suis rendu compte qu'il peut y avoir de la redondance avec les tours des matches
+> Du coup j'ai créé une table en plus
+![4eMCD](4eMCD.JPG)
+
+### Heure: 11:29
+> Je termine la création de la base de donnée maintenant
+> Je sauvgarde mon travail et je pars en pause de midi
