@@ -102,9 +102,22 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .main{
-  height: 100px;
-  width: 100px;
-  background-color: blue;
+  height: 35em;
+  width: 100%;
+  background-color: #616161;
+}
+
+.mainCreate
+{
+  height: 50em;
+  width: 70em;
+  float: left;
+  overflow-y: scroll;
+}
+
+.btn-primary
+{
+  margin-bottom: 20px;
 }
 
 p {
