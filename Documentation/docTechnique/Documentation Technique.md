@@ -23,8 +23,6 @@
   - [5.1. Product Backlog](#51-product-backlog)
   - [5.2. Plan previsionnel](#52-plan-previsionnel)
 - [6. Analyse Fonctionnelle](#6-analyse-fonctionnelle)
-  - [6.1. Interface graphique](#61-interface-graphique)
-    - [6.1.1. Page...](#611-page)
   - [6.2. Fonctionnalités](#62-fonctionnalités)
   - [6.3. Description des fonctionnalités](#63-description-des-fonctionnalités)
   - [6.4. Mesure de sécurité](#64-mesure-de-sécurité)
@@ -244,17 +242,27 @@
 > Voici le plan prévisionnel que j'ai réalisé
 
 
-![Getting Started](/TPI/BonvallatDanTpi/Documentation/planPrévisionnel/PlanPrévisionnel.jpg)
+![Getting Started](../planPrévisionnel/PlanPrévisionnel.jpg)
 
 
 ## 6. Analyse Fonctionnelle
+> Il y au totale 4 pages dans mon site web. Sur l'une d'entre elles (tournois.php) il y a un pop up qui fait apparaitre les 2 joueurs, l'utilisateur peut enregistrer les résultats des 2 joueurs
+> Pour réaliser ces pages, j'ai fais un croquis
+![maquette](../journalBord/maquette.JPG)
 
-### 6.1. Interface graphique
+> Après avoir fais le croquis sur papier, je decide de faire un squelette du site
+![squelette](../journalBord/squelette.PNG)
 
-#### 6.1.1. Page...
+> Je commence alors par créer la page index.php. Cette page est un menu ou ce trouve les tournois créé par l'utilisateur.
+> Je créé ensuite la page creation.php. Cette page est un formulaire ou l'utilisateur pourra créer un tournois. 
 
 ### 6.2. Fonctionnalités
+> Sur la page index.php, l'utilisateur peut créer un tournois en appuyant sur un bouton qui l'emenera sur la page création.php, il peut le supprimer, le copier et modifier le tournois avant le commencement du tournois.
+> Il peut également faire une recherche du tournois.
+> Cette page ressemble à ça
+![pageIndex](imageCode/pageIndex.PNG)
 
+> Sur la page creation.php, l'utilisateur a un formulaire avec plusieurs champs...
 ### 6.3. Description des fonctionnalités
 
 ### 6.4. Mesure de sécurité
