@@ -41,9 +41,9 @@ if (isset($_POST['creer'])) {
     $surface = filter_input(INPUT_POST, 'surface', FILTER_SANITIZE_STRING);
     $typeTournois = filter_input(INPUT_POST, 'typeTournois', FILTER_SANITIZE_STRING);
 
-    insertCategorie($genre, $dotation, $surface, $typeTournois, $jeuDecisif, $nbSets, $nbJoueursFiltre);
+    insertCategorie($genre, $dotation, $surface, $typeTournois, $jeuDecisif, $nbSetsFiltre, $nbJoueursFiltre);
     $idCategorie = recupIdCategorie();
-    insertTournois($nomTournois, $nomPays, $nomVille, $dateDebut, $dateFin, $idCategorie);
+    insertTournois($nomTournois, $nomPays, $nomVille, $dateDebut, $dateFin, $idCategorie["idCategorie"]);
     redirection($cheminIndex);
 }
 ?>
@@ -96,15 +96,15 @@ if (isset($_POST['creer'])) {
                     <form action method="POST">
                         <div class="form-group">
                             <label for="formGroupExampleInput">Nom du tournois</label>
-                            <input type="text" class="form-control" name="nomTournois" placeholder="Geneva Open">
+                            <input type="text" class="form-control" name="nomTournois" placeholder="Geneva Open" required>
                         </div>
                         <div class="form-group">
                             <label for="formGroupExampleInput2">Pays</label>
-                            <input type="text" class="form-control" name="nomPays" placeholder="Suisse">
+                            <input type="text" class="form-control" name="nomPays" placeholder="Suisse" required>
                         </div>
                         <div class="form-group">
                             <label for="formGroupExampleInput2">Ville</label>
-                            <input type="text" class="form-control" name="nomVille" placeholder="Genève">
+                            <input type="text" class="form-control" name="nomVille" placeholder="Genève" required>
                         </div>
                         <div class="form-group">
                             <label for="formGroupExampleInput2">Date de debut</label>

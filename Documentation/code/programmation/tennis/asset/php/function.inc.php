@@ -76,13 +76,13 @@ function getTournoisType()
  * @param [int] $typeTournois
  * @return void
  */
-function insertCategorie($genre, $dotation, $jeuDecisif, $nbSet, $nbParticipant, $surface, $typeTournois)
+function insertCategorie($genre, $dotation, $surface, $typeTournois, $jeuDecisif, $nbSet, $nbParticipant)
 {
   static $ps = null;
   $sql = "INSERT INTO `tennis_tpi`.`categories` (`genre`, `dotation`, `idSurface`, `idType`, `jeuDecisif`, `nbSet`, `nbParticipant`) ";
-  $sql .= "VALUES (:GENRE, :DOTATION, :ID_SURFACE, :ID_TYPE, :JEU_DECISIF, :NB_SET, NB_PARTICIPANT)";
+  $sql .= "VALUES (:GENRE, :DOTATION, :ID_SURFACE, :ID_TYPE, :JEU_DECISIF, :NB_SET, :NB_PARTICIPANT)";
   if ($ps == null) {
-    $ps = dbnotes()->prepare($sql);
+    $ps = tennis_database()->prepare($sql);
   }
   $answer = false;
   try {
@@ -109,9 +109,9 @@ function insertCategorie($genre, $dotation, $jeuDecisif, $nbSet, $nbParticipant,
 function recupIdCategorie()
 {
     static $ps = null;
-  $sql = 'SELECT idTournois';
-  $sql .= 'FROM tennis_tpi.categories';
-  $sql .= 'ORDER BY idTournois ';
+  $sql = 'SELECT idCategorie ';
+  $sql .= 'FROM tennis_tpi.categories ';
+  $sql .= 'ORDER BY idCategorie ';
   $sql .= 'DESC LIMIT 1';
 
   if ($ps == null) {
@@ -120,7 +120,7 @@ function recupIdCategorie()
   $answer = false;
   try {
     if ($ps->execute())
-      $answer = $ps->fetchAll(PDO::FETCH_ASSOC);
+      $answer = $ps->fetch(PDO::FETCH_ASSOC);
   } catch (PDOException $e) {
     echo $e->getMessage();
   }
@@ -140,22 +140,22 @@ function recupIdCategorie()
  * @param [string] $dateFin
  * @return void
  */
-function insertTournois($idCategorie, $nom, $pays, $ville, $dateDebut, $dateFin)
+function insertTournois($nom, $pays, $ville, $dateDebut, $dateFin, $idCategorie)
 {
   static $ps = null;
-  $sql = "INSERT INTO `tennis_tpi`.`tournois` (`idCategorie`, `nom`, `pays`, `ville`, `dateDebut`, `dateFin`) ";
-  $sql .= "VALUES (:ID_CATEGORIE, :NOM, :PAYS, :VILLE, :DATE_DEBUT, :DATE_FIN)";
+  $sql = "INSERT INTO `tennis_tpi`.`tournois` (`nom`, `pays`, `ville`, `dateDebut`, `dateFin`, `idCategorie`) ";
+  $sql .= "VALUES (:NOM, :PAYS, :VILLE, :DATE_DEBUT, :DATE_FIN, :ID_CATEGORIE)";
   if ($ps == null) {
-    $ps = dbnotes()->prepare($sql);
+    $ps = tennis_database()->prepare($sql);
   }
   $answer = false;
   try {
-    $ps->bindParam(':ID_CATEGORIE', $idCategorie, PDO::PARAM_BOOL);
     $ps->bindParam(':NOM', $nom, PDO::PARAM_STR);
     $ps->bindParam(':PAYS', $pays, PDO::PARAM_STR);
     $ps->bindParam(':VILLE', $ville, PDO::PARAM_STR);
     $ps->bindParam(':DATE_DEBUT', $dateDebut, PDO::PARAM_STR);
     $ps->bindParam(':DATE_FIN', $dateFin, PDO::PARAM_STR);
+    $ps->bindParam(':ID_CATEGORIE', intval($idCategorie), PDO::PARAM_INT);
 
     $answer = $ps->execute();
   } catch (PDOException $e) {
