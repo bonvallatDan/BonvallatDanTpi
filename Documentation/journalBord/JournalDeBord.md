@@ -160,3 +160,7 @@
 > Le paramètre pdo n'était pas juste, c'était marqué PDO::PARAM_BOOL
 > Alors qu'il fallait qu'il soit PDO::PARAM_INT
 ![erreurInsertTournois](erreurInsertTournois.PNG)
+
+### Heure: 16:00
+> Après une pause je continue la documentation 
+> Je commence l'analyse fonctionnelle
