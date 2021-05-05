@@ -138,3 +138,25 @@
 > J'ai terminé les fonctions qui permettent d'inserer les données de la page création dans la table tournois et la table catégorie
 > Par contre je n'ai pas encore tester les fonctions
 > Je pars en pause
+
+### Heure: 14:40
+> Je rentre de pause et je vais tester les fonctions que j'ai réalisé précedement
+
+### Heure: 15:00
+> J'ai eu une erreur avec les paramètres de ma fonction insertCategorie
+![erreurInsertCategorie](erreurInsertCategorie.PNG)
+> Il manquait les :
+> Maintenant j'ai une autre erreur que le débegueur affiche pas
+
+### Heure: 15:27
+> J'ai résolu le problème pour la fonction insertCategorie mais je ne sais pas pourquoi ça marche
+> Par contre j'ai une autre erreur pour la fonction recupIdCategorie et insertTournois
+
+### Heure: 15:31
+> Pour la fonction recupIdCategorie, l'erreur était que je n'avais pas bien nommé le champ que je voulais récupérer
+> J'ai marqué idTournois alors que je voulais idCategorie
+
+### Heure: 15:50
+> Le paramètre pdo n'était pas juste, c'était marqué PDO::PARAM_BOOL
+> Alors qu'il fallait qu'il soit PDO::PARAM_INT
+![erreurInsertTournois](erreurInsertTournois.PNG)
