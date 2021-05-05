@@ -110,3 +110,31 @@
 ### Heure: 16:09
 > Le problème a été résolu et la template resemble a ça
 ![Squelette](squelette.PNG)
+
+## Date: 05.05.2021
+### Heure: 7:30
+> Je commence à travailler et je commence a faire les fonctionnalités pour créer un tournois
+
+### Heure: 07:55
+> Pour rendre des boutons plus jolie j'utilise la doc bootstrap
+> [(Documentation Bootstrap)](https://getbootstrap.com/docs/4.0/components/buttons/)
+
+### Heure: 9:50
+> Je passe au php 
+
+### Heure: 10:00
+> J'ai créer une fonction pour me faciliter les choses
+> Cette fonction permet de se rediriger sur une autre page en ayant en paramètre le chemin d'acces à la page
+
+### Heure: 12:45
+> Après la pause de midi je continue la création de la page creation.php
+> J'ai bientot terminé la création de la page
+> Il reste à implémenter les valeurs entrées dans la base de donnée
+
+### Heure: 13:37
+> J'ai réussi à filtrer tous les inputs, j'ai pris beaucoup de temps car j'ai fais beaucoup de fautes d'natentions comme par example mal tapé le name d'un input
+
+### Heure: 14:09
+> J'ai terminé les fonctions qui permettent d'inserer les données de la page création dans la table tournois et la table catégorie
+> Par contre je n'ai pas encore tester les fonctions
+> Je pars en pause
