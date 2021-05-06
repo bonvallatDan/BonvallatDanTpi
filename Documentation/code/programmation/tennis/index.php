@@ -7,7 +7,7 @@ $supprimer = "";
 $modifier = "";
 $cheminCreer = "creation.php";
 $cheminModification = "modification.php";
-$infoTournois = "";
+$infoTournois = recupTournoisInfo();
 
 // filtrage des inputs
 $creer = filter_input(INPUT_POST, 'creer', FILTER_DEFAULT);
@@ -19,26 +19,7 @@ if(isset($creer))
     redirection($cheminCreer);
 }
 
-if(isset($supprimer))
-{
-    $infoTournois = recupTournoisInfo();
-    if($infoTournois != false)
-    {
-        deleteTournois($infoTournois["idTournois"]);
-        deleteCategorie($infoTournois["idCategorie"]);
-    }
 
-}
-
-if(isset($modifier))
-{
-    $infoTournois = recupTournoisInfo();
-    if($infoTournois != false)
-    {
-        $cheminModification .= "?idTournois=".(int)$infoTournois["idTournois"]."&nom=$infoTournois[nom]&pays=$infoTournois[pays]&ville=$infoTournois[ville]&dateDebut=$infoTournois[dateDebut]&dateFin=$infoTournois[dateFin]&idCategorie=".(int)$infoTournois["idCategorie"];
-        redirection($cheminModification);
-    }
-}
 ?>
 
 <!DOCTYPE html>
@@ -78,7 +59,17 @@ if(isset($modifier))
             <div class="col-lg-8">
                 <h1 class="mt-4">Tournois</h1>
                 <div class="main">
-
+                    <?php 
+                    foreach ($infoTournois as $tournois) {
+                       echo "<div class=tournois><p>".$tournois['nom']."</p><p>".$tournois['dateDebut']."</p>
+                       <a class=delete name=supprimer href=supprimer.php?idTournois=".(int)$tournois["idTournois"]."&idCategorie=".(int)$tournois["idCategorie"].">Supprimer</a>
+                       <a class=edit name=modifier 
+                       href=modification.php?idTournois=".(int)$tournois["idTournois"]." &nom=".$tournois['nom']." &pays=".$tournois['pays']." &ville=".$tournois['ville'].
+                       " &dateDebut=".$tournois['dateDebut']." &dateFin=".$tournois['dateFin']." &idCategorie=".(int)$tournois["idCategorie"].">Modifier</a>
+                       </div>";
+                    }
+                    
+                    ?>
                 </div>
 
             </div>
@@ -100,14 +91,10 @@ if(isset($modifier))
                                 <form action method="POST">
                                     <ul class="list-unstyled mb-0">
                                         <li><input class="btn btn-primary" type="submit" value="Créer" name="creer"></li>
-                                        <li><input class="btn btn-primary" type="submit" value="Voir" name="voir"></li>
-                                        <li><input class="btn btn-primary" type="submit" value="Copier" name="copier"></li>
                                     </ul>
                             </div>
                             <div class="col-lg-6">
                                 <ul class="list-unstyled mb-0">
-                                    <li><input class="btn btn-primary" type="submit" value="Supprimer" name="supprimer"></li>
-                                    <li><input class="btn btn-primary" type="submit" value="Modifier" name="modifier"></li>
                                 </ul>
                                 </form>
                             </div>

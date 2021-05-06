@@ -176,7 +176,7 @@ function recupTournoisInfo()
   $sql = 'SELECT idTournois, nom, pays, ville, dateDebut, dateFin, idCategorie ';
   $sql .= 'FROM tennis_tpi.tournois ';
   $sql .= 'ORDER BY idCategorie ';
-  $sql .= 'DESC LIMIT 1';
+  $sql .= 'DESC';
 
   if ($ps == null) {
     $ps = tennis_database()->prepare($sql);
@@ -184,7 +184,7 @@ function recupTournoisInfo()
   $answer = false;
   try {
     if ($ps->execute())
-      $answer = $ps->fetch(PDO::FETCH_ASSOC);
+      $answer = $ps->fetchAll(PDO::FETCH_ASSOC);
   } catch (PDOException $e) {
     echo $e->getMessage();
   }

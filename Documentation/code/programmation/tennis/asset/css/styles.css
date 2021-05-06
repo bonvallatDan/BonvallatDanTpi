@@ -69,6 +69,20 @@ body {
   background-color: #fff;
 }
 
+.tournois{
+  height: 100px;
+  width: 100%;
+  background-color: red;
+}
+
+.delete{
+  float: right;
+}
+
+.edit{
+  float: right;
+}
+
 /*
 pour mettre le footer en bas de page
 */
@@ -635,6 +649,7 @@ pre code {
   width: 100%;
   padding-right: 15px;
   padding-left: 15px;
+  float: right;
 }
 
 .col {
@@ -2453,6 +2468,7 @@ textarea.form-control {
   line-height: 1.5;
   border-radius: 0.25rem;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  float: right;
 }
 @media (prefers-reduced-motion: reduce) {
   .btn {
