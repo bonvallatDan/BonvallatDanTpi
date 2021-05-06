@@ -194,3 +194,32 @@
 > Le problème était qu'un des paramètres était un tableau et que je ne renseignais pas la valeur dans le tableau
 ![erreurUpdate](erreurUpdate.PNG)
 ![resolutionUpdate](resolutionUpdate.PNG)
+
+### Heure: 11:30
+> J'enregistre tout et je pars en pause de midi
+
+### Heure: 12:36
+> Je reviens de pause
+> Je vais insérer minimum 48 joueurs (32 joureurs et 16 joueuses)
+> Pour aller plus vite, je cherche sur internet avec les informations dont j'ai besion
+> Puis je les copie dans notepad++ pour en faire une table afin d'inserer les données dans ma base de donnée
+> Le prof de classe m'a aidé pour optimiser mon travail et l'implémentation des données dans la base de donnée
+
+### Heure: 14:00
+> Tous les joueurs ont été importé
+
+### Heure: 14:07
+> Après la pause de 14:15, je vais commencer l'affichage des tournois sur la page index.php
+
+### Heure: 15:15
+> Après le rendez-vous avec les experts, je continue le dévloppement du menu
+
+### Heure: 15:28
+> Je me rend compte que ce que je voulais faire est trop compliqué et que ça me prend trop de temps
+> Je voulais qu'on puisse séléctionner un tournois et ensuite utiliser les boutons pour interagir avec.
+> Mais je change les plans que j'ai fais et je vais faire en sorte que pour chaque tournois créé un bouton supprimé, modifié et voir vont être attribués à chaque tournois
+![nouvellePageIndex](nouvellePageIndex.JPG)
+
+### Heure: 15:51
+> J'ai du rajouter une page supprimé mais qui sert juste à supprimer les données du tournois selectionné
+> Après la page supprimé revient directe sur la page index
