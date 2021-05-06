@@ -50,7 +50,6 @@
 > Finalement j'ai enfin réussi à mettre une image dans markdown
 > Je vais passé aux sauvgardes et je vais mettre à jour le plan effectif
 
-# Jour de bord 
 ## Date: 04.05.2021
 ### Heure: 07:34
 
@@ -164,3 +163,34 @@
 ### Heure: 16:00
 > Après une pause je continue la documentation 
 > Je commence l'analyse fonctionnelle
+
+## Date: 06.05.2021
+### Heure: 07:40
+> Après être rentré en classe et d'avoir allumé mon poste, je commence la création de la fonctionnalité supprimé
+
+### Heure: 08:08
+> J'ai terminé les fonctions deleteTournois et deleteCategorie
+> Pour l'instant les fonctions suppriment juste le dernier tournois créé mais je compte trouver un moyen pour afficher les tournois créés et lorsqu'on clique sur un des tournois on peut le supprimer
+> Je passe maintenant à la page modifier
+
+### Heure: 08:50
+> J'ai eu un problème, que j'ai résolu
+> Le problème était que je voulais passer des données en get entre 2 page (index.php -> modification.php) et j'avais une erreur qui disait "a non-numeric value encountered"
+> Mon code était ça
+![erreurPassageGetIndex](erreurPassageGetIndex.PNG)
+> Je ne devais pas faire un += mais un .= qui est une concatenation
+![resolutionPassageGetIndex](resolutionPassageGetIndex.PNG)
+> Le programme pensait que $cheminModification était une valeur numérique et c'est donc pour ça que l'erreur s'affichait
+
+### Heure: 10:09
+> Retoure de pause, je continue la cération de la page modification.php ainsi que ses fonctions
+
+### Heure: 11:07
+> J'ai des erreus dans mes fonctions car elles retourne false
+> Je vais tester les requettes dans ma base de données
+
+### Heure: 11:26
+> Les fonctions qui permettent de mettre à jour le tournois fonctionnent
+> Le problème était qu'un des paramètres était un tableau et que je ne renseignais pas la valeur dans le tableau
+![erreurUpdate](erreurUpdate.PNG)
+![resolutionUpdate](resolutionUpdate.PNG)
