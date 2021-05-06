@@ -3,20 +3,43 @@ require_once 'asset/php/inc.all.php';
 
 // création des variables
 $creer = "";
+$supprimer = "";
+$modifier = "";
 $cheminCreer = "creation.php";
+$cheminModification = "modification.php";
+$infoTournois = "";
 
 // filtrage des inputs
 $creer = filter_input(INPUT_POST, 'creer', FILTER_DEFAULT);
+$supprimer = filter_input(INPUT_POST, 'supprimer', FILTER_DEFAULT);
+$modifier = filter_input(INPUT_POST, 'modifier', FILTER_DEFAULT);
 
 if(isset($creer))
 {
     redirection($cheminCreer);
 }
 
+if(isset($supprimer))
+{
+    $infoTournois = recupTournoisInfo();
+    if($infoTournois != false)
+    {
+        deleteTournois($infoTournois["idTournois"]);
+        deleteCategorie($infoTournois["idCategorie"]);
+    }
 
+}
+
+if(isset($modifier))
+{
+    $infoTournois = recupTournoisInfo();
+    if($infoTournois != false)
+    {
+        $cheminModification .= "?idTournois=".(int)$infoTournois["idTournois"]."&nom=$infoTournois[nom]&pays=$infoTournois[pays]&ville=$infoTournois[ville]&dateDebut=$infoTournois[dateDebut]&dateFin=$infoTournois[dateFin]&idCategorie=".(int)$infoTournois["idCategorie"];
+        redirection($cheminModification);
+    }
+}
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
