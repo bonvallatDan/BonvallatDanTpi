@@ -23,10 +23,14 @@
   - [5.1. Product Backlog](#51-product-backlog)
   - [5.2. Plan previsionnel](#52-plan-previsionnel)
 - [6. Analyse Fonctionnelle](#6-analyse-fonctionnelle)
-  - [6.2. Fonctionnalités](#62-fonctionnalités)
-  - [6.3. Description des fonctionnalités](#63-description-des-fonctionnalités)
-  - [6.4. Mesure de sécurité](#64-mesure-de-sécurité)
+  - [6.1. Fonctionnalités](#61-fonctionnalités)
+  - [6.2. Description des fonctionnalités](#62-description-des-fonctionnalités)
+  - [6.3. Mesure de sécurité](#63-mesure-de-sécurité)
 - [7. Analyse Organique](#7-analyse-organique)
+    - [7.0.1. Page index](#701-page-index)
+    - [Page Creation](#page-creation)
+    - [Page Modification](#page-modification)
+    - [Page Tournois](#page-tournois)
   - [7.1. Technologies utilisées](#71-technologies-utilisées)
   - [7.2. Environnement](#72-environnement)
   - [7.3. Description de la base de données](#73-description-de-la-base-de-données)
@@ -256,7 +260,7 @@
 > Je commence alors par créer la page index.php. Cette page est un menu ou ce trouve les tournois créé par l'utilisateur.
 > Je créé ensuite la page creation.php. Cette page est un formulaire ou l'utilisateur pourra créer un tournois. 
 
-### 6.2. Fonctionnalités
+### 6.1. Fonctionnalités
 > Sur la page index.php, l'utilisateur peut créer un tournois en appuyant sur un bouton créer qui l'emenera sur la page création.php. Une fois le tournois créé, le tournois s'affichera dans le compartiment en gris. A coté du tournois, se trouvera un bouton pour supprimer le tournois, un bouton modifier, un autre pour voir le tournois et un dernier pour copier le tournois.
 > La page index.php peut également faire une recherche du tournois.
 > Cette page ressemble à ça
@@ -277,7 +281,7 @@
 
 > PAGE COPIER !!!
 
-### 6.3. Description des fonctionnalités
+### 6.2. Description des fonctionnalités
 > Sur la page index l'utilisateur peut rechercher un tournois. Il doit juste entré un mot dans la barre de recherche et à appuyer sur le bouton recherche et les tournois vont apparaîtres du plus au moins pertinent.
 >  Il peut également appuyer sur les bouton créer, modifier, voir, copier et supprimer. 
 > Sur la parge creation, l'utilisateur peut rentrer différentes données dans les champs du formulaire. Il peut ensuite cliquer sur le bouton créer qui va envoyer les données dans la base de données et l'utilisateur sera redirigé sur la page index.
@@ -289,13 +293,376 @@
 > FAIRE PAGE COPIER !!!
 
 
-### 6.4. Mesure de sécurité
+### 6.3. Mesure de sécurité
 > Pour ce qui est de la sécurité, je filtre toujours les inputs avant de traiter les données. Lorsque je passe des données en get, je les filtre directement sur la page ou les données ont été envoyé.
 
 
 ## 7. Analyse Organique
+#### 7.0.1. Page index
+> Sur la page index il y a un lien qui permet de revenir a la page index. Le lien ce trouve sur le mot "Tennis" qui est le titre de la page. Dans le lien la méthode de redirection est utilisé.
+
+> Sur la page index ce trouve également un bouton créer qui redirige l'utilisateur sur la page creation.php.
+> Lorsque l'utilisateur appuie sur le bouton, on vérifie que le bouton a été set puis on utilise une fonction avec un paramètre, qui est le chemin d'acces, qui permet de redirectionner l'utilisateur sur la page creation.
+```php
+if (isset($_POST['creer'])) {
+    redirection($cheminCreer);
+}
+```
+```php
+function redirection($chemin)
+{
+  header("Location: $chemin");
+  exit();
+}
+```
+
+> L'utilisateur peut chercher les tournois créés grâce à une barre de recherche ainsi que d'un bouton.
+> A COMPLETER 
+
+> Lorsque l'utilisateur supprime un tournois, l'id du tournois et l'id de la catégorie sont envoyés en get sur une page supprimé ou l'utilisateur n'a pas accès. Sur cette page les id sont d'abord filtés puis entrés dans une fonction afin de récupérer les données du tournois créé et de la catégorie. Après que toutes les données aies été récupérer, deux fonctions vont êtres utilisées pour, d'abord, supprimer les données du tournois puis ensuite supprimer les données de la catégorie. Les fonctions ont pour paramètre l'id du tournois et l'id de la catégorie.
+> Pour finir la page supprimer.php va se rediriger sur la page index avec la même fonction de redirection
+```php
+$cheminSupprimer?idTournois=" . (int)$tournois["idTournois"] . "&idCategorie=" . (int)$tournois["idCategorie"]
+```
+```php
+$idTournois = filter_input(INPUT_GET, 'idTournois', FILTER_VALIDATE_INT);
+$idCategorie = filter_input(INPUT_GET, 'idCategorie', FILTER_VALIDATE_INT);
+```
+```php
+deleteTournois($idTournois);
+deleteCategorie($idCategorie);
+```
+```php
+function deleteTournois($idTournois)
+{
+  static $ps = null;
+  $sql = "DELETE FROM `tennis_tpi`.`tournois` WHERE (`idTournois` = :ID_TOURNOIS);";
+  if ($ps == null) {
+    $ps = tennis_database()->prepare($sql);
+  }
+  $answer = false;
+  try {
+    $ps->bindParam(':ID_TOURNOIS', intval($idTournois), PDO::PARAM_INT);
+    $ps->execute();
+    $answer = ($ps->rowCount() > 0);
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
+  return $answer;
+}
+```
+```php
+function deleteCategorie($idCategorie)
+{
+  static $ps = null;
+  $sql = "DELETE FROM `tennis_tpi`.`categories` WHERE (`idCategorie` = :ID_CATEGORIE);";
+  if ($ps == null) {
+    $ps = tennis_database()->prepare($sql);
+  }
+  $answer = false;
+  try {
+    $ps->bindParam(':ID_CATEGORIE', intval($idCategorie), PDO::PARAM_INT);
+    $ps->execute();
+    $answer = ($ps->rowCount() > 0);
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
+  return $answer;
+}
+```
+```php
+redirection($cheminIndex);
+```
+```php
+function redirection($chemin)
+{
+  header("Location: $chemin");
+  exit();
+}
+```
+> Lorsque l'utilisateur modifie un tournois, on passe en get l'id du tournois sur la page modification.php et on redirige l'utilisateur grâce à un lien sur cette même page.
+```php
+$cheminModification?idTournois=" . (int)$tournois["idTournois"]
+```
+> Quand l'utilisateur accède à la page tournois.php, on passe l'id du tournois en get et on le redirige grace à un lien sur la page tournois.php.
+```php
+$cheminVoir?idTournois=" . (int)$tournois["idTournois"]
+```
+#### Page Creation
+> Sur la page creation il y a un lien qui permet de revenir a la page index. Le lien ce trouve sur le mot "Tennis" qui est le titre de la page. Dans le lien la méthode de redirection est utilisé.
+```php
+function redirection($chemin)
+{
+  header("Location: $chemin");
+  exit();
+}
+```
+> Lorsque l'utilisateur appuie sur le bouton pour créer le tournois après avoir remplit le formulaire, on vérifie d'abord que le bouton aie été activé puis les données sont filtrées et stockées dans des variables. Après que les données soient filtrées, des méthodes sont utilisées pour inserer les données dans la base de données. Les fonctions ont pour paramètre les variables dont les données ont été stocké précedement. Après avoir inserer les données dans la base de données, l'utilisateur sera redirigé sur la page index à l'aide de la fonction de redirection.
+```php
+if (isset($_POST['creer'])) {
+}
+```
+```php
+$nomTournois = filter_input(INPUT_POST, 'nomTournois', FILTER_SANITIZE_STRING);
+$nomPays = filter_input(INPUT_POST, 'nomPays', FILTER_SANITIZE_STRING);
+$nomVille = filter_input(INPUT_POST, 'nomVille', FILTER_SANITIZE_STRING);
+$dateDebut = filter_input(INPUT_POST, 'dateDebut', FILTER_SANITIZE_STRING);
+$dateFin = filter_input(INPUT_POST, 'dateFin', FILTER_SANITIZE_STRING);
+$genre = filter_input(INPUT_POST, 'genreTournois', FILTER_SANITIZE_STRING);
+$dotation = filter_input(INPUT_POST, 'dotation', FILTER_VALIDATE_INT);
+$nbJoueursFiltre = filter_input(INPUT_POST, 'nbJoueurs', FILTER_SANITIZE_STRING);
+$nbSetsFiltre = filter_input(INPUT_POST, 'nbSets', FILTER_SANITIZE_STRING);
+$jeuDecisif = filter_input(INPUT_POST, 'jeuDecisif', FILTER_SANITIZE_STRING);
+    if ($jeuDecisif != 1)
+    {
+        $jeuDecisif = 0;
+    }
+$surface = filter_input(INPUT_POST, 'surface', FILTER_SANITIZE_STRING);
+$typeTournois = filter_input(INPUT_POST, 'typeTournois', FILTER_SANITIZE_STRING);
+```
+```php
+insertCategorie($genre, $dotation, $surface, $typeTournois, $jeuDecisif, $nbSetsFiltre, $nbJoueursFiltre);
+$idCategorie = recupIdCategorie();
+insertTournois($nomTournois, $nomPays, $nomVille, $dateDebut, $dateFin, $idCategorie["idCategorie"]);
+```
+```php
+function insertCategorie($genre, $dotation, $surface, $typeTournois, $jeuDecisif, $nbSet, $nbParticipant)
+{
+  static $ps = null;
+  $sql = "INSERT INTO `tennis_tpi`.`categories` (`genre`, `dotation`, `idSurface`, `idType`, `jeuDecisif`, `nbSet`, `nbParticipant`) ";
+  $sql .= "VALUES (:GENRE, :DOTATION, :ID_SURFACE, :ID_TYPE, :JEU_DECISIF, :NB_SET, :NB_PARTICIPANT)";
+  if ($ps == null) {
+    $ps = tennis_database()->prepare($sql);
+  }
+  $answer = false;
+  try {
+    $ps->bindParam(':GENRE', $genre, PDO::PARAM_BOOL);
+    $ps->bindParam(':DOTATION', $dotation, PDO::PARAM_INT);
+    $ps->bindParam(':ID_SURFACE', $surface, PDO::PARAM_INT);
+    $ps->bindParam(':ID_TYPE', $typeTournois, PDO::PARAM_INT);
+    $ps->bindParam(':JEU_DECISIF', $jeuDecisif, PDO::PARAM_BOOL);
+    $ps->bindParam(':NB_SET', $nbSet, PDO::PARAM_INT);
+    $ps->bindParam(':NB_PARTICIPANT', $nbParticipant, PDO::PARAM_INT);
+
+    $answer = $ps->execute();
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
+  return $answer;
+}
+```
+```php
+function recupIdCategorie()
+{
+  static $ps = null;
+  $sql = 'SELECT idCategorie ';
+  $sql .= 'FROM tennis_tpi.categories ';
+  $sql .= 'ORDER BY idCategorie ';
+  $sql .= 'DESC LIMIT 1';
+
+  if ($ps == null) {
+    $ps = tennis_database()->prepare($sql);
+  }
+  $answer = false;
+  try {
+    if ($ps->execute())
+      $answer = $ps->fetch(PDO::FETCH_ASSOC);
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
+
+  return $answer;
+}
+```
+```php
+function insertTournois($nom, $pays, $ville, $dateDebut, $dateFin, $idCategorie)
+{
+  static $ps = null;
+  $sql = "INSERT INTO `tennis_tpi`.`tournois` (`nom`, `pays`, `ville`, `dateDebut`, `dateFin`, `idCategorie`) ";
+  $sql .= "VALUES (:NOM, :PAYS, :VILLE, :DATE_DEBUT, :DATE_FIN, :ID_CATEGORIE)";
+  if ($ps == null) {
+    $ps = tennis_database()->prepare($sql);
+  }
+  $answer = false;
+  try {
+    $ps->bindParam(':NOM', $nom, PDO::PARAM_STR);
+    $ps->bindParam(':PAYS', $pays, PDO::PARAM_STR);
+    $ps->bindParam(':VILLE', $ville, PDO::PARAM_STR);
+    $ps->bindParam(':DATE_DEBUT', $dateDebut, PDO::PARAM_STR);
+    $ps->bindParam(':DATE_FIN', $dateFin, PDO::PARAM_STR);
+    $ps->bindParam(':ID_CATEGORIE', intval($idCategorie), PDO::PARAM_INT);
+
+    $answer = $ps->execute();
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
+  return $answer;
+}
+```
+```php
+function redirection($chemin)
+{
+  header("Location: $chemin");
+  exit();
+}
+```
+#### Page Modification
+ > Sur la page modification il y a un lien qui permet de revenir a la page index. Le lien ce trouve sur le mot "Tennis" qui est le titre de la page. Dans le lien la méthode de redirection est utilisé.
+```php
+function redirection($chemin)
+{
+  header("Location: $chemin");
+  exit();
+}
+```
+> Lorsque l'utilisateur appuie sur le bouton pour modifier le tournois après avoir modifier le formulaire, on vérifie d'abord que le bouton aie été activé puis les données sont filtrées et stockées dans des variables. Après que les données soient filtrées, des méthodes sont utilisées pour modifier les données dans la base de données. Les fonctions ont pour paramètre les variables dont les données ont été stocké précedement. Après avoir modifier les données dans la base de données, l'utilisateur sera redirigé sur la page index à l'aide de la fonction de redirection.
+```php
+if (isset($_POST['modifier'])) {
+}
+```
+```php
+//filtrage des inputs
+    $nomTournois = filter_input(INPUT_POST, 'nomTournois', FILTER_SANITIZE_STRING);
+    $nomPays = filter_input(INPUT_POST, 'nomPays', FILTER_SANITIZE_STRING);
+    $nomVille = filter_input(INPUT_POST, 'nomVille', FILTER_SANITIZE_STRING);
+    $dateDebut = filter_input(INPUT_POST, 'dateDebut', FILTER_SANITIZE_STRING);
+    $dateFin = filter_input(INPUT_POST, 'dateFin', FILTER_SANITIZE_STRING);
+    $genre = filter_input(INPUT_POST, 'genreTournois', FILTER_SANITIZE_STRING);
+    $dotation = filter_input(INPUT_POST, 'dotation', FILTER_VALIDATE_INT);
+    $nbJoueursFiltre = filter_input(INPUT_POST, 'nbJoueurs', FILTER_SANITIZE_STRING);
+    $nbSetsFiltre = filter_input(INPUT_POST, 'nbSets', FILTER_SANITIZE_STRING);
+    $jeuDecisif = filter_input(INPUT_POST, 'jeuDecisif', FILTER_SANITIZE_STRING);
+    if ($jeuDecisif != 1)
+    {
+        $jeuDecisif = 0;
+    }
+    $surface = filter_input(INPUT_POST, 'surface', FILTER_SANITIZE_STRING);
+    $typeTournois = filter_input(INPUT_POST, 'typeTournois', FILTER_SANITIZE_STRING);
+```
+```php
+$idCategorie = recupIdCategorie();
+updateCategorie($genre, $dotation, $surface, $typeTournois, $jeuDecisif, $nbSetsFiltre, $nbJoueursFiltre, $idCategorie['idCategorie']);
+updateTournois($nomTournois, $nomPays, $nomVille, $dateDebut, $dateFin, $idCategorie['idCategorie'], $idTournois);
+```
+```php
+function recupIdCategorie()
+{
+  static $ps = null;
+  $sql = 'SELECT idCategorie ';
+  $sql .= 'FROM tennis_tpi.categories ';
+  $sql .= 'ORDER BY idCategorie ';
+  $sql .= 'DESC LIMIT 1';
+
+  if ($ps == null) {
+    $ps = tennis_database()->prepare($sql);
+  }
+  $answer = false;
+  try {
+    if ($ps->execute())
+      $answer = $ps->fetch(PDO::FETCH_ASSOC);
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
+
+  return $answer;
+}
+```
+```php
+function updateCategorie($genre, $dotation, $idSurface, $idType, $jeuDecisif, $nbSet, $nbParticipant, $idCategorie)
+{
+  static $ps = null;
+
+  $sql = "UPDATE `tennis_tpi`.`categories` SET ";
+  $sql .= "`genre` = :GENRE, ";
+  $sql .= "`dotation` = :DOTATION, ";
+  $sql .= "`idSurface` = :ID_SURFACE, ";
+  $sql .= "`idType` = :ID_TYPE, ";
+  $sql .= "`jeuDecisif` = :JEU_DECISIF, ";
+  $sql .= "`nbSet` = :NB_SET, ";
+  $sql .= "`nbParticipant` = :NB_PARTICIPANT ";
+  $sql .= "WHERE (`idCategorie` = :ID_CATEGORIE)";
+  if ($ps == null) {
+    $ps = tennis_database()->prepare($sql);
+  }
+  $answer = false;
+  try {
+    $ps->bindParam(':GENRE', intval($genre), PDO::PARAM_INT);
+    $ps->bindParam(':DOTATION', intval($dotation), PDO::PARAM_INT);
+    $ps->bindParam(':ID_SURFACE', intval($idSurface), PDO::PARAM_INT);
+    $ps->bindParam(':ID_TYPE', intval($idType), PDO::PARAM_INT);
+    $ps->bindParam(':JEU_DECISIF', intval($jeuDecisif), PDO::PARAM_INT);
+    $ps->bindParam(':NB_SET', intval($nbSet), PDO::PARAM_INT);
+    $ps->bindParam(':NB_PARTICIPANT', intval($nbParticipant), PDO::PARAM_INT);
+    $ps->bindParam(':ID_CATEGORIE', intval($idCategorie), PDO::PARAM_INT);
+    $ps->execute();
+    $answer = ($ps->rowCount() > 0);
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
+  return $answer;
+}
+```
+```php
+function updateTournois($nom, $pays, $ville, $dateDebut, $dateFin, $idCategorie, $idTournois)
+{
+  static $ps = null;
+
+  $sql = "UPDATE `tennis_tpi`.`tournois` SET ";
+  $sql .= "`nom` = :NOM, ";
+  $sql .= "`pays` = :PAYS, ";
+  $sql .= "`ville` = :VILLE, ";
+  $sql .= "`dateDebut` = :DATE_DEBUT, ";
+  $sql .= "`dateFin` = :DATE_FIN, ";
+  $sql .= "`idCategorie` = :ID_CATEGORIE ";
+  $sql .= "WHERE (`idTournois` = :ID_TOURNOIS)";
+  if ($ps == null) {
+    $ps = tennis_database()->prepare($sql);
+  }
+  $answer = false;
+  try {
+    $ps->bindParam(':NOM', $nom, PDO::PARAM_STR);
+    $ps->bindParam(':PAYS', $pays, PDO::PARAM_STR);
+    $ps->bindParam(':VILLE', $ville, PDO::PARAM_STR);
+    $ps->bindParam(':DATE_DEBUT', $dateDebut, PDO::PARAM_STR);
+    $ps->bindParam(':DATE_FIN', $dateFin, PDO::PARAM_STR);
+    $ps->bindParam(':ID_CATEGORIE', intval($idCategorie), PDO::PARAM_INT);
+    $ps->bindParam(':ID_TOURNOIS', intval($idTournois), PDO::PARAM_INT);
+    $ps->execute();
+    $answer = ($ps->rowCount() > 0);
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
+  return $answer;
+}
+```
+```php
+function redirection($chemin)
+{
+  header("Location: $chemin");
+  exit();
+}
+```
+#### Page Tournois
+ > Sur la page tournois il y a un lien qui permet de revenir a la page index. Le lien ce trouve sur le mot "Tennis" qui est le titre de la page. Dans le lien la méthode de redirection est utilisé.
+```php
+function redirection($chemin)
+{
+  header("Location: $chemin");
+  exit();
+}
+```
+A COMPLETER !!!!
 
 ### 7.1. Technologies utilisées
+> Les technologies qui sont utilisé dans ce projet sont:
+> * php
+> Le php est principalement utilisé pour traiter les données, sécuriser le site et faire les traitements avec la base de données
+> * css
+> Le css est utiliser pour décorer le site web mais aussi pour faciliter l'utilisation de l'utilisateur lorsqu'il navigue sur le site.
+> * html
+> L'html permet de construire le site et de permettre certaines actions qui nécessite du php 
+> * sql
+> L'sql permet de traiter les informations qu'il reçoit dans la base de données et permet l'accès au php afin de permettre aux informations de circuler entre le site web et la base de données.
 
 ### 7.2. Environnement
 
