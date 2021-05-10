@@ -7,15 +7,18 @@ $supprimer = "";
 $modifier = "";
 $cheminCreer = "creation.php";
 $cheminModification = "modification.php";
+$cheminVoir = "tournois.php";
 $infoTournois = recupTournoisInfo();
+$recherche = "";
+$word = "";
 
 // filtrage des inputs
 $creer = filter_input(INPUT_POST, 'creer', FILTER_DEFAULT);
 $supprimer = filter_input(INPUT_POST, 'supprimer', FILTER_DEFAULT);
 $modifier = filter_input(INPUT_POST, 'modifier', FILTER_DEFAULT);
+$word = filter_input(INPUT_POST, 'word', FILTER_SANITIZE_STRING);
 
-if(isset($creer))
-{
+if (isset($_POST['creer'])) {
     redirection($cheminCreer);
 }
 
@@ -47,7 +50,7 @@ if(isset($creer))
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ml-auto">
-                    
+
                 </ul>
             </div>
         </div>
@@ -59,16 +62,22 @@ if(isset($creer))
             <div class="col-lg-8">
                 <h1 class="mt-4">Tournois</h1>
                 <div class="main">
-                    <?php 
-                    foreach ($infoTournois as $tournois) {
-                       echo "<div class=tournois><p>".$tournois['nom']."</p><p>".$tournois['dateDebut']."</p>
-                       <a class=delete name=supprimer href=supprimer.php?idTournois=".(int)$tournois["idTournois"]."&idCategorie=".(int)$tournois["idCategorie"].">Supprimer</a>
-                       <a class=edit name=modifier 
-                       href=modification.php?idTournois=".(int)$tournois["idTournois"]." &nom=".$tournois['nom']." &pays=".$tournois['pays']." &ville=".$tournois['ville'].
-                       " &dateDebut=".$tournois['dateDebut']." &dateFin=".$tournois['dateFin']." &idCategorie=".(int)$tournois["idCategorie"].">Modifier</a>
-                       </div>";
+                    <?php
+                    if (!isset($_POST['recherche'])) {
+                        foreach ($infoTournois as $tournois) {
+                            echo "<div class=tournois><p>" . $tournois['nom'] . "</p><p>" . $tournois['dateDebut'] . "</p>
+                            <a class=delete name=supprimer href=supprimer.php?idTournois=" . (int)$tournois["idTournois"] . "&idCategorie=" . (int)$tournois["idCategorie"] . ">Supprimer</a>
+                            <a class=edit name=modifier href=$cheminModification?idTournois=" . (int)$tournois["idTournois"] . ">Modifier</a>
+                            <a class=look name=voir href=$cheminVoir?idTournois=" . (int)$tournois["idTournois"] . ">Voir</a>
+                            </div>";
+                        }
+                    } else {
+                        $chaine = recherche("Geneva");
+                        foreach ($chaine as $unMot) {
+                        }
                     }
-                    
+
+
                     ?>
                 </div>
 
@@ -78,8 +87,14 @@ if(isset($creer))
                     <h5 class="card-header">Search</h5>
                     <div class="card-body">
                         <div class="input-group">
-                            <input class="form-control" type="text" placeholder="Search for..." />
-                            <span class="input-group-append"><button class="btn btn-secondary" type="button">Go!</button></span>
+                            <form method="POST" action>
+                                <div class="input-group">
+                                    <div class="form-outline">
+                                        <input type="search" id="form1" class="form-control" name="word" />
+                                    </div>
+                                    <input type="submit" class="btn btn-primary" value="Go!" name="recherche">
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>

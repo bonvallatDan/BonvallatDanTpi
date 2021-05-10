@@ -274,6 +274,37 @@ function recupCategorieInfoById($idCategorie)
 }
 
 
+
+/**
+ * Retourne les valeurs d'un tournois par rapport à son id
+ *
+ * @return array
+ */
+function recupTournoisInfoById($idTournois)
+{
+  static $ps = null;
+  $sql = 'SELECT idTournois, nom, pays, ville, dateDebut, dateFin, idCategorie FROM tennis_tpi.tournois';
+  $sql .= ' WHERE idTournois = :ID_TOURNOIS';
+
+  if ($ps == null) {
+    $ps = tennis_database()->prepare($sql);
+  }
+  $answer = false;
+  try {
+    $ps->bindParam(':ID_TOURNOIS', $idTournois, PDO::PARAM_INT);
+
+    if ($ps->execute())
+      $answer = $ps->fetch(PDO::FETCH_ASSOC);
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
+
+  return $answer;
+  
+}
+
+
+
 /**
  * Met à jour les données de la table categorie
  *
@@ -366,5 +397,97 @@ function updateTournois($nom, $pays, $ville, $dateDebut, $dateFin, $idCategorie,
   }
   return $answer;
 }
-?>
+
+
+/**
+ * Effectue une recherche de mot du plus au moins pertinent, en utilisant un système de score
+ *
+ * @param [string] $word
+ * @return void
+ */
+function recherche($word)
+{
+  static $ps = null;
+  $sql = 'SELECT *,(SELECT REPLACE(nom, :WORD, "<mark class=marker><a href=https://fr.wikipedia.org/wiki/":WORD0" target=_blank rel=noopener noreferrer>":WORD1"</a></mark>")) AS contentReplace, ROUND(MATCH (content) AGAINST (:WORD2 IN NATURAL LANGUAGE MODE), 2) AS score
+    FROM tournois WHERE MATCH (nom) AGAINST (:WORD3 IN NATURAL LANGUAGE MODE) > 0 ORDER BY score DESC';
+
+  if ($ps == null) {
+    $ps = tennis_database()->prepare($sql);
+  }
+  $answer = false;
+  try {
+    $ps->bindParam(':WORD', $word, PDO::PARAM_STR);
+    $ps->bindParam(':WORD0', $word, PDO::PARAM_STR);
+    $ps->bindParam(':WORD1', $word, PDO::PARAM_STR);
+    $ps->bindParam(':WORD2', $word, PDO::PARAM_STR);
+    $ps->bindParam(':WORD3', $word, PDO::PARAM_STR);
+
+    if ($ps->execute())
+      $answer = $ps->fetchAll(PDO::FETCH_ASSOC);
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
+
+  return $answer;
+}
+
+
+/**
+ * Récupère tous les joueurs de la table joueurs
+ *
+ * @return array
+ */
+function getPlayer()
+{
+  static $ps = null;
+  $sql = 'SELECT idJoueur, prenom, nom, dateNaissance, nationalite, genre, classementATP';
+  $sql .= ' FROM tennis_tpi.joueurs';
+
+  if ($ps == null) {
+    $ps = tennis_database()->prepare($sql);
+  }
+  $answer = false;
+  try {
+    if ($ps->execute())
+      $answer = $ps->fetchAll(PDO::FETCH_ASSOC);
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
+
+  return $answer;
+}
+
+
+function trieJoueur($tableauJoueurs)
+{
+  $joueurPairHomme = [];
+  $joueurImpairHomme = [];
+  $joueusePairFemme = [];
+  $joueuseImpairFemme = [];
+  
+  foreach ($tableauJoueurs as $unJoueur ) {
+    if ($unJoueur['genre'] == 1)
+    {
+      if (fmod($unJoueur['classementATP'], 2) == 0)
+      {
+        array_push($joueurPairHomme, $unJoueur);
+      }
+      else
+      {
+        array_push($joueurImpairHomme, $unJoueur);
+      }
+    }
+    else
+    {
+      if (fmod($unJoueur['classementATP'], 2) == 0)
+      {
+        array_push($joueusePairFemme, $unJoueur);
+      }
+      else
+      {
+        array_push($joueuseImpairFemme, $unJoueur);
+      }
+    }
+  }
+}
 

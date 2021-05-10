@@ -18,14 +18,9 @@ $getTournoisType = getTournoisType();
 
 //filtrage des inputs
 $idTournois = filter_input(INPUT_GET, 'idTournois', FILTER_VALIDATE_INT);
-$nom = filter_input(INPUT_GET, 'nom', FILTER_SANITIZE_STRING);
-$pays = filter_input(INPUT_GET, 'pays', FILTER_SANITIZE_STRING);
-$ville = filter_input(INPUT_GET, 'ville', FILTER_SANITIZE_STRING);
-$dateDebut = filter_input(INPUT_GET, 'dateDebut', FILTER_SANITIZE_STRING);
-$dateFin = filter_input(INPUT_GET, 'dateFin', FILTER_SANITIZE_STRING);
-$idCategorie = filter_input(INPUT_GET, 'idCategorie', FILTER_VALIDATE_INT);
 
-$categorie = recupCategorieInfoById($idCategorie);
+$tournois = recupTournoisInfoById($idTournois);
+$categorie = recupCategorieInfoById($tournois['idCategorie']);
 
 
 if (isset($_POST['modification'])) {
@@ -103,23 +98,23 @@ if (isset($_POST['modification'])) {
                     <form action method="POST">
                         <div class="form-group">
                             <label for="formGroupExampleInput">Nom du tournois</label>
-                            <input type="text" class="form-control" name="nomTournois" placeholder="Geneva Open" value="<?= $nom ?>" required >
+                            <input type="text" class="form-control" name="nomTournois" placeholder="Geneva Open" value="<?= $tournois['nom'] ?>" required >
                         </div>
                         <div class="form-group">
                             <label for="formGroupExampleInput2">Pays</label>
-                            <input type="text" class="form-control" name="nomPays" placeholder="Suisse" value=<?= $pays ?> required>
+                            <input type="text" class="form-control" name="nomPays" placeholder="Suisse" value=<?= $tournois['pays'] ?> required>
                         </div>
                         <div class="form-group">
                             <label for="formGroupExampleInput2">Ville</label>
-                            <input type="text" class="form-control" name="nomVille" placeholder="Genève" value=<?= $ville ?> required>
+                            <input type="text" class="form-control" name="nomVille" placeholder="Genève" value=<?= $tournois['ville'] ?> required>
                         </div>
                         <div class="form-group">
                             <label for="formGroupExampleInput2">Date de debut</label>
-                            <input class="form-control" type="date" name="dateDebut" value=<?= $dateDebut?>>
+                            <input class="form-control" type="date" name="dateDebut" value=<?=$tournois['dateDebut']?>>
                         </div>
                         <div class="form-group">
                             <label for="formGroupExampleInput2">Date de fin</label>
-                            <input class="form-control" type="date" name="dateFin" value=<?= $dateFin?>>
+                            <input class="form-control" type="date" name="dateFin" value=<?= $tournois['dateFin']?>>
                         </div>
                         <fieldset class="form-group ">
                             <legend class="col-form-legend col-sm-2">Genre</legend>
