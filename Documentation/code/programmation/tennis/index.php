@@ -7,7 +7,9 @@ $supprimer = "";
 $modifier = "";
 $cheminCreer = "creation.php";
 $cheminModification = "modification.php";
+$cheminSupprimer = "supprimer.php";
 $cheminVoir = "tournois.php";
+$cheminIndex = "index.php";
 $infoTournois = recupTournoisInfo();
 $recherche = "";
 $word = "";
@@ -35,7 +37,7 @@ if (isset($_POST['creer'])) {
     <meta name="author" content="" />
     <title>Tennis tournament creator</title>
     <!-- Favicon-->
-    <link rel="icon" type="image/x-icon" href="assets/image/" />
+    <link rel="icon" type="image/x-icon" href="asset/image/logo.png" />
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="asset/css/styles.css" rel="stylesheet" />
     <!-- CSS only -->
@@ -46,7 +48,7 @@ if (isset($_POST['creer'])) {
     <!-- Navigation-->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="#!">Tennis</a>
+            <a class="navbar-brand" href=<?= $cheminIndex?>>Tennis</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ml-auto">
@@ -66,7 +68,7 @@ if (isset($_POST['creer'])) {
                     if (!isset($_POST['recherche'])) {
                         foreach ($infoTournois as $tournois) {
                             echo "<div class=tournois><p>" . $tournois['nom'] . "</p><p>" . $tournois['dateDebut'] . "</p>
-                            <a class=delete name=supprimer href=supprimer.php?idTournois=" . (int)$tournois["idTournois"] . "&idCategorie=" . (int)$tournois["idCategorie"] . ">Supprimer</a>
+                            <a class=delete name=supprimer href=$cheminSupprimer?idTournois=" . (int)$tournois["idTournois"] . "&idCategorie=" . (int)$tournois["idCategorie"] . ">Supprimer</a>
                             <a class=edit name=modifier href=$cheminModification?idTournois=" . (int)$tournois["idTournois"] . ">Modifier</a>
                             <a class=look name=voir href=$cheminVoir?idTournois=" . (int)$tournois["idTournois"] . ">Voir</a>
                             </div>";

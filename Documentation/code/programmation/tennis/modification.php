@@ -61,7 +61,7 @@ if (isset($_POST['modification'])) {
     <meta name="author" content="" />
     <title>tennis tournament creator</title>
     <!-- Favicon-->
-    <link rel="icon" type="image/x-icon" href="assets/image/" />
+    <link rel="icon" type="image/x-icon" href="asset/image/logo.png" />
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="asset/css/styles.css" rel="stylesheet" />
 
@@ -71,7 +71,7 @@ if (isset($_POST['modification'])) {
     <!-- Navigation-->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="#!">Tennis</a>
+            <a class="navbar-brand" href=<?=$cheminIndex?>>Tennis</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ml-auto">

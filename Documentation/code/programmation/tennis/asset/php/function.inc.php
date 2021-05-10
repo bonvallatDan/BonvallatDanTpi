@@ -1,4 +1,6 @@
-<?php 
+<?php
+session_start();
+
 /**
  * fonction qui permet de se rediriger
  * sur une autre page par rapport au chemin du fichier 
@@ -8,8 +10,8 @@
  */
 function redirection($chemin)
 {
-    header("Location: $chemin");
-    exit();
+  header("Location: $chemin");
+  exit();
 }
 
 
@@ -108,7 +110,7 @@ function insertCategorie($genre, $dotation, $surface, $typeTournois, $jeuDecisif
  */
 function recupIdCategorie()
 {
-    static $ps = null;
+  static $ps = null;
   $sql = 'SELECT idCategorie ';
   $sql .= 'FROM tennis_tpi.categories ';
   $sql .= 'ORDER BY idCategorie ';
@@ -190,7 +192,6 @@ function recupTournoisInfo()
   }
 
   return $answer;
-  
 }
 
 
@@ -270,7 +271,6 @@ function recupCategorieInfoById($idCategorie)
   }
 
   return $answer;
-  
 }
 
 
@@ -300,7 +300,6 @@ function recupTournoisInfoById($idTournois)
   }
 
   return $answer;
-  
 }
 
 
@@ -457,37 +456,48 @@ function getPlayer()
   return $answer;
 }
 
-
+/**
+ * Trie les joueurs et les ajoutes dans un tableau en fonction de leur genre et de leur classement
+ *
+ * @param [array] $tableauJoueurs
+ * @return void
+ */
 function trieJoueur($tableauJoueurs)
 {
   $joueurPairHomme = [];
   $joueurImpairHomme = [];
   $joueusePairFemme = [];
   $joueuseImpairFemme = [];
-  
-  foreach ($tableauJoueurs as $unJoueur ) {
-    if ($unJoueur['genre'] == 1)
-    {
-      if (fmod($unJoueur['classementATP'], 2) == 0)
-      {
+
+  foreach ($tableauJoueurs as $unJoueur) {
+    if ($unJoueur['genre'] == 1) {
+      if (fmod($unJoueur['classementATP'], 2) == 0) {
         array_push($joueurPairHomme, $unJoueur);
-      }
-      else
-      {
+        $_SESSION['joueursPairHomme'] = $joueurPairHomme;
+      } else {
         array_push($joueurImpairHomme, $unJoueur);
+        $_SESSION['joueursImpairHomme'] = $joueurImpairHomme;
       }
-    }
-    else
-    {
-      if (fmod($unJoueur['classementATP'], 2) == 0)
-      {
+    } else {
+      if (fmod($unJoueur['classementATP'], 2) == 0) {
         array_push($joueusePairFemme, $unJoueur);
-      }
-      else
-      {
+        $_SESSION['joueusesPairFemme'] = $joueusePairFemme;
+      } else {
         array_push($joueuseImpairFemme, $unJoueur);
+        $_SESSION['joueusesImpairFemme'] = $joueuseImpairFemme;
       }
     }
   }
 }
 
+function matche($tableauJoueursPair, $tableauJoueursImpair, $idTours)
+{
+  if ($idTours == 1)
+  {
+    
+  }
+  else if ($idTours == 2)
+  {
+
+  }
+}

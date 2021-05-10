@@ -1,9 +1,23 @@
 <?php
 require_once "asset/php/inc.all.php";
 
+//creation de la seesion
+session_start();
+
+// creation des variables
+$cheminIndex = "index.php";
+
+//filtage des données
 $idTournois = filter_input(INPUT_GET, 'idTournois', FILTER_VALIDATE_INT);
 $joueurs = getPlayer();
+
 trieJoueur($joueurs);
+
+// Instanciation des variables en utilisant des variables de session
+$joueursPairHomme = $_SESSION['joueursPairHomme'];
+$joueursImpairHomme = $_SESSION['joueursImpairHomme'];
+$joueusesPairFemme = $_SESSION['joueusesPairFemme'];
+$joueusesImpairFemme = $_SESSION['joueusesImpairFemme'];
 ?>
 
 
@@ -28,7 +42,7 @@ trieJoueur($joueurs);
     <!-- Navigation-->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="#!">Tennis</a>
+            <a class="navbar-brand" href="<?= $cheminIndex?>">Tennis</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ml-auto">
