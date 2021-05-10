@@ -265,4 +265,16 @@
 ### Heure: 10:46
 > J'ai pris une template de tournois et j'ai appris à utiliser les modals
 > La template de tournois je l'ai trouvé sur ce [site web](https://blog.codepen.io/2018/02/16/need-make-tournament-bracket/)
-> C'est la première template
+> C'est la première template du site
+
+### Heure: 13:00
+> Je commence l'algorythme qui va créer les premiers matches
+
+### Heure: 13:30 
+> Après avir créé les fonctions qui permettent de trier les joueurs par le genres et leur classement (pair, impair), je me rend compte que j'ai du mal a créer l'algorythme
+> Je vais juste essayer de faire un algorythme pour le premier matche
+
+### Heure: 14:03
+> J'ai du mal a me concentrer alors pour éviter de perdre trop de temps je préfère passer à la documentation
+> Je commence l'analyse organique
+
