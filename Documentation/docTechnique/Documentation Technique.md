@@ -257,15 +257,41 @@
 > Je créé ensuite la page creation.php. Cette page est un formulaire ou l'utilisateur pourra créer un tournois. 
 
 ### 6.2. Fonctionnalités
-> Sur la page index.php, l'utilisateur peut créer un tournois en appuyant sur un bouton qui l'emenera sur la page création.php, il peut le supprimer, le copier et modifier le tournois avant le commencement du tournois.
-> Il peut également faire une recherche du tournois.
+> Sur la page index.php, l'utilisateur peut créer un tournois en appuyant sur un bouton créer qui l'emenera sur la page création.php. Une fois le tournois créé, le tournois s'affichera dans le compartiment en gris. A coté du tournois, se trouvera un bouton pour supprimer le tournois, un bouton modifier, un autre pour voir le tournois et un dernier pour copier le tournois.
+> La page index.php peut également faire une recherche du tournois.
 > Cette page ressemble à ça
 ![pageIndex](imageCode/pageIndex.PNG)
 
-> Sur la page creation.php, l'utilisateur a un formulaire avec plusieurs champs...
+> Sur la page creation.php, l'utilisateur a un formulaire avec plusieurs champs. Il doit remplir les champs pour créer le tournois.
+![pageCreation](imageCode/pageCreation1.PNG)
+![pageCreation](imageCode/pageCreation2.PNG)
+
+> La page modification.php est pareil que la page creation.php. La différence est que lorsque l'utilisateur appuie sur le bouton modifié d'un tournois, l'utilisateur se retrouvera sur une page pareil à la page creation.php, sauf que les données du tournois sont déjà entrées dans les champs du formulaire, alors l'utilisateur a juste à modifier le champ qui lui convient pas.
+![pageModification](imageCode/pageModification1.PNG)
+![pageModification](imageCode/pageModification2.PNG)
+
+> Lorsque l'utilisateur clique sur le bouton voir d'un tournois sur la page index.php, il sera envoyé sur la page tournois.php. C'est sur cette page qu'aura lieu les matches et ou l'utilisateur entre le score des différents matches.
+> METTRE IMAGE !!!!
+
+> Quand un utilisateur appuie sur le bouton supprimé, le tournois est supprimé.
+
+> PAGE COPIER !!!
+
 ### 6.3. Description des fonctionnalités
+> Sur la page index l'utilisateur peut rechercher un tournois. Il doit juste entré un mot dans la barre de recherche et à appuyer sur le bouton recherche et les tournois vont apparaîtres du plus au moins pertinent.
+>  Il peut également appuyer sur les bouton créer, modifier, voir, copier et supprimer. 
+> Sur la parge creation, l'utilisateur peut rentrer différentes données dans les champs du formulaire. Il peut ensuite cliquer sur le bouton créer qui va envoyer les données dans la base de données et l'utilisateur sera redirigé sur la page index.
+> Sur la page modification.php l'utilisateur peut modifier un ou plusieurs des champs du formulaire. Une fois qu'il appuie sur le bouton modifier, les données seront envoyées dans la base de données et vont remplacer les anciennes données. L'utilisateur sera redirigé sur la page index.php.
+> Lorsque l'utilisateur appuie sur le bouton supprimé, les données du tournois vont être envoyées sur une page supprimer.php afin de supprimer les données de la base de données. L'utilisateur ne change pas de page.
+> Lorsque l'utilisateur clique sur le bouton voir, il sera redirigé sur la page tournois.php. Sur cette page l'utilisateur pourra entrer les données des matches comme la date de la rencontre et les points des matches.
+> Il pourra aussi télécharger la fiche du matche.
+
+> FAIRE PAGE COPIER !!!
+
 
 ### 6.4. Mesure de sécurité
+> Pour ce qui est de la sécurité, je filtre toujours les inputs avant de traiter les données. Lorsque je passe des données en get, je les filtre directement sur la page ou les données ont été envoyé.
+
 
 ## 7. Analyse Organique
 
