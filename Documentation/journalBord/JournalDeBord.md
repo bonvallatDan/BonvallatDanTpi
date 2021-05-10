@@ -261,3 +261,8 @@
 > J'ai des erreurs que je ne comprend pas entièrement
 > Je préfère arrêter la et demander l'aide du prof qui nous garde le mardi car il connait bien le php
 > Je commence le devloppement de la page tournois.php
+
+### Heure: 10:46
+> J'ai pris une template de tournois et j'ai appris à utiliser les modals
+> La template de tournois je l'ai trouvé sur ce [site web](https://blog.codepen.io/2018/02/16/need-make-tournament-bracket/)
+> C'est la première template
