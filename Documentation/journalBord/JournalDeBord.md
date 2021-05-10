@@ -223,3 +223,41 @@
 ### Heure: 15:51
 > J'ai du rajouter une page supprimé mais qui sert juste à supprimer les données du tournois selectionné
 > Après la page supprimé revient directe sur la page index
+
+## Jour: 10.05.2021
+### Heure: 07:40
+> Lorsque je suis entré en classe, j'ai d'abord regardé mon planning prévisionnel
+> Ensuite, j'écris un mail à mon fomrateur pour lui poser deux questions qui m'étais venu pendant le week-end
+> Les deux questions sont que doit faire le bouton copier et comment je dois enregistrer un match
+
+### Heure: 07:45
+> Je commence la documentation
+> Je continue l'analyse fonctionnel
+
+### Heure: 07:55
+> En voulant prendre des captures de chacunes de mes pages je me rend compte qu'il y a un problème sur la page modification.php
+> Les champs ne sont pas tous instanciés avec les valeurs du tournois
+> Je décide donc de régler le problème
+
+### Heure: 08:18
+> J'ai reglé le problème
+> J'ai juste changé la méthode de passage de données entre la page index et modification
+> Au lieu de passer toutes les données, je passe juste idTournois et je récupère toutes les données de l'autre coté avec la méthode recupTournoisInfoById
+> Je continue la documentation
+
+### Heure: 08:30
+> Après avoir fais l'analyse fonctionnel, je décide de faire la recherche de tournois
+
+### Heure: 09:10
+> J'ai un problème avec un bouton, le isset ne fonctionne pas
+> J'appelle le prof qui nous surveille
+> Le prof n'a pas réussi à m'aider
+
+### Heure: 09:18
+> Après avoir demander de l'aide à un camarade, l'erreur a été réparer
+> Je n'avais pas mis de method et d'action dans ma form
+
+### Heure: 09:26
+> J'ai des erreurs que je ne comprend pas entièrement
+> Je préfère arrêter la et demander l'aide du prof qui nous garde le mardi car il connait bien le php
+> Je commence le devloppement de la page tournois.php
