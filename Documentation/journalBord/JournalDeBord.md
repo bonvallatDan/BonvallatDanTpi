@@ -285,3 +285,43 @@
 ### Heure: 08:56
 > La recherche de tournois fonctionne, pour la recherche des joueurs, la base est la même, il faut changer la table et le champ
 > Je continue le code pour le premier tour du tournois
+
+### Heure: 11:01
+> Lors de la creation de la méthode organisationMatch, qui regroupe les joueurs par pairs, je rencontre un problème
+> Il faut que le joueur ayant le meilleur classement affronte le joueur ayant le moins bon classement
+> Pour ce faire, j'ai utilisé la méthode en php end() qui prend la dernière valeur d'un tableau, sauf que j'utilise une variable de transition pour stocker les pairs dans un tableau
+> Il faut alors que supprime les joueurs des pairs dans l'ancien tableau ou les joueurs étaitent stocké
+> J'utilise alors la méthode unset afin de supprimer les joueurs, mais je ne peux pas faire end() dans la méthode unset car il faut un index et end() renvoie la valeur
+> Je fais donc 
+```php
+unset($joueursImpair[$i], $joueursImpair[count($joueursImpair)])
+```
+
+### 15:23
+> En continuant l'algorithme, je me suis rendu compte que le 2e joueur pioché est toujours le même
+> C'est parce que lorsque je fais l'unset, le joueur 1 va être supprimé mais le joueur 2 est supprimé en même temps
+> Ce qui fait que ``` $joueursImpair[count($joueursImpair)]``` va toujours compté un nombre de joueurs comme si il n'y avait pas eu de suppression avant
+> ![avantUnset](avantUnset.PNG)
+> ![premierUnset](premierUnset.PNG)
+> ![deuxiemeUnset](deuxiemeUnset.PNG)
+> Pour résoudre le problème je fais juste 2 unset, un avec le joueur 1 et l'autre avec le joueur 2
+
+### Heure: 16:09
+> Après avoir analysé le code une nouvelle fois, la même erreur apparait
+
+### Heure: 16:17
+> En faite ce que j'ai dis au dessus est faux
+> Le problème est qu'appartir d'un certain moment le count() ne fonctionne plus
+> Car la technique que j'ai employé, avec le count(), sera en retard sur le nombre de joureurs qu'il y dans le tableau
+> Lorsque je vais supprimer le joueur ayant l'index numero 1, il restera 13 joueurs
+> Du coup quand le count() s'appliquera, il comptera 13 joueurs mais l'index qu'il faut supprimer est le 14 et non le 13
+> Je pense avoir trouvé une solution
+> Je vais échanger l'ordre des unset
+
+### Heure 16:25
+> La méthode ne fonctionne pas car le count() va compter 16 alors que l'index qui doit être supprimé est le numéro 15
+> Je vais tester en faisant un if
+
+### Heure 16:32
+> La méthode ne fonctionne pas non plus car il y a toujours 2 suppressions d'affilées alors le count() n'aura pas la même valeur que le dernier index du tableau
+> Je vais enregistrer mon travail et je reprendrai demain
