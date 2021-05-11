@@ -48,7 +48,7 @@ if (isset($_POST['creer'])) {
     <!-- Navigation-->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href=<?= $cheminIndex?>>Tennis</a>
+            <a class="navbar-brand" href=<?= $cheminIndex ?>>Tennis</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ml-auto">
@@ -65,17 +65,23 @@ if (isset($_POST['creer'])) {
                 <h1 class="mt-4">Tournois</h1>
                 <div class="main">
                     <?php
-                    if (!isset($_POST['recherche'])) {
+                    if (isset($_POST['recherche'])) {
+                        $chaine = recherche($word);
+                        foreach ($chaine as $unMot) {
+                            echo "<div class=tournois><p>" . $unMot['nom'] . "</p><p>" . $unMot['dateDebut'] . "</p>
+                            <a class=delete name=supprimer href=$cheminSupprimer?idTournois=" . (int)$unMot["idTournois"] . "&idCategorie=" . (int)$unMot["idCategorie"] . ">Supprimer</a>
+                            <a class=edit name=modifier href=$cheminModification?idTournois=" . (int)$unMot["idTournois"] . ">Modifier</a>
+                            <a class=look name=voir href=$cheminVoir?idTournois=" . (int)$unMot["idTournois"] . ">Voir</a>
+                            </div>";
+                        }
+                        unset($_POST['recherche']);
+                    } else {
                         foreach ($infoTournois as $tournois) {
                             echo "<div class=tournois><p>" . $tournois['nom'] . "</p><p>" . $tournois['dateDebut'] . "</p>
                             <a class=delete name=supprimer href=$cheminSupprimer?idTournois=" . (int)$tournois["idTournois"] . "&idCategorie=" . (int)$tournois["idCategorie"] . ">Supprimer</a>
                             <a class=edit name=modifier href=$cheminModification?idTournois=" . (int)$tournois["idTournois"] . ">Modifier</a>
                             <a class=look name=voir href=$cheminVoir?idTournois=" . (int)$tournois["idTournois"] . ">Voir</a>
                             </div>";
-                        }
-                    } else {
-                        $chaine = recherche("Geneva");
-                        foreach ($chaine as $unMot) {
                         }
                     }
 

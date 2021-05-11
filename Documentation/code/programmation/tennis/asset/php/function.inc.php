@@ -404,30 +404,26 @@ function updateTournois($nom, $pays, $ville, $dateDebut, $dateFin, $idCategorie,
  * @param [string] $word
  * @return void
  */
-function recherche($word)
+function recherche($motRecherche)
 {
-  static $ps = null;
-  $sql = 'SELECT *,(SELECT REPLACE(nom, :WORD, "<mark class=marker><a href=https://fr.wikipedia.org/wiki/":WORD0" target=_blank rel=noopener noreferrer>":WORD1"</a></mark>")) AS contentReplace, ROUND(MATCH (content) AGAINST (:WORD2 IN NATURAL LANGUAGE MODE), 2) AS score
-    FROM tournois WHERE MATCH (nom) AGAINST (:WORD3 IN NATURAL LANGUAGE MODE) > 0 ORDER BY score DESC';
+    static $ps = null;
+    $sql = "SELECT * FROM tournois WHERE nom LIKE :SEARCH";
 
-  if ($ps == null) {
-    $ps = tennis_database()->prepare($sql);
-  }
-  $answer = false;
-  try {
-    $ps->bindParam(':WORD', $word, PDO::PARAM_STR);
-    $ps->bindParam(':WORD0', $word, PDO::PARAM_STR);
-    $ps->bindParam(':WORD1', $word, PDO::PARAM_STR);
-    $ps->bindParam(':WORD2', $word, PDO::PARAM_STR);
-    $ps->bindParam(':WORD3', $word, PDO::PARAM_STR);
+    $answer = false;
+    try {
+        if ($ps == null) {
+            $ps = tennis_database()->prepare($sql);
+        }
+        $motRecherche = "%$motRecherche%";
+        $ps->bindParam(':SEARCH', $motRecherche, PDO::PARAM_STR);
+        $ps->execute();
 
-    if ($ps->execute())
-      $answer = $ps->fetchAll(PDO::FETCH_ASSOC);
-  } catch (PDOException $e) {
-    echo $e->getMessage();
-  }
-
-  return $answer;
+        $answer = $ps->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        $answer = array();
+        echo $e->getMessage();
+    }
+    return $answer;
 }
 
 
@@ -455,6 +451,7 @@ function getPlayer()
 
   return $answer;
 }
+
 
 /**
  * Trie les joueurs et les ajoutes dans un tableau en fonction de leur genre et de leur classement
@@ -490,14 +487,12 @@ function trieJoueur($tableauJoueurs)
   }
 }
 
-function matche($tableauJoueursPair, $tableauJoueursImpair, $idTours)
-{
-  if ($idTours == 1)
-  {
-    
-  }
-  else if ($idTours == 2)
-  {
 
+function organisationMatch($joueursPair, $joueursImpair)
+{
+  $pair = [];
+  for ($i=0; $i < count($joueursPair); $i++) { 
+    array_push($pair, $joueursPair[$i], end($joueursPair));
+    unset($joueursPair[$i], end($joueursPair));
   }
 }

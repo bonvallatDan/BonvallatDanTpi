@@ -133,7 +133,7 @@ if (isset($_POST['creer'])) {
                         </fieldset>
                         <div class="form-group">
                             <label for="formGroupExampleInput2">Dotation</label>
-                            <input class="form-control" type="dotation" value="0" name="dotation">
+                            <input class="form-control" type="number" min="0" value="0" name="dotation">
                         </div>
                         <div class="form-group">
                             <label for="exampleSelect1">Nombre de joueurs</label>

@@ -18,6 +18,8 @@ $joueursPairHomme = $_SESSION['joueursPairHomme'];
 $joueursImpairHomme = $_SESSION['joueursImpairHomme'];
 $joueusesPairFemme = $_SESSION['joueusesPairFemme'];
 $joueusesImpairFemme = $_SESSION['joueusesImpairFemme'];
+
+organisationMatch($joueursPairHomme, $joueursImpairHomme);
 ?>
 
 
