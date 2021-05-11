@@ -224,7 +224,7 @@
 > J'ai du rajouter une page supprimé mais qui sert juste à supprimer les données du tournois selectionné
 > Après la page supprimé revient directe sur la page index
 
-## Jour: 10.05.2021
+## Date: 10.05.2021
 ### Heure: 07:40
 > Lorsque je suis entré en classe, j'ai d'abord regardé mon planning prévisionnel
 > Ensuite, j'écris un mail à mon fomrateur pour lui poser deux questions qui m'étais venu pendant le week-end
@@ -278,3 +278,10 @@
 > J'ai du mal a me concentrer alors pour éviter de perdre trop de temps je préfère passer à la documentation
 > Je commence l'analyse organique
 
+## Date: 11.05.2021
+### Heure: 07:39
+> Je continue le code que j'ai laissé hier, la recherche de tournois
+
+### Heure: 08:56
+> La recherche de tournois fonctionne, pour la recherche des joueurs, la base est la même, il faut changer la table et le champ
+> Je continue le code pour le premier tour du tournois
