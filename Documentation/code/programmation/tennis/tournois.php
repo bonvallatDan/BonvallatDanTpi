@@ -6,12 +6,15 @@ session_start();
 
 // creation des variables
 $cheminIndex = "index.php";
+$joueurs = getPlayer();
+$idTournois = "";
+$tournois = "";
+$categorie = "";
+$joueursPair = "";
+$joueursImpair = "";
 
 //filtage des données
 $idTournois = filter_input(INPUT_GET, 'idTournois', FILTER_VALIDATE_INT);
-$joueurs = getPlayer();
-
-trieJoueur($joueurs);
 
 // Instanciation des variables en utilisant des variables de session
 $joueursPairHomme = $_SESSION['joueursPairHomme'];
@@ -19,7 +22,21 @@ $joueursImpairHomme = $_SESSION['joueursImpairHomme'];
 $joueusesPairFemme = $_SESSION['joueusesPairFemme'];
 $joueusesImpairFemme = $_SESSION['joueusesImpairFemme'];
 
-organisationMatch($joueursPairHomme, $joueursImpairHomme);
+//utilisation de méthode
+trieJoueur($joueurs);
+$tournois = recupTournoisInfoById($idTournois);
+$categorie = recupCategorieInfoById($tournois['idCategorie']);
+if ($categorie['genre'] == 1) {
+    organisationMatch($joueursPairHomme, $joueursImpairHomme, intval($categorie['nbParticipant']));
+}
+else
+{
+    organisationMatch($joueursPairFemme, $joueursImpairFemme, intval($categorie['nbParticipant']));
+}
+
+//instanciation des variables, necessitant des varibles de session, après l'utilisation de méthode 
+$joueursPair = $_SESSION['tableauPair'];
+$joueursImpair = $_SESSION['tableauImpair'];
 ?>
 
 
@@ -44,7 +61,7 @@ organisationMatch($joueursPairHomme, $joueursImpairHomme);
     <!-- Navigation-->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="<?= $cheminIndex?>">Tennis</a>
+            <a class="navbar-brand" href="<?= $cheminIndex ?>">Tennis</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ml-auto">
@@ -66,56 +83,18 @@ organisationMatch($joueursPairHomme, $joueursImpairHomme);
         <h1>2013 NCAA Tournament - Midwest Bracket</h1>
         <main id="tournament">
             <ul class="round round-1">
-                <li class="spacer">&nbsp;</li>
-                <a data-target="#myModal" data-toggle="modal" href="#">
-                    <li class="game game-top winner">Lousville <span>79</span></li>
-                    <li class="game game-spacer">&nbsp;</li>
-                    <li class="game game-bottom ">NC A&T <span>48</span></li>
-                </a>
+            <?php 
+            foreach ($joueursImpair as $joueur ) {
+                echo "
+                <li class=spacer>&nbsp;</li>
+                <a data-target=#myModal data-toggle=modal href=#>
+                    <li class=game game-top winner>".$joueur['0']['nom']." <span>79</span></li>
+                    <li class=game game-spacer>&nbsp;</li>
+                    <li class=game game-bottom>".$joueur['1']['nom']."<span>48</span></li>
+                </a>";
+            }
+            ?>
 
-                <li class="spacer">&nbsp;</li>
-
-                <li class="game game-top winner">Colo St <span>84</span></li>
-                <li class="game game-spacer">&nbsp;</li>
-                <li class="game game-bottom ">Missouri <span>72</span></li>
-
-                <li class="spacer">&nbsp;</li>
-
-                <li class="game game-top ">Oklahoma St <span>55</span></li>
-                <li class="game game-spacer">&nbsp;</li>
-                <li class="game game-bottom winner">Oregon <span>68</span></li>
-
-                <li class="spacer">&nbsp;</li>
-
-                <li class="game game-top winner">Saint Louis <span>64</span></li>
-                <li class="game game-spacer">&nbsp;</li>
-                <li class="game game-bottom ">New Mexico St <span>44</span></li>
-
-                <li class="spacer">&nbsp;</li>
-
-                <li class="game game-top winner">Memphis <span>54</span></li>
-                <li class="game game-spacer">&nbsp;</li>
-                <li class="game game-bottom ">St Mary's <span>52</span></li>
-
-                <li class="spacer">&nbsp;</li>
-
-                <li class="game game-top winner">Mich St <span>65</span></li>
-                <li class="game game-spacer">&nbsp;</li>
-                <li class="game game-bottom ">Valparaiso <span>54</span></li>
-
-                <li class="spacer">&nbsp;</li>
-
-                <li class="game game-top winner">Creighton <span>67</span></li>
-                <li class="game game-spacer">&nbsp;</li>
-                <li class="game game-bottom ">Cincinnati <span>63</span></li>
-
-                <li class="spacer">&nbsp;</li>
-
-                <li class="game game-top winner">Duke <span>73</span></li>
-                <li class="game game-spacer">&nbsp;</li>
-                <li class="game game-bottom ">Albany <span>61</span></li>
-
-                <li class="spacer">&nbsp;</li>
             </ul>
             <ul class="round round-2">
                 <li class="spacer">&nbsp;</li>

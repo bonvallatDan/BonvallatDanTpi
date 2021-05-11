@@ -406,24 +406,24 @@ function updateTournois($nom, $pays, $ville, $dateDebut, $dateFin, $idCategorie,
  */
 function recherche($motRecherche)
 {
-    static $ps = null;
-    $sql = "SELECT * FROM tournois WHERE nom LIKE :SEARCH";
+  static $ps = null;
+  $sql = "SELECT * FROM tournois WHERE nom LIKE :SEARCH";
 
-    $answer = false;
-    try {
-        if ($ps == null) {
-            $ps = tennis_database()->prepare($sql);
-        }
-        $motRecherche = "%$motRecherche%";
-        $ps->bindParam(':SEARCH', $motRecherche, PDO::PARAM_STR);
-        $ps->execute();
-
-        $answer = $ps->fetchAll(PDO::FETCH_ASSOC);
-    } catch (Exception $e) {
-        $answer = array();
-        echo $e->getMessage();
+  $answer = false;
+  try {
+    if ($ps == null) {
+      $ps = tennis_database()->prepare($sql);
     }
-    return $answer;
+    $motRecherche = "%$motRecherche%";
+    $ps->bindParam(':SEARCH', $motRecherche, PDO::PARAM_STR);
+    $ps->execute();
+
+    $answer = $ps->fetchAll(PDO::FETCH_ASSOC);
+  } catch (Exception $e) {
+    $answer = array();
+    echo $e->getMessage();
+  }
+  return $answer;
 }
 
 
@@ -488,11 +488,76 @@ function trieJoueur($tableauJoueurs)
 }
 
 
-function organisationMatch($joueursPair, $joueursImpair)
+/**
+ * Organisation des en fonctions des classements pairs et impairs
+ *
+ * @param [] $joueursImpair
+ * @param [] $joueursPair
+ * @param [int] $nbJoueurs
+ * @return void
+ */
+function organisationMatch($joueursPair, $joueursImpair, $nbJoueurs)
 {
-  $pair = [];
-  for ($i=0; $i < count($joueursPair); $i++) { 
-    array_push($pair, $joueursPair[$i], end($joueursPair));
-    unset($joueursPair[$i], end($joueursPair));
+  //Création des variables 
+  $tableauPair = [];
+  $tableauImpair = [];
+
+  //Vérifie le nombre de joueurs par tournois
+  if ($nbJoueurs == 16) {
+
+    //compte le nombre de joueurs dont le numéro de classement est
+    //un chiffre pair
+    for ($i = 0; $i < count($joueursPair) / 2; $i++) {
+      $pair = [];
+      array_push($pair, $joueursPair[$i], end($joueursPair));
+      unset($joueursPair[$i], $joueursPair[count($joueursPair)]);
+      array_push($tableauPair, $pair);
+      unset($pair);
+    }
+
+    //compte le nombre de joueurs dont le numéro de classement est
+    //un chiffre impair
+    for ($i = 0; $i < count($joueursImpair) / 2; $i++) {
+      $impair = [];
+      array_push($impair, $joueursImpair[$i], end($joueursImpair));
+      if (count($joueursImpair) == 16)
+      {
+        unset($joueursImpair[count($joueursImpair) - 1]);
+      }
+      else if(count($joueursImpair) )
+      {
+        unset($joueursImpair[count($joueursImpair)]);
+      }
+      unset($joueursImpair[$i]);
+      array_push($tableauImpair, $impair);
+      unset($impair);
+    }
+  } else {
+
+    //compte le nombre de joueurs dont le numéro de classement est
+    //un chiffre pair
+    for ($i = 0; $i < count($joueursPair); $i++) {
+      $pair = [];
+      array_push($pair, $joueursPair[$i], end($joueursPair));
+      if (count($joueursImpair) == 16)
+      {
+        
+      }
+      unset($joueursPair[$i], $joueursPair[count($joueursPair)]);
+      array_push($tableauPair, $pair);
+      unset($pair);
+    }
+
+    //compte le nombre de joueurs dont le numéro de classement est
+    //un chiffre impair
+    for ($i = 0; $i < count($joueursImpair); $i++) {
+      $impair = [];
+      array_push($impair, $joueursImpair[$i], end($joueursImpair));
+      unset($joueursImpair[$i], $joueursImpair[count($joueursImpair)]);
+      array_push($tableauImpair, $impair);
+      unset($impair);
+    }
   }
+  $_SESSION['tableauPair'] = $tableauPair;
+  $_SESSION['tableauImpair'] = $tableauImpair;
 }
