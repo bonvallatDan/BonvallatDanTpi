@@ -505,43 +505,40 @@ function organisationMatch($joueursPair, $joueursImpair, $nbJoueurs)
   //Vérifie le nombre de joueurs par tournois
   if ($nbJoueurs == 16) {
 
+
+
+    $longueur = count($joueursImpair) / 4;
     //compte le nombre de joueurs dont le numéro de classement est
     //un chiffre pair
-    for ($i = 0; $i < count($joueursPair) / 2; $i++) {
+    for ($i = 0; $i < $longueur; $i++) {
       $pair = [];
       array_push($pair, $joueursPair[$i], end($joueursPair));
-      unset($joueursPair[$i], $joueursPair[count($joueursPair)]);
+      unset($joueursPair[$i], $joueursPair[array_key_last($joueursPair)]);
       array_push($tableauPair, $pair);
       unset($pair);
     }
 
     //compte le nombre de joueurs dont le numéro de classement est
     //un chiffre impair
-    for ($i = 0; $i < count($joueursImpair) / 2; $i++) {
+    for ($i = 0; $i < $longueur; $i++) {
       $impair = [];
       array_push($impair, $joueursImpair[$i], end($joueursImpair));
-      if (count($joueursImpair) == 16)
-      {
-        unset($joueursImpair[count($joueursImpair) - 1]);
-      }
-      else if(count($joueursImpair) )
-      {
-        unset($joueursImpair[count($joueursImpair)]);
-      }
+      unset($joueursImpair[array_key_last($joueursImpair)]);
       unset($joueursImpair[$i]);
       array_push($tableauImpair, $impair);
-      unset($impair);
+      unset($impair); 
     }
-  } else {
+
+
+  } 
+  else {
 
     //compte le nombre de joueurs dont le numéro de classement est
     //un chiffre pair
     for ($i = 0; $i < count($joueursPair); $i++) {
       $pair = [];
       array_push($pair, $joueursPair[$i], end($joueursPair));
-      if (count($joueursImpair) == 16)
-      {
-        
+      if (count($joueursImpair) == 16) {
       }
       unset($joueursPair[$i], $joueursPair[count($joueursPair)]);
       array_push($tableauPair, $pair);

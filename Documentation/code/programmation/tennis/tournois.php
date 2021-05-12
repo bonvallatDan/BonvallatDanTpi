@@ -28,9 +28,7 @@ $tournois = recupTournoisInfoById($idTournois);
 $categorie = recupCategorieInfoById($tournois['idCategorie']);
 if ($categorie['genre'] == 1) {
     organisationMatch($joueursPairHomme, $joueursImpairHomme, intval($categorie['nbParticipant']));
-}
-else
-{
+} else {
     organisationMatch($joueursPairFemme, $joueursImpairFemme, intval($categorie['nbParticipant']));
 }
 
@@ -83,17 +81,27 @@ $joueursImpair = $_SESSION['tableauImpair'];
         <h1>2013 NCAA Tournament - Midwest Bracket</h1>
         <main id="tournament">
             <ul class="round round-1">
-            <?php 
-            foreach ($joueursImpair as $joueur ) {
-                echo "
-                <li class=spacer>&nbsp;</li>
-                <a data-target=#myModal data-toggle=modal href=#>
-                    <li class=game game-top winner>".$joueur['0']['nom']." <span>79</span></li>
-                    <li class=game game-spacer>&nbsp;</li>
-                    <li class=game game-bottom>".$joueur['1']['nom']."<span>48</span></li>
-                </a>";
-            }
-            ?>
+                <?php
+                foreach ($joueursImpair as $joueur) {
+                    echo
+                    '<a data-target=#myModal data-toggle=modal href=#>' .
+                        '<li class="game game-top winner">' . $joueur['0']['nom'] . ' <span>79</span></li>' .
+                        '<li class="game game-spacer">&nbsp;</li>' .
+                        '<li class="game game-bottom">' . $joueur['1']['nom'] . '<span>48</span></li>' .
+                        '</a>' .
+                        '<script> var joueursRencontre = ' . json_encode($joueur) . '</script>' .
+                        '<li class=spacer>&nbsp;</li>';
+                }
+                foreach ($joueursPair as $joueur) {
+                    echo
+                    '<a data-target=#myModal data-toggle=modal href=#>' .
+                        '<li class="game game-top winner">' . $joueur['0']['nom'] . ' <span>79</span></li>' .
+                        '<li class="game game-spacer">&nbsp;</li>' .
+                        '<li class="game game-bottom">' . $joueur['1']['nom'] . '<span>48</span></li>' .
+                        '</a>' .
+                        '<li class=spacer>&nbsp;</li>';
+                }
+                ?>
 
             </ul>
             <ul class="round round-2">
@@ -155,8 +163,8 @@ $joueursImpair = $_SESSION['tableauImpair'];
                 <!-- Modal content-->
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
                         <h4 class="modal-title">Modal Header</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <div class="modal-body">
                         <p>Some text in the modal.</p>
@@ -181,5 +189,6 @@ $joueursImpair = $_SESSION['tableauImpair'];
     <!-- Core theme JS-->
     <script src="asset/js/scripts.js"></script>
 </body>
+<script src="asset/js/scripts.js"></script>
 
 </html>
