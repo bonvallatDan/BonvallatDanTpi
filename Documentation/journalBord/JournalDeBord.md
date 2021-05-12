@@ -325,3 +325,71 @@ unset($joueursImpair[$i], $joueursImpair[count($joueursImpair)])
 ### Heure 16:32
 > La méthode ne fonctionne pas non plus car il y a toujours 2 suppressions d'affilées alors le count() n'aura pas la même valeur que le dernier index du tableau
 > Je vais enregistrer mon travail et je reprendrai demain
+
+## Date: 12.05.2021
+### 07:30
+> Je reprend le code que j'ai laissé hier
+
+### Heure: 07:50
+> J'ai essayé de faire fonctionner l'algorithme en faisant plusieurs if pour tester mais le problème est le 2e unset qui creuse a chaque foois l'écart entre le count() et le bon index
+
+### Heure: 08:00
+> Mon formateur est arrivé dans la classe et on a discuté un petit moment sur l'avancé de mon travail
+
+### Heure: 08:11
+> Je reprend mon code
+
+### Heure: 08:20
+> J'ai trouvé un moyen de prendre le dernier index
+> php a une fonction qui s'appelle array_key_last qui prend le dernier index du tableau
+> Alors je peux faire ça
+```php
+unset($joueursImpair[array_key_last($joueursImpair)])
+```
+
+### Heure: 08:31
+> Je rencontre maintenant un problème d'affichage
+> Lorsque je veux afficher les joueurs dans le tournois j'utilise des class spéciales car elles viennent de la template du tournois, donc il y a un fichier css rien que pour le tournois
+> Quand j'executais le code pour que les joueurs s'affichent, le css du tournois n'était pas prit en compte
+> Dans le code ou je dis d'afficher les joueurs, je fais un echo avec les bonnes balises pour afficher les joueurs sauf que le css dans les balises ne fonctionne pas
+> J'ai alors demandé de l'aide à un de mes camarades et il m'a dit que c'est une histoire de guillemets
+```php
+<?php 
+            foreach ($joueursImpair as $joueur ) {
+                echo '
+                <li class=spacer>&nbsp;</li>'.
+                '<a data-target=#myModal data-toggle=modal href=#>'.
+                    '<li class="game game-top winner">'.$joueur['0']['nom'].' <span>79</span></li>'.
+                    '<li class="game game-spacer">&nbsp;</li>'.
+                    '<li class="game game-bottom">'.$joueur['1']['nom'].'<span>48</span></li>'.
+                '</a>'.
+                '<li class=spacer>&nbsp;</li>';
+            }
+            foreach ($joueursPair as $joueur ) {
+                echo "
+                <li class=spacer>&nbsp;</li>
+                <a data-target=#myModal data-toggle=modal href=#>
+                    <li class=game game-top winner>".$joueur['0']['nom']." <span>79</span></li>
+                    <li class=game game-spacer>&nbsp;</li>
+                    <li class=game game-bottom>".$joueur['1']['nom']."<span>48</span></li>
+                </a>";
+            }
+            ?>
+```
+> Sur le code du dessus il y a la méthode que mon camarade m'a dit avec de simple guillemets et le code du bas étais le miens avec des doubles guillemets
+![affichageTournois](affichageTournois.PNG)
+> Voici la différence entre le code du haut et celui du bas
+
+### Heure: 09:03
+> Après réglage du css, juste pour rendre un peu plus propre, j'essaie de faire en sorte que lorsqu'on clique sur un match, on peut choisir la date, l'heure de la rencontre ainsi que le score
+> Pour cela je passe par des modals en html
+
+### Heure: 09:30
+> Je n'arrive toujours pas à passer les données dans les modals
+> J'ai essayé de créer le modal en même temps que j'execute le code pour afficher les joueurs mais le modal garde toujours les mêmes valeur
+> J'ai essayé aussi de mettre une variable comme id mais les modals garde tous le même id
+> J'ai alors essayé avec une variable de session mais le modal ne se créer juste pas
+> Je vais donc sauvgarder mon travail et prendre ma pause et je continuerai après la pause
+
+### Heure: 11:00
+> Je me rend compte que ça va être compliqué de faire seulement en php alors il faut que j'utilise du js
