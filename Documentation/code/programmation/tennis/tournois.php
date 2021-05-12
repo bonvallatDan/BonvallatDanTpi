@@ -12,15 +12,38 @@ $tournois = "";
 $categorie = "";
 $joueursPair = "";
 $joueursImpair = "";
+$tours = "";
+$terrains = "";
+$choixTerrain = "";
+$dateMatch = "";
+$heureMatch = "";
+$premierSet = "";
+$deuxiemeSet = "";
+$troisiemeSet = "";
+$quatiremeSet = "";
+$cinquiemeSet = "";
+
 
 //filtage des données
 $idTournois = filter_input(INPUT_GET, 'idTournois', FILTER_VALIDATE_INT);
+if (isset($_POST['ajouter'])) {
+    $choixTerrain = filter_input(INPUT_GET, 'terrains', FILTER_SANITIZE_STRING);
+    $dateMatch = filter_input(INPUT_GET, 'dateMatch', FILTER_SANITIZE_STRING);
+    $heureMatch = filter_input(INPUT_GET, 'heureMatch', FILTER_SANITIZE_STRING);
+    $premierSet = filter_input(INPUT_GET, 'premierSet', FILTER_VALIDATE_INT);
+    $deuxiemeSet = filter_input(INPUT_GET, 'deuxiemeSet', FILTER_VALIDATE_INT);
+    $troisiemeSet = filter_input(INPUT_GET, 'troisiemeSet', FILTER_VALIDATE_INT);
+    $quatiremeSet = filter_input(INPUT_GET, 'quatriemeSet', FILTER_VALIDATE_INT);
+    $cinquiemeSet = filter_input(INPUT_GET, 'cinquiemeSet', FILTER_VALIDATE_INT);
+}
 
 // Instanciation des variables en utilisant des variables de session
 $joueursPairHomme = $_SESSION['joueursPairHomme'];
 $joueursImpairHomme = $_SESSION['joueursImpairHomme'];
 $joueusesPairFemme = $_SESSION['joueusesPairFemme'];
 $joueusesImpairFemme = $_SESSION['joueusesImpairFemme'];
+$_SESSION['modal'] = 1;
+$modal = $_SESSION['modal'];
 
 //utilisation de méthode
 trieJoueur($joueurs);
@@ -31,6 +54,8 @@ if ($categorie['genre'] == 1) {
 } else {
     organisationMatch($joueursPairFemme, $joueursImpairFemme, intval($categorie['nbParticipant']));
 }
+
+$terrains = getTerrain();
 
 //instanciation des variables, necessitant des varibles de session, après l'utilisation de méthode 
 $joueursPair = $_SESSION['tableauPair'];
@@ -84,22 +109,239 @@ $joueursImpair = $_SESSION['tableauImpair'];
                 <?php
                 foreach ($joueursImpair as $joueur) {
                     echo
-                    '<a data-target=#myModal data-toggle=modal href=#>' .
+                    '<a data-target=#myModal' . $modal . ' data-toggle=modal href=#>' .
                         '<li class="game game-top winner">' . $joueur['0']['nom'] . ' <span>79</span></li>' .
                         '<li class="game game-spacer">&nbsp;</li>' .
                         '<li class="game game-bottom">' . $joueur['1']['nom'] . '<span>48</span></li>' .
                         '</a>' .
-                        '<script> var joueursRencontre = ' . json_encode($joueur) . '</script>' .
-                        '<li class=spacer>&nbsp;</li>';
+                        '<li class=spacer>&nbsp;</li>' .
+                        '<div class="modal fade" id="myModal' . $modal . '" role="dialog">' .
+                        '<div class="modal-dialog">' .
+                        '<div class="modal-content">' .
+                        '<div class="modal-header">' .
+                        '<h4 class="modal-title">' . $joueur['0']['prenom'] . ' ' . $joueur['0']['nom'] . ' vs ' . $joueur['1']['prenom'] . ' ' . $joueur['1']['nom'] . '</h4>' .
+                        '<button type="button" class="close" data-dismiss="modal">&times;</button>' .
+                        '</div>' .
+                        '<div class="modal-body">' .
+                        '<form action methode="POST">' .
+                        '<div class="form-group">' .
+                        '<label for="exampleSelect1">Choix Terrain</label>' .
+                        '<select class="form-control" name="terrains">';
+                    foreach ($terrains as $unTerrain) {
+                        echo "<option value=" . $unTerrain['idTerrain'] . ">" . $unTerrain['nom'] . " - " . $unTerrain['lieu'] . "</option>";
+                    }
+                    echo '</select>' .
+                        '</div>' .
+                        '<div class="form-group">' .
+                        '<label for="formGroupExampleInput2">Date du match</label>' .
+                        '<input class="form-control" type="date" name="dateMatch" required min="' . $categorie['dateDebut'] . '" max="' . $categorie['dateFin'] . '" >' .
+                        '</div>' .
+                        '<div class"form-group">' .
+                        '<label for="formGroupExampleInput2">Heure du match</label>' .
+                        '<input class="form-control" type="time" name="heureMatch" required>' .
+                        '</div>';
+                    if ($categorie['nbSet'] == 2) {
+                        if ($categorie['jeuDecisif']) {
+                            echo '<div class"form-group">' .
+                                '<label for="formGroupExampleInput2">1er set</label>' .
+                                '<input  type="number" name="premierSetGauche" required min="0" max="7"><span> - </span><input  type="number" name="premierSetDroite" min="0" max="7" required>' .
+                                '</div>' .
+                                '<div class"form-group">' .
+                                '<label for="formGroupExampleInput2">2e set</label>' .
+                                '<input  type="number" name="deuxiemeSetGauche" required min="0" max="7"><span> - </span><input  type="number" name="deuxiemeSetDroite" min="0" max="7" required>' .
+                                '</div>' .
+                                '<div class"form-group">' .
+                                '<label for="formGroupExampleInput2">3e set</label>' .
+                                '<input  type="number" name="troisiemeSetGauche" required min="0" max="7"><span> - </span><input  type="number" name="troisiemeSetDroite" min="0" max="7" required>' .
+                                '</div>';
+                        } else {
+                            echo '<div class"form-group">' .
+                                '<label for="formGroupExampleInput2">1er set</label>' .
+                                '<input  type="number" name="premierSetGauche" required min="0" ><span> - </span><input  type="number" name="premierSetDroite" min="0" max="7" required>' .
+                                '</div>' .
+                                '<div class"form-group">' .
+                                '<label for="formGroupExampleInput2">2e set</label>' .
+                                '<input  type="number" name="deuxiemeSetGauche" required min="0" ><span> - </span><input  type="number" name="deuxiemeSetDroite" min="0" max="7" required>' .
+                                '</div>' .
+                                '<div class"form-group">' .
+                                '<label for="formGroupExampleInput2">3e set</label>' .
+                                '<input  type="number" name="troisiemeSetGauche" required min="0" ><span> - </span><input  type="number" name="troisiemeSetDroite" min="0" max="7" required>' .
+                                '</div>';
+                        }
+                    } else {
+                        if ($categorie['jeuDecisif']) {
+                            echo '<div class"form-group">' .
+                                '<label for="formGroupExampleInput2">1er set</label>' .
+                                '<input  type="number" name="premierSetGauche" required min="0" max="7"><span> - </span><input  type="number" name="premierSetDroite" min="0" max="7" required>' .
+                                '</div>' .
+                                '<div class"form-group">' .
+                                '<label for="formGroupExampleInput2">2e set</label>' .
+                                '<input  type="number" name="deuxiemeSetGauche" required min="0" max="7"><span> - </span><input  type="number" name="deuxiemeSetDroite" min="0" max="7" required>' .
+                                '</div>' .
+                                '<div class"form-group">' .
+                                '<label for="formGroupExampleInput2">3e set</label>' .
+                                '<input  type="number" name="troisiemeSetGauche" required min="0" max="7"><span> - </span><input  type="number" name="troisiemeSetDroite" min="0" max="7" required>' .
+                                '</div>' .
+                                '<div class"form-group">' .
+                                '<label for="formGroupExampleInput2">4e set</label>' .
+                                '<input  type="number" name="quatriemeSetGauche" required min="0" max="7"><span> - </span><input  type="number" name="quatriemeSetDroite" min="0" max="7" required>' .
+                                '</div>' .
+                                '<div class"form-group">' .
+                                '<label for="formGroupExampleInput2">5e set</label>' .
+                                '<input  type="number" name="cinquiemeSetGauche" required min="0" max="7"><span> - </span><input  type="number" name="cinquiemeSetDroite" min="0" max="7" required>' .
+                                '</div>';
+                        } else {
+                            echo '<div class"form-group">' .
+                                '<label for="formGroupExampleInput2">1er set</label>' .
+                                '<input  type="number" name="premierSetGauche" required min="0" ><span> - </span><input  type="number" name="premierSetDroite" min="0" max="7" required>' .
+                                '</div>' .
+                                '<div class"form-group">' .
+                                '<label for="formGroupExampleInput2">2e set</label>' .
+                                '<input  type="number" name="deuxiemeSetGauche" required min="0" ><span> - </span><input  type="number" name="deuxiemeSetDroite" min="0" max="7" required>' .
+                                '</div>' .
+                                '<div class"form-group">' .
+                                '<label for="formGroupExampleInput2">3e set</label>' .
+                                '<input  type="number" name="troisiemeSetGauche" required min="0" ><span> - </span><input  type="number" name="troisiemeSetDroite" min="0" max="7" required>' .
+                                '</div>' .
+                                '<div class"form-group">' .
+                                '<label for="formGroupExampleInput2">4e set</label>' .
+                                '<input  type="number" name="quatriemeSetGauche" required min="0" ><span> - </span><input  type="number" name="quatriemeSetDroite" min="0" max="7" required>' .
+                                '</div>' .
+                                '<div class"form-group">' .
+                                '<label for="formGroupExampleInput2">5e set</label>' .
+                                '<input  type="number" name="cinquiemeSetGauche" required min="0" ><span> - </span><input  type="number" name="cinquiemeSetDroite" min="0" max="7" required>' .
+                                '</div>';
+                        }
+                    }
+                    echo '</div>' .
+                        '<div class="modal-footer">' .
+                        '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' .
+                        '<input class="btn btn-primary" type="submit" name="ajouter" value="Ajouter">' .
+                        '</form>' .
+                        '</div>' .
+                        '</div>' .
+
+                        '</div>' .
+                        '</div>';
+                    $modal++;
                 }
                 foreach ($joueursPair as $joueur) {
                     echo
-                    '<a data-target=#myModal data-toggle=modal href=#>' .
+                    '<a data-target=#myModal' . $modal . ' data-toggle=modal href=#>' .
                         '<li class="game game-top winner">' . $joueur['0']['nom'] . ' <span>79</span></li>' .
                         '<li class="game game-spacer">&nbsp;</li>' .
                         '<li class="game game-bottom">' . $joueur['1']['nom'] . '<span>48</span></li>' .
                         '</a>' .
-                        '<li class=spacer>&nbsp;</li>';
+                        '<li class=spacer>&nbsp;</li>' .
+                        '<div class="modal fade" id="myModal' . $modal . '" role="dialog">' .
+                        '<div class="modal-dialog">' .
+                        '<div class="modal-content">' .
+                        '<div class="modal-header">' .
+                        '<h4 class="modal-title">' . $joueur['0']['prenom'] . ' ' . $joueur['0']['nom'] . ' vs ' . $joueur['1']['prenom'] . ' ' . $joueur['1']['nom'] . '</h4>' .
+                        '<button type="button" class="close" data-dismiss="modal">&times;</button>' .
+                        '</div>' .
+                        '<div class="modal-body">' .
+                        '<form action methode="POST">' .
+                        '<div class="form-group">' .
+                        '<label for="exampleSelect1">Choix Terrain</label>' .
+                        '<select class="form-control" name="terrains">';
+                    foreach ($terrains as $unTerrain) {
+                        echo "<option value=" . $unTerrain['idTerrain'] . ">" . $unTerrain['nom'] . " - " . $unTerrain['lieu'] . "</option>";
+                    }
+                    echo '</select>' .
+                        '</div>' .
+                        '<div class="form-group">' .
+                        '<label for="formGroupExampleInput2">Date du match</label>' .
+                        '<input class="form-control" type="date" name="dateMatch" required min="' . $categorie['dateDebut'] . '" max="' . $categorie['dateFin'] . '" >' .
+                        '</div>' .
+                        '<div class"form-group">' .
+                        '<label for="formGroupExampleInput2">Heure du match</label>' .
+                        '<input class="form-control" type="time" name="heureMatch" required>' .
+                        '</div>';
+                    if ($categorie['nbSet'] == 2) {
+                        if ($categorie['jeuDecisif']) {
+                            echo '<div class"form-group">' .
+                                '<label for="formGroupExampleInput2">1er set</label>' .
+                                '<input  type="number" name="premierSetGauche" required min="0" max="7"><span> - </span><input  type="number" name="premierSetDroite" min="0" max="7" required>' .
+                                '</div>' .
+                                '<div class"form-group">' .
+                                '<label for="formGroupExampleInput2">2e set</label>' .
+                                '<input  type="number" name="deuxiemeSetGauche" required min="0" max="7"><span> - </span><input  type="number" name="deuxiemeSetDroite" min="0" max="7" required>' .
+                                '</div>' .
+                                '<div class"form-group">' .
+                                '<label for="formGroupExampleInput2">3e set</label>' .
+                                '<input  type="number" name="troisiemeSetGauche" required min="0" max="7"><span> - </span><input  type="number" name="troisiemeSetDroite" min="0" max="7" required>' .
+                                '</div>';
+                        } else {
+                            echo '<div class"form-group">' .
+                                '<label for="formGroupExampleInput2">1er set</label>' .
+                                '<input  type="number" name="premierSetGauche" required min="0" ><span> - </span><input  type="number" name="premierSetDroite" min="0" max="7" required>' .
+                                '</div>' .
+                                '<div class"form-group">' .
+                                '<label for="formGroupExampleInput2">2e set</label>' .
+                                '<input  type="number" name="deuxiemeSetGauche" required min="0" ><span> - </span><input  type="number" name="deuxiemeSetDroite" min="0" max="7" required>' .
+                                '</div>' .
+                                '<div class"form-group">' .
+                                '<label for="formGroupExampleInput2">3e set</label>' .
+                                '<input  type="number" name="troisiemeSetGauche" required min="0" ><span> - </span><input  type="number" name="troisiemeSetDroite" min="0" max="7" required>' .
+                                '</div>';
+                        }
+                    } else {
+                        if ($categorie['jeuDecisif']) {
+                            echo '<div class"form-group">' .
+                                '<label for="formGroupExampleInput2">1er set</label>' .
+                                '<input  type="number" name="premierSetGauche" required min="0" max="7"><span> - </span><input  type="number" name="premierSetDroite" min="0" max="7" required>' .
+                                '</div>' .
+                                '<div class"form-group">' .
+                                '<label for="formGroupExampleInput2">2e set</label>' .
+                                '<input  type="number" name="deuxiemeSetGauche" required min="0" max="7"><span> - </span><input  type="number" name="deuxiemeSetDroite" min="0" max="7" required>' .
+                                '</div>' .
+                                '<div class"form-group">' .
+                                '<label for="formGroupExampleInput2">3e set</label>' .
+                                '<input  type="number" name="troisiemeSetGauche" required min="0" max="7"><span> - </span><input  type="number" name="troisiemeSetDroite" min="0" max="7" required>' .
+                                '</div>' .
+                                '<div class"form-group">' .
+                                '<label for="formGroupExampleInput2">4e set</label>' .
+                                '<input  type="number" name="quatriemeSetGauche" required min="0" max="7"><span> - </span><input  type="number" name="quatriemeSetDroite" min="0" max="7" required>' .
+                                '</div>' .
+                                '<div class"form-group">' .
+                                '<label for="formGroupExampleInput2">5e set</label>' .
+                                '<input  type="number" name="cinquiemeSetGauche" required min="0" max="7"><span> - </span><input  type="number" name="cinquiemeSetDroite" min="0" max="7" required>' .
+                                '</div>';
+                        } else {
+                            echo '<div class"form-group">' .
+                                '<label for="formGroupExampleInput2">1er set</label>' .
+                                '<input  type="number" name="premierSetGauche" required min="0" ><span> - </span><input  type="number" name="premierSetDroite" min="0" max="7" required>' .
+                                '</div>' .
+                                '<div class"form-group">' .
+                                '<label for="formGroupExampleInput2">2e set</label>' .
+                                '<input  type="number" name="deuxiemeSetGauche" required min="0" ><span> - </span><input  type="number" name="deuxiemeSetDroite" min="0" max="7" required>' .
+                                '</div>' .
+                                '<div class"form-group">' .
+                                '<label for="formGroupExampleInput2">3e set</label>' .
+                                '<input  type="number" name="troisiemeSetGauche" required min="0" ><span> - </span><input  type="number" name="troisiemeSetDroite" min="0" max="7" required>' .
+                                '</div>' .
+                                '<div class"form-group">' .
+                                '<label for="formGroupExampleInput2">4e set</label>' .
+                                '<input  type="number" name="quatriemeSetGauche" required min="0" ><span> - </span><input  type="number" name="quatriemeSetDroite" min="0" max="7" required>' .
+                                '</div>' .
+                                '<div class"form-group">' .
+                                '<label for="formGroupExampleInput2">5e set</label>' .
+                                '<input  type="number" name="cinquiemeSetGauche" required min="0" ><span> - </span><input  type="number" name="cinquiemeSetDroite" min="0" max="7" required>' .
+                                '</div>';
+                        }
+                    }
+                    echo '</div>' .
+                        '<div class="modal-footer">' .
+                        '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' .
+                        '<input class="btn btn-primary" type="submit" name="ajouter" value="Ajouter">' .
+                        '</form>' .
+                        '</div>' .
+                        '</div>' .
+
+                        '</div>' .
+                        '</div>';
+                    $modal++;
                 }
                 ?>
 
@@ -189,6 +431,5 @@ $joueursImpair = $_SESSION['tableauImpair'];
     <!-- Core theme JS-->
     <script src="asset/js/scripts.js"></script>
 </body>
-<script src="asset/js/scripts.js"></script>
 
 </html>

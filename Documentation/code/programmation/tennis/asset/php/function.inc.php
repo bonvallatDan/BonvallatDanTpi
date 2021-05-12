@@ -558,3 +558,54 @@ function organisationMatch($joueursPair, $joueursImpair, $nbJoueurs)
   $_SESSION['tableauPair'] = $tableauPair;
   $_SESSION['tableauImpair'] = $tableauImpair;
 }
+
+/**
+ * Récupère les données de la table tours
+ *
+ * @return array
+ */
+function getTour()
+{
+  static $ps = null;
+  $sql = 'SELECT idTour, nom';
+  $sql .= ' FROM tennis_tpi.tours';
+
+  if ($ps == null) {
+    $ps = tennis_database()->prepare($sql);
+  }
+  $answer = false;
+  try {
+    if ($ps->execute())
+      $answer = $ps->fetchAll(PDO::FETCH_ASSOC);
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
+
+  return $answer;
+}
+
+
+/**
+ * Récupère les données de la table terrains
+ *
+ * @return array
+ */
+function getTerrain()
+{
+  static $ps = null;
+  $sql = 'SELECT idTerrain, nom, lieu';
+  $sql .= ' FROM tennis_tpi.terrains';
+
+  if ($ps == null) {
+    $ps = tennis_database()->prepare($sql);
+  }
+  $answer = false;
+  try {
+    if ($ps->execute())
+      $answer = $ps->fetchAll(PDO::FETCH_ASSOC);
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
+
+  return $answer;
+}
