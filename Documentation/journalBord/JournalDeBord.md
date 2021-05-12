@@ -393,3 +393,31 @@ unset($joueursImpair[array_key_last($joueursImpair)])
 
 ### Heure: 11:00
 > Je me rend compte que ça va être compliqué de faire seulement en php alors il faut que j'utilise du js
+
+### Heure: 13:02
+> En rentrant en classe, j'ai appelé le prof pour qu'il m'aide pour les modals
+> Lorsque je lui est expliqué ce que j'avais déjà fais, il m'a expliqué de ne pas mettre que des chiffres dans les id
+> Car lorsque je créer un modal il faut lui donner un id et je mettais que des chiffres
+> Alors comme id j'ai mis 
+```php
+'id=myModal'.$modal.'
+```
+> $modal est une varaiable qui s'incremente à chaque fin de fonction
+
+### Heure: 15:02
+> Je continue tranquillement mon code sans trop de problème
+> Mais la je rencontre un problème
+> Je suis en train de faire un formulaire dans le modal pour que l'utilisateur puisse entrer les données du match
+> J'étais en train de créer les balises qui permettent d'entrer des int pour les sets
+> Je ne sais pas trop comment décrire alors je prend une photo
+![problemeModal](problèmeModal.PNG)
+![problemeModalSuite](problemeModalSuite.PNG)
+> Le deuxième match s'affiche dans le modal et plus dans le tournois
+> Je ne sais pas encore ce que c'est
+
+### Heure: 15:44
+> J'ai eu meet avec un des experts
+> On a discuté de mon tpi et de mon avancement
+
+### Heure: 16:10
+> Je n'ai pas trouvö l'erreur alors j'ai refais le code et ça fonctionne
