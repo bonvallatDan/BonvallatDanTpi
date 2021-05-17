@@ -28,15 +28,14 @@
   - [6.3. Mesure de sécurité](#63-mesure-de-sécurité)
 - [7. Analyse Organique](#7-analyse-organique)
     - [7.0.1. Page index](#701-page-index)
-    - [Page Creation](#page-creation)
-    - [Page Modification](#page-modification)
-    - [Page Tournois](#page-tournois)
+    - [7.0.2. Page Creation](#702-page-creation)
+    - [7.0.3. Page Modification](#703-page-modification)
+    - [7.0.4. Page Tournois](#704-page-tournois)
+    - [7.0.5. Page Joueur](#705-page-joueur)
   - [7.1. Technologies utilisées](#71-technologies-utilisées)
   - [7.2. Environnement](#72-environnement)
   - [7.3. Description de la base de données](#73-description-de-la-base-de-données)
     - [7.3.1. Modèle logique de données](#731-modèle-logique-de-données)
-  - [7.4. Classes](#74-classes)
-  - [7.5. Pages](#75-pages)
 - [8. Tests](#8-tests)
   - [8.1. Environnement des tests](#81-environnement-des-tests)
   - [8.2. Plan de test](#82-plan-de-test)
@@ -49,7 +48,12 @@
   - [11.3. Code Source](#113-code-source)
 
 ## 1. Table des versions
-> a faire !!!!!!!!
+
+| N° de version | Date       | Auteur        | Changements apportés |
+| ------------- | ---------- | ------------- | -------------------- |
+| 1.0.0         | 20.05.2021 | Bonvallat Dan | Rendu final du TPI   |
+
+
 
 
 ## 2. Introduction
@@ -71,7 +75,8 @@
 
 
 ### 3.2. Livrables
-* Planning 
+* Planning prévisionnel
+* Planning effectif
 * Documentation technique avec codes sources
 * Manuel utlisateur
 * Résumé du rapport du TPI
@@ -91,7 +96,7 @@
 > * Gestion des matchs.
 > 
 > Les fonctionnalités disponibles sont les suivantes :
-> * Créer, modifier, supprimer un tournoi, 
+> * Créer, modifier, supprimer, copier un tournoi, 
 > * La liste des joueurs inscrits au tournoi est fournie, 
 > * Planifier les matchs, 
 > * Enregistrer les résultats des matchs,
@@ -240,6 +245,11 @@
 | Description | En tant qu'utilisateur je peux rechercher un joueur et savoir dans quel tournois il est inscrit |
 | Priorité    | I: Important +                                                                                  |
 
+| Nom         | 4: Copier un tournois                             |
+| ----------- | ------------------------------------------------- |
+| Description | En tant qu'utilisateur je peux copier un tournois |
+| Priorité    | S: Secondaire -                                   |
+
 
 ### 5.2. Plan previsionnel 
 
@@ -250,7 +260,7 @@
 
 
 ## 6. Analyse Fonctionnelle
-> Il y au totale 4 pages dans mon site web. Sur l'une d'entre elles (tournois.php) il y a un pop up qui fait apparaitre les 2 joueurs, l'utilisateur peut enregistrer les résultats des 2 joueurs
+> Il y au totale 5 pages dans mon site web. Sur l'une d'entre elles (tournois.php) il y a un pop up qui fait apparaitre les 2 joueurs, l'utilisateur peut enregistrer les résultats des 2 joueurs
 > Pour réaliser ces pages, j'ai fais un croquis
 ![maquette](../journalBord/maquette.JPG)
 
@@ -279,7 +289,9 @@
 
 > Quand un utilisateur appuie sur le bouton supprimé, le tournois est supprimé.
 
-> PAGE COPIER !!!
+> Un bouton copier permet de 
+
+> Lorsque l'utilisateur clique sur le bouton joueurs d'un tournois dans la page index, il sera redirigé sur la page joueurs.php ou un tableau s'affichera avec les joueurs du tounois. Il pourra aussi faire des recherches de joueurs par le nom ou le prénom
 
 ### 6.2. Description des fonctionnalités
 > Sur la page index l'utilisateur peut rechercher un tournois. Il doit juste entré un mot dans la barre de recherche et à appuyer sur le bouton recherche et les tournois vont apparaîtres du plus au moins pertinent.
@@ -290,7 +302,7 @@
 > Lorsque l'utilisateur clique sur le bouton voir, il sera redirigé sur la page tournois.php. Sur cette page l'utilisateur pourra entrer les données des matches comme la date de la rencontre et les points des matches.
 > Il pourra aussi télécharger la fiche du matche.
 
-> FAIRE PAGE COPIER !!!
+> Lorsque l'utilisateur clique sur le bouton copier d'un tournois, un nouveau tournois sera créé avec les mêmes informations que le tournois dont l'utilisateur à cliqué sur le bouton copier
 
 
 ### 6.3. Mesure de sécurité
@@ -388,7 +400,7 @@ $cheminModification?idTournois=" . (int)$tournois["idTournois"]
 ```php
 $cheminVoir?idTournois=" . (int)$tournois["idTournois"]
 ```
-#### Page Creation
+#### 7.0.2. Page Creation
 > Sur la page creation il y a un lien qui permet de revenir a la page index. Le lien ce trouve sur le mot "Tennis" qui est le titre de la page. Dans le lien la méthode de redirection est utilisé.
 ```php
 function redirection($chemin)
@@ -506,7 +518,7 @@ function redirection($chemin)
   exit();
 }
 ```
-#### Page Modification
+#### 7.0.3. Page Modification
  > Sur la page modification il y a un lien qui permet de revenir a la page index. Le lien ce trouve sur le mot "Tennis" qui est le titre de la page. Dans le lien la méthode de redirection est utilisé.
 ```php
 function redirection($chemin)
@@ -642,7 +654,7 @@ function redirection($chemin)
   exit();
 }
 ```
-#### Page Tournois
+#### 7.0.4. Page Tournois
  > Sur la page tournois il y a un lien qui permet de revenir a la page index. Le lien ce trouve sur le mot "Tennis" qui est le titre de la page. Dans le lien la méthode de redirection est utilisé.
 ```php
 function redirection($chemin)
@@ -651,7 +663,19 @@ function redirection($chemin)
   exit();
 }
 ```
-A COMPLETER !!!!
+> Pour chaque match, l'utiisateur peut entrer la date du match, l'heure du match, sur quel terrain ce déroule le match et le résultat des sets.
+> Après avoir enregistrer les informations du match, l'utilisateur peut télécharger les données du match en pdf.
+
+#### 7.0.5. Page Joueur
+> Sur la page tournois il y a un lien qui permet de revenir a la page index. Le lien ce trouve sur le mot "Tennis" qui est le titre de la page. Dans le lien la méthode de redirection est utilisé.
+ ```php
+ function redirection($chemin)
+{
+  header("Location: $chemin");
+  exit();
+}
+```
+A COMPLETER !!!
 
 ### 7.1. Technologies utilisées
 > Les technologies qui sont utilisé dans ce projet sont:
@@ -663,28 +687,71 @@ A COMPLETER !!!!
 > L'html permet de construire le site et de permettre certaines actions qui nécessite du php 
 > * sql
 > L'sql permet de traiter les informations qu'il reçoit dans la base de données et permet l'accès au php afin de permettre aux informations de circuler entre le site web et la base de données.
-
+> * markdown
+> Le markdown est très lisible et très graphique, rédaction rapide. Utilisé pour rédiger des documents.
+> * debian
+> Debian est une interface linux sous lequel il peut héberger un serveur apache
+> * apache2
+> Apache2 est un serveur qui permet de faire le lien entre la base de donnée et le site web
+> * wsl
+> Wsl est une couche de compatibilité permettant d'executer des executable Linux sur Windows
 ### 7.2. Environnement
 
-### 7.3. Description de la base de données
+> Pour la plupart des technologies utilisé, j'utilise Visual Studio Code.
+> Visual Studio Code est un éditeur de code dévloppé par Microsoft pour Windows.
+> La communauté devloppe peut devlopper des extensions qui permet de coder de manière plus ergonomique. J'utilise Visual Studio Code pour le php, le css, l'html, markdown et wsl.
+> Pour le sql j'utilise le programme DBeaver.
+> Pour le serveur j'utilise apache2 sur l'interface Linux Debian.
 
+### 7.3. Description de la base de données
+La base de données compte 12 tables dont deux tables qui contiennent juste les id deux deux autres tables.
+Les tables sont :
+> * matches
+> Contient les informations des matches, lié avec la table tournois, tours, scores, joue, terrains
+> * tournois
+> Contient les informations du tournois comme son nom ou encore l'endroit ou il se trouve. Lié avec la table matches et categories.
+> * categories
+> Contient les informations concernant les catégories des tournois comme le genre, le nombre de sets gagnant ou la dotation. Lié avec la table tournois, surfaces et types
+> * sufaces
+> Contient le type de surface d'un terrain de tennis. Lié avec la table catégorie
+> * types
+> Contient le type du tournois (Grand Chelem, master 1000, ...). Lié avec la table categories.
+> * tours
+> Contient le type de tours (demi-finale, finale, ...). Lié avec la table matches
+> * terrains
+> Contient l'enplacement des terrains et leur nom comme terrainA - Nord. Lié avec la table matches
+> * scores
+> Contient les id de la tables matches et la table sets. Lié avec la table sets et matches.
+> * sets
+> Contient le score d'un set. Lié avec la table scores et la table jeu_decisif
+> * jeu_decisif
+> Contient les points du jeu decisif. Lié avec la table set
+> * joue
+> Contient les id de la table matches et joueurs. Lié avec la table matches et joueurs.
+> * joueurs
+> Contient les informations des joueurs du tournois. Lié avec la table joue.
 #### 7.3.1. Modèle logique de données
 
-### 7.4. Classes
-
-### 7.5. Pages
-
 ## 8. Tests
-
+Pour réaliser ce projet, j'ai écris des protocoles de test pour simuler une utilisation du site par un quelconque utilisateur.  
 ### 8.1. Environnement des tests
+Les test ont été effectué sur les naviguateur Google Chrome et Mozilla Firefox.
+Les test ont été effectué sur un ordinateur utilisant Wo
 
 ### 8.2. Plan de test
 
-| N°  | Description du test                                | Résultat attendu |
-| --- | -------------------------------------------------- | ---------------- |
-| 1   | Test magnifique cil est vraiment trop bien ce test | Il se passe ça   |
-| 2   |                                                    |                  |
-|     |                                                    |                  |
+| N°  | Description du test                                                                | Résultat attendu                                                                                                                                       |
+| --- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1   | L'utilisateur a remplit le formulaire de création et a cliqué sur le bouton validé | Les données ont été envoyé à la base de données, un tournois a été créé, l'utilisateur est redirigé sur la page principale et le tournois créé apparet |
+| 2   |                                                                                    L'utilisateur a remplit le formulaire de modification et a cliqué sur le bouton modifier |Les données sont envoyé à la base de données, le tournois est modifier, l'utilisateur es redirigé sur la page principale et le tournois a été modifié                                                                                                                                                        |
+| 3   |                                                                                    L'utilisateur clique sur le bouton supprimé d'un tournois|                                                                              Les données du tournois sont traitées dans la base de données, les données sont supprimées, la page se recharge et le tournois a disparu                                                                          |
+| 4   |                                                                                    L'utilisateur clique sur le bouton copier d'un tournois|                                                                              Les données du tournois sont traitées dans la base de données, les données sont recréé avec un nouvel id, la page se recharge et un nouveau tournois apparait|
+| 5   |                                                                                    L'utilisateur clique sur le bouton joueurs d'un tournois|                                                                              L'utilisateur est redirigé sur la page joueurs. Un tableau des joueurs du tournois apparait                                                                         |
+| 6   |                                                                                    L'utilisateur cherche un mot dans la barre de recheche de la page pricipale et clique sur le bouton |                                                                              Tous les tounrois où leur nom contient le groupe de mot choisit par l'utilisateur apparaissent                                                                          |
+| 7   |                                                                                    L'utilisateur cherche un mot dans la barre de recheche de la page joueur et clique sur le bouton |                                                                              Tous les joueurs où leur nom et prénom contient le groupe de mot choisit par l'utilisateur apparaissent                                                                          |
+| 8   |                                                                                    L'utilisateur clique sur le bouton voir d'un tournois |                                                                              L'utilisateur est redirigé sur la page tournois, un tournois apparait avec le premier tour déjà complété (matches)|      
+| 9   |                                                                                    L'utilisateur clique sur le bouton valider du formulaire d'un match dans la page tournois |                                                                              Les informations sont envoyées dans la base de données, le joueur ayant gagné le match passe au prochain tour                                                                            |
+| 10   |                                                                                    L'utilisateur clique sur le mot "Tennis" dans la barre de navigation d'une page  |                                                                              L'utilisateur va directement être redirigé sur la page principale du site                                                                            |
 
 ### 8.3. Rapport de test
 

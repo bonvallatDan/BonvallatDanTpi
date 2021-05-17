@@ -135,14 +135,14 @@ if (isset($_POST['modification'])) {
                         </fieldset>
                         <div class="form-group">
                             <label for="formGroupExampleInput2">Dotation</label>
-                            <input class="form-control" type="dotation" value=<?= $categorie['dotation']?> name="dotation">
+                            <input class="form-control" type="dotation"  name="dotation" value=<?= $categorie['dotation']?>>
                         </div>
                         <div class="form-group">
                             <label for="exampleSelect1">Nombre de joueurs</label>
                             <select class="form-control" name="nbJoueurs">
                                 <?php 
                                 foreach ($nbJoueurs as $joueurs) {
-                                    echo "<option value='$joueurs'". ($categorie['nbParticipant'] == $joueurs ? "selected=''" : " ") .">$joueurs</option>";
+                                    echo "<option value='$joueurs'". ($categorie['nbParticipants'] == $joueurs ? "selected=''" : " ") .">$joueurs</option>";
                                 }
                                 ?>
                             </select>
@@ -152,7 +152,7 @@ if (isset($_POST['modification'])) {
                             <select class="form-control" name="nbSets">
                             <?php 
                                 foreach ($nbSets as $sets) {
-                                    echo "<option value='$sets'". (intval($categorie['nbSet']) == $sets ? "selected=''" : " ") .">$sets</option>";
+                                    echo "<option value='$sets'". (intval($categorie['nbSets']) == $sets ? "selected=''" : " ") .">$sets</option>";
                                 }
                                 ?>
                             </select>
@@ -192,11 +192,6 @@ if (isset($_POST['modification'])) {
         </div>
     </div>
     <!-- Footer-->
-    <footer class="py-5 bg-dark">
-        <div class="container">
-            <p class="m-0 text-center text-white">Copyright &copy; Your Website 2021</p>
-        </div>
-    </footer>
     <!-- Bootstrap core JS-->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>

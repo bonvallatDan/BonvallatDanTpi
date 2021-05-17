@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (!isset($_SESSION)) {
+  session_start();
+}
 
 /**
  * fonction qui permet de se rediriger
@@ -81,7 +83,7 @@ function getTournoisType()
 function insertCategorie($genre, $dotation, $surface, $typeTournois, $jeuDecisif, $nbSet, $nbParticipant)
 {
   static $ps = null;
-  $sql = "INSERT INTO `tennis_tpi`.`categories` (`genre`, `dotation`, `idSurface`, `idType`, `jeuDecisif`, `nbSet`, `nbParticipant`) ";
+  $sql = "INSERT INTO `tennis_tpi`.`categories` (`genre`, `dotation`, `idSurface`, `idType`, `jeuDecisif`, `nbSets`, `nbParticipants`) ";
   $sql .= "VALUES (:GENRE, :DOTATION, :ID_SURFACE, :ID_TYPE, :JEU_DECISIF, :NB_SET, :NB_PARTICIPANT)";
   if ($ps == null) {
     $ps = tennis_database()->prepare($sql);
@@ -254,7 +256,7 @@ function deleteTournois($idTournois)
 function recupCategorieInfoById($idCategorie)
 {
   static $ps = null;
-  $sql = 'SELECT idCategorie, genre, dotation, idSurface, idType, jeuDecisif, nbSet, nbParticipant FROM tennis_tpi.categories';
+  $sql = 'SELECT idCategorie, genre, dotation, idSurface, idType, jeuDecisif, nbSets, nbParticipants FROM tennis_tpi.categories';
   $sql .= ' WHERE idCategorie = :ID_CATEGORIE';
 
   if ($ps == null) {
@@ -327,8 +329,8 @@ function updateCategorie($genre, $dotation, $idSurface, $idType, $jeuDecisif, $n
   $sql .= "`idSurface` = :ID_SURFACE, ";
   $sql .= "`idType` = :ID_TYPE, ";
   $sql .= "`jeuDecisif` = :JEU_DECISIF, ";
-  $sql .= "`nbSet` = :NB_SET, ";
-  $sql .= "`nbParticipant` = :NB_PARTICIPANT ";
+  $sql .= "`nbSets` = :NB_SET, ";
+  $sql .= "`nbParticipants` = :NB_PARTICIPANT ";
   $sql .= "WHERE (`idCategorie` = :ID_CATEGORIE)";
   if ($ps == null) {
     $ps = tennis_database()->prepare($sql);
@@ -399,10 +401,10 @@ function updateTournois($nom, $pays, $ville, $dateDebut, $dateFin, $idCategorie,
 
 
 /**
- * Effectue une recherche de mot du plus au moins pertinent, en utilisant un système de score
+ * Effectue une recherche de mot en ayant pour paramètre un ou plusieurs mot(s) entré par l'utilisateur
  *
  * @param [string] $word
- * @return void
+ * @return array
  */
 function recherche($motRecherche)
 {
@@ -499,13 +501,13 @@ function trieJoueur($tableauJoueurs)
 function organisationMatch($joueursPair, $joueursImpair, $nbJoueurs)
 {
   //Création des variables 
+  $tableauPairTemp = [];
+  $tableauImpairTemp = [];
   $tableauPair = [];
   $tableauImpair = [];
 
   //Vérifie le nombre de joueurs par tournois
   if ($nbJoueurs == 16) {
-
-
 
     $longueur = count($joueursImpair) / 4;
     //compte le nombre de joueurs dont le numéro de classement est
@@ -514,9 +516,15 @@ function organisationMatch($joueursPair, $joueursImpair, $nbJoueurs)
       $pair = [];
       array_push($pair, $joueursPair[$i], end($joueursPair));
       unset($joueursPair[$i], $joueursPair[array_key_last($joueursPair)]);
-      array_push($tableauPair, $pair);
+      array_push($tableauPairTemp, $pair);
       unset($pair);
     }
+
+    array_push($tableauPair, $tableauPairTemp[0]);
+    array_push($tableauPair, $tableauPairTemp[3]);
+    array_push($tableauPair, $tableauPairTemp[2]);
+    array_push($tableauPair, $tableauPairTemp[1]);
+  
 
     //compte le nombre de joueurs dont le numéro de classement est
     //un chiffre impair
@@ -525,35 +533,56 @@ function organisationMatch($joueursPair, $joueursImpair, $nbJoueurs)
       array_push($impair, $joueursImpair[$i], end($joueursImpair));
       unset($joueursImpair[array_key_last($joueursImpair)]);
       unset($joueursImpair[$i]);
-      array_push($tableauImpair, $impair);
-      unset($impair); 
+      array_push($tableauImpairTemp, $impair);
+      unset($impair);
     }
+    array_push($tableauImpair, $tableauImpairTemp[0]);
+    array_push($tableauImpair, $tableauImpairTemp[3]);
+    array_push($tableauImpair, $tableauImpairTemp[2]);
+    array_push($tableauImpair, $tableauImpairTemp[1]);
 
 
-  } 
-  else {
-
+  } else {
+    $longueur = count($joueursImpair) / 2;
     //compte le nombre de joueurs dont le numéro de classement est
     //un chiffre pair
-    for ($i = 0; $i < count($joueursPair); $i++) {
+    for ($i = 0; $i < $longueur; $i++) {
       $pair = [];
       array_push($pair, $joueursPair[$i], end($joueursPair));
-      if (count($joueursImpair) == 16) {
-      }
-      unset($joueursPair[$i], $joueursPair[count($joueursPair)]);
-      array_push($tableauPair, $pair);
+      unset($joueursPair[$i], $joueursPair[array_key_last($joueursPair)]);
+      array_push($tableauPairTemp, $pair);
       unset($pair);
     }
 
+    array_push($tableauPair, $tableauPairTemp[0]);
+    array_push($tableauPair, $tableauPairTemp[7]);
+    array_push($tableauPair, $tableauPairTemp[4]);
+    array_push($tableauPair, $tableauPairTemp[3]);
+    array_push($tableauPair, $tableauPairTemp[5]);
+    array_push($tableauPair, $tableauPairTemp[2]);
+    array_push($tableauPair, $tableauPairTemp[6]);
+    array_push($tableauPair, $tableauPairTemp[1]);
+
+
     //compte le nombre de joueurs dont le numéro de classement est
     //un chiffre impair
-    for ($i = 0; $i < count($joueursImpair); $i++) {
+    for ($i = 0; $i < $longueur; $i++) {
       $impair = [];
       array_push($impair, $joueursImpair[$i], end($joueursImpair));
-      unset($joueursImpair[$i], $joueursImpair[count($joueursImpair)]);
-      array_push($tableauImpair, $impair);
+      unset($joueursImpair[$i], $joueursImpair[array_key_last($joueursImpair)]);
+      array_push($tableauImpairTemp, $impair);
       unset($impair);
     }
+
+    array_push($tableauImpair, $tableauImpairTemp[0]);
+    array_push($tableauImpair, $tableauImpairTemp[7]);
+    array_push($tableauImpair, $tableauImpairTemp[4]);
+    array_push($tableauImpair, $tableauImpairTemp[3]);
+    array_push($tableauImpair, $tableauImpairTemp[5]);
+    array_push($tableauImpair, $tableauImpairTemp[2]);
+    array_push($tableauImpair, $tableauImpairTemp[6]);
+    array_push($tableauImpair, $tableauImpairTemp[1]);
+
   }
   $_SESSION['tableauPair'] = $tableauPair;
   $_SESSION['tableauImpair'] = $tableauImpair;
@@ -601,6 +630,265 @@ function getTerrain()
   }
   $answer = false;
   try {
+    if ($ps->execute())
+      $answer = $ps->fetchAll(PDO::FETCH_ASSOC);
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
+
+  return $answer;
+}
+
+
+/**
+ * Récupère les joueurs et leurs informations en ayant pour paramètre le genre et le nombre de joueur du tournois
+ * 
+ * @param [bool] $genre
+ * @param [int] $gnbJoueurs
+ * @return array 
+ */
+function getPlayerByParameter($genre, $nbJoueurs)
+{
+  static $ps = null;
+  $sql = 'SELECT idJoueur, prenom, nom, dateNaissance, nationalite, genre, classementATP FROM tennis_tpi.joueurs';
+  $sql .= ' WHERE genre = :GENRE';
+  $sql .= ' LIMIT :NB_JOUEURS';
+
+  if ($ps == null) {
+    $ps = tennis_database()->prepare($sql);
+  }
+  $answer = false;
+  try {
+    $ps->bindParam(':GENRE', $genre, PDO::PARAM_INT);
+    $ps->bindParam(':NB_JOUEURS', $nbJoueurs, PDO::PARAM_INT);
+
+    if ($ps->execute())
+      $answer = $ps->fetchAll(PDO::FETCH_ASSOC);
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
+
+  return $answer;
+}
+
+
+
+/**
+ * Effectue une recherche de mot en ayant pour paramètre le mot entré par l'utilisateur, le genre et le nombre de joueur au tournois
+ *
+ * @param [string] $word
+ * @param [bool] $genre
+ * @param [int] $nbJoueurs
+ * @return array
+ */
+function rechercheJoueur($motRecherche, $nbJoueurs, $genre)
+{
+  static $ps = null;
+  $sql = "SELECT * FROM joueurs WHERE nom LIKE :SEARCH AND genre = :GENRE OR prenom LIKE :SEARCH AND genre = :GENRE LIMIT :NB_JOUEURS";
+
+  $answer = false;
+  try {
+    if ($ps == null) {
+      $ps = tennis_database()->prepare($sql);
+    }
+    $motRecherche = "%$motRecherche%";
+    $ps->bindParam(':SEARCH', $motRecherche, PDO::PARAM_STR);
+    $ps->bindParam(':GENRE', $genre, PDO::PARAM_BOOL);
+    $ps->bindParam(':NB_JOUEURS', $nbJoueurs, PDO::PARAM_INT);
+    $ps->execute();
+
+    $answer = $ps->fetchAll(PDO::FETCH_ASSOC);
+  } catch (Exception $e) {
+    $answer = array();
+    echo $e->getMessage();
+  }
+  return $answer;
+}
+
+
+/**
+ * Insert les informations d'un match dans la tables matches
+ *
+ * @param [int] $choixTerrain
+ * @param [string] $dateMatch
+ * @param [string] $heureMatch
+ * @param [int] $idTournois
+ * @param [int] $idMatch
+ * @param [int] $idTour
+ * @param [int] $vainqueur
+ * @return array
+ */
+function insertMatch($choixTerrain, $dateMatch, $heureMatch, $idMatch, $vainqueur)
+{
+  static $ps = null;
+  $sql = "UPDATE `tennis_tpi`.`matches` SET ";
+  $sql .= "`idTerrain` = :ID_TERRAIN , ";
+  $sql .= "`date` = :DATE_MATCH , ";
+  $sql .= "`heure` = :HEURE_MATCH , ";
+  $sql .= "`vainqueur` = :VAINQUEUR ";
+  $sql .= "WHERE (`idMatch` = :ID_MATCH)";
+  if ($ps == null) {
+    $ps = tennis_database()->prepare($sql);
+  }
+  $answer = false;
+  try {
+    $ps->bindParam(':ID_TERRAIN', $choixTerrain, PDO::PARAM_INT);
+    $ps->bindParam(':DATE_MATCH', $dateMatch, PDO::PARAM_STR);
+    $ps->bindParam(':HEURE_MATCH', $heureMatch, PDO::PARAM_STR);
+    $ps->bindParam(':ID_MATCH', $idMatch, PDO::PARAM_INT);
+    $ps->bindParam(':VAINQUEUR', $vainqueur, PDO::PARAM_INT);
+
+    $answer = $ps->execute();
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
+  return $answer;
+}
+
+
+
+function recupIdMatch($idJoueur1, $idJoueur2, $idTour)
+{
+  static $ps = null;
+  $sql = 'SELECT idMatch FROM tennis_tpi.matches ';
+  $sql .= 'WHERE idJoueur1 = :ID_JOUEUR1 AND idJoueur2 = :ID_JOUEUR2 AND idTour = :ID_TOUR';
+
+  if ($ps == null) {
+    $ps = tennis_database()->prepare($sql);
+  }
+  $answer = false;
+  try {
+    $ps->bindParam(':ID_JOUEUR1', $idJoueur1, PDO::PARAM_INT);
+    $ps->bindParam(':ID_JOUEUR2', $idJoueur2, PDO::PARAM_INT);
+    $ps->bindParam(':ID_TOUR', $idTour, PDO::PARAM_INT);
+    if ($ps->execute())
+      $answer = $ps->fetch(PDO::FETCH_ASSOC);
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
+
+  return $answer;
+}
+
+
+
+/**
+ * Insert la valeur des sets dans la table set
+ *
+ * @param [int] $score1
+ * @param [int] $score2
+ * @return array
+ */
+function insertSets($score1, $score2)
+{
+  static $ps = null;
+  $sql = "INSERT INTO `tennis_tpi`.`sets` (`score1`, `score2`) ";
+  $sql .= "VALUES (:SCORE1, :SCORE2)";
+  if ($ps == null) {
+    $ps = tennis_database()->prepare($sql);
+  }
+  $answer = false;
+  try {
+    $ps->bindParam(':SCORE1', $score1, PDO::PARAM_BOOL);
+    $ps->bindParam(':SCORE2', $score2, PDO::PARAM_INT);
+
+    $answer = $ps->execute();
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
+  return $answer;
+}
+
+
+
+
+
+
+/**
+ * Insert l'id des joueurs dans la table matches
+ *
+ * @param [int] $idJoueur1
+ * @param [int] $idJoueur2
+ * @param [int] $idTour
+ * @return array
+ */
+function insertJoueurMatch($idJoueur1, $idJoueur2, $idTour, $idTournois)
+{
+  static $ps = null;
+  $sql = "INSERT INTO `tennis_tpi`.`matches` (`idJoueur1`, `idJoueur2`, `idTour`, `idTournois`) ";
+  $sql .= "VALUES (:ID_JOUEUR1, :ID_JOUEUR2, :ID_TOUR, :ID_TOURNOIS)";
+  if ($ps == null) {
+    $ps = tennis_database()->prepare($sql);
+  }
+  $answer = false;
+  try {
+    $ps->bindParam(':ID_JOUEUR1', $idJoueur1, PDO::PARAM_INT);
+    $ps->bindParam(':ID_JOUEUR2', $idJoueur2, PDO::PARAM_INT);
+    $ps->bindParam(':ID_TOUR', $idTour, PDO::PARAM_INT);
+    $ps->bindParam(':ID_TOURNOIS', $idTournois, PDO::PARAM_INT);
+
+    $answer = $ps->execute();
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
+  return $answer;
+}
+
+
+
+/**
+ * Vérifie que les joueurs existent dans la table matches
+ *
+ * @param [int] $idJoueur1
+ * @param [int] $idJoueur2
+ * @param [int] $idTour
+ * @return array
+ */
+function verifJoueurExist($idJoueur1, $idJoueur2, $idTour, $idTournois)
+{
+  static $ps = null;
+  $sql = 'SELECT idJoueur1, idJoueur2, idTour, idTournois FROM tennis_tpi.matches';
+  $sql .= ' WHERE idJoueur1 = :ID_JOUEUR1 AND idJoueur2 = :ID_JOUEUR2 AND idTour = :ID_TOUR AND idTournois = :ID_TOURNOIS';
+
+  if ($ps == null) {
+    $ps = tennis_database()->prepare($sql);
+  }
+  $answer = false;
+  try {
+    $ps->bindParam(':ID_JOUEUR1', $idJoueur1, PDO::PARAM_INT);
+    $ps->bindParam(':ID_JOUEUR2', $idJoueur2, PDO::PARAM_INT);
+    $ps->bindParam(':ID_TOUR', $idTour, PDO::PARAM_INT);
+    $ps->bindParam(':ID_TOURNOIS', $idTournois, PDO::PARAM_INT);
+
+    if ($ps->execute())
+      $answer = $ps->fetchAll(PDO::FETCH_ASSOC);
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
+
+  return $answer;
+}
+
+
+
+
+/**
+ * Fonction qui retourne tous les joueurs vainqueurs des huitième
+ *
+ * @return array
+ */
+function recupVainqueurHuitieme()
+{
+  static $ps = null;
+  $sql = 'SELECT vainqueur FROM tennis_tpi.matches';
+  $sql .= ' WHERE idJoueur1 = vainqueur AND idTour = 2 OR idJoueur2 = vainqueur AND idTour = 2';
+
+  if ($ps == null) {
+    $ps = tennis_database()->prepare($sql);
+  }
+  $answer = false;
+  try {
+
     if ($ps->execute())
       $answer = $ps->fetchAll(PDO::FETCH_ASSOC);
   } catch (PDOException $e) {

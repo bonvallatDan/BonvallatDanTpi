@@ -2,7 +2,9 @@
 require_once "asset/php/inc.all.php";
 
 //creation de la seesion
-session_start();
+if (!isset($_SESSION)) {
+    session_start();
+}
 
 // creation des variables
 $cheminIndex = "index.php";
@@ -17,25 +19,13 @@ $terrains = "";
 $choixTerrain = "";
 $dateMatch = "";
 $heureMatch = "";
-$premierSet = "";
-$deuxiemeSet = "";
-$troisiemeSet = "";
-$quatiremeSet = "";
-$cinquiemeSet = "";
+$score1 = "";
+$score2 = "";
+$nomTour = "";
 
 
 //filtage des données
 $idTournois = filter_input(INPUT_GET, 'idTournois', FILTER_VALIDATE_INT);
-if (isset($_POST['ajouter'])) {
-    $choixTerrain = filter_input(INPUT_GET, 'terrains', FILTER_SANITIZE_STRING);
-    $dateMatch = filter_input(INPUT_GET, 'dateMatch', FILTER_SANITIZE_STRING);
-    $heureMatch = filter_input(INPUT_GET, 'heureMatch', FILTER_SANITIZE_STRING);
-    $premierSet = filter_input(INPUT_GET, 'premierSet', FILTER_VALIDATE_INT);
-    $deuxiemeSet = filter_input(INPUT_GET, 'deuxiemeSet', FILTER_VALIDATE_INT);
-    $troisiemeSet = filter_input(INPUT_GET, 'troisiemeSet', FILTER_VALIDATE_INT);
-    $quatiremeSet = filter_input(INPUT_GET, 'quatriemeSet', FILTER_VALIDATE_INT);
-    $cinquiemeSet = filter_input(INPUT_GET, 'cinquiemeSet', FILTER_VALIDATE_INT);
-}
 
 // Instanciation des variables en utilisant des variables de session
 $joueursPairHomme = $_SESSION['joueursPairHomme'];
@@ -50,16 +40,33 @@ trieJoueur($joueurs);
 $tournois = recupTournoisInfoById($idTournois);
 $categorie = recupCategorieInfoById($tournois['idCategorie']);
 if ($categorie['genre'] == 1) {
-    organisationMatch($joueursPairHomme, $joueursImpairHomme, intval($categorie['nbParticipant']));
+    organisationMatch($joueursPairHomme, $joueursImpairHomme, intval($categorie['nbParticipants']));
 } else {
-    organisationMatch($joueursPairFemme, $joueursImpairFemme, intval($categorie['nbParticipant']));
+    organisationMatch($joueusesPairFemme, $joueusesImpairFemme, intval($categorie['nbParticipants']));
 }
 
 $terrains = getTerrain();
 
+
 //instanciation des variables, necessitant des varibles de session, après l'utilisation de méthode 
 $joueursPair = $_SESSION['tableauPair'];
 $joueursImpair = $_SESSION['tableauImpair'];
+
+$bob = recupVainqueurHuitieme();
+
+
+//vérifie que le bouton est set
+if (isset($_POST['ajouter'])) {
+    //filtrage des données
+    
+    $choixTerrain = filter_input(INPUT_POST, 'terrains', FILTER_SANITIZE_STRING);
+    $dateMatch = filter_input(INPUT_POST, 'dateMatch', FILTER_SANITIZE_STRING);
+    $heureMatch = filter_input(INPUT_POST, 'heureMatch', FILTER_SANITIZE_STRING);
+    $idMatch = filter_input(INPUT_POST, 'idMatch', FILTER_VALIDATE_INT);
+    $joueur1 = filter_input(INPUT_POST, 'joueur1', FILTER_VALIDATE_INT);
+    $joueur2 = filter_input(INPUT_POST, 'joueur2', FILTER_VALIDATE_INT);
+    insertMatch(intval($choixTerrain), $dateMatch, $heureMatch, intval($idMatch), intval($joueur1));
+}
 ?>
 
 
@@ -107,7 +114,16 @@ $joueursImpair = $_SESSION['tableauImpair'];
         <main id="tournament">
             <ul class="round round-1">
                 <?php
+                if ((count($joueursPair) + count($joueursImpair)) == 8)
+                {
+                    $idTour = 2;
+                }
                 foreach ($joueursImpair as $joueur) {
+                    if (empty(verifJoueurExist(intval($joueur['0']['idJoueur']), intval($joueur['1']['idJoueur']), intval($idTour), intval($tournois['idTournois']))))
+                    {
+                        insertJoueurMatch(intval($joueur['0']['idJoueur']), intval($joueur['1']['idJoueur']), intval($idTour), intval($tournois['idTournois']));
+                    }
+                    $idMatch = recupIdMatch(intval($joueur['0']['idJoueur']), intval($joueur['1']['idJoueur']), intval($idTour));
                     echo
                     '<a data-target=#myModal' . $modal . ' data-toggle=modal href=#>' .
                         '<li class="game game-top winner">' . $joueur['0']['nom'] . ' <span>79</span></li>' .
@@ -122,8 +138,11 @@ $joueursImpair = $_SESSION['tableauImpair'];
                         '<h4 class="modal-title">' . $joueur['0']['prenom'] . ' ' . $joueur['0']['nom'] . ' vs ' . $joueur['1']['prenom'] . ' ' . $joueur['1']['nom'] . '</h4>' .
                         '<button type="button" class="close" data-dismiss="modal">&times;</button>' .
                         '</div>' .
+                        '<form action method="POST">' .
                         '<div class="modal-body">' .
-                        '<form action methode="POST">' .
+                        '<input type="text" name="idMatch" value="'.$idMatch['idMatch'].'" style="visibility: hidden">'.
+                        '<input type="text" name="joueur1" value="'.$joueur['0']['idJoueur'].'" style="visibility: hidden">'.
+                        '<input type="text" name="joueur2" value="'.$joueur['1']['idJoueur'].'" style="visibility: hidden">'.
                         '<div class="form-group">' .
                         '<label for="exampleSelect1">Choix Terrain</label>' .
                         '<select class="form-control" name="terrains">';
@@ -134,82 +153,82 @@ $joueursImpair = $_SESSION['tableauImpair'];
                         '</div>' .
                         '<div class="form-group">' .
                         '<label for="formGroupExampleInput2">Date du match</label>' .
-                        '<input class="form-control" type="date" name="dateMatch" required min="' . $categorie['dateDebut'] . '" max="' . $categorie['dateFin'] . '" >' .
+                        '<input class="form-control" type="date" name="dateMatch" required " >' .
                         '</div>' .
                         '<div class"form-group">' .
                         '<label for="formGroupExampleInput2">Heure du match</label>' .
                         '<input class="form-control" type="time" name="heureMatch" required>' .
                         '</div>';
-                    if ($categorie['nbSet'] == 2) {
+                    if ($categorie['nbSets'] == 2) {
                         if ($categorie['jeuDecisif']) {
                             echo '<div class"form-group">' .
                                 '<label for="formGroupExampleInput2">1er set</label>' .
-                                '<input  type="number" name="premierSetGauche" required min="0" max="7"><span> - </span><input  type="number" name="premierSetDroite" min="0" max="7" required>' .
+                                '<input  type="number" name="score1" required min="0" max="7"><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
                                 '</div>' .
                                 '<div class"form-group">' .
                                 '<label for="formGroupExampleInput2">2e set</label>' .
-                                '<input  type="number" name="deuxiemeSetGauche" required min="0" max="7"><span> - </span><input  type="number" name="deuxiemeSetDroite" min="0" max="7" required>' .
+                                '<input  type="number" name="score1" required min="0" max="7"><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
                                 '</div>' .
                                 '<div class"form-group">' .
                                 '<label for="formGroupExampleInput2">3e set</label>' .
-                                '<input  type="number" name="troisiemeSetGauche" required min="0" max="7"><span> - </span><input  type="number" name="troisiemeSetDroite" min="0" max="7" required>' .
+                                '<input  type="number" name="score1" required min="0" max="7"><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
                                 '</div>';
                         } else {
                             echo '<div class"form-group">' .
                                 '<label for="formGroupExampleInput2">1er set</label>' .
-                                '<input  type="number" name="premierSetGauche" required min="0" ><span> - </span><input  type="number" name="premierSetDroite" min="0" max="7" required>' .
+                                '<input  type="number" name="score1" required min="0" ><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
                                 '</div>' .
                                 '<div class"form-group">' .
                                 '<label for="formGroupExampleInput2">2e set</label>' .
-                                '<input  type="number" name="deuxiemeSetGauche" required min="0" ><span> - </span><input  type="number" name="deuxiemeSetDroite" min="0" max="7" required>' .
+                                '<input  type="number" name="score1" required min="0" ><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
                                 '</div>' .
                                 '<div class"form-group">' .
                                 '<label for="formGroupExampleInput2">3e set</label>' .
-                                '<input  type="number" name="troisiemeSetGauche" required min="0" ><span> - </span><input  type="number" name="troisiemeSetDroite" min="0" max="7" required>' .
+                                '<input  type="number" name="score1" required min="0" ><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
                                 '</div>';
                         }
                     } else {
                         if ($categorie['jeuDecisif']) {
                             echo '<div class"form-group">' .
                                 '<label for="formGroupExampleInput2">1er set</label>' .
-                                '<input  type="number" name="premierSetGauche" required min="0" max="7"><span> - </span><input  type="number" name="premierSetDroite" min="0" max="7" required>' .
+                                '<input  type="number" name="score1" required min="0" max="7"><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
                                 '</div>' .
                                 '<div class"form-group">' .
                                 '<label for="formGroupExampleInput2">2e set</label>' .
-                                '<input  type="number" name="deuxiemeSetGauche" required min="0" max="7"><span> - </span><input  type="number" name="deuxiemeSetDroite" min="0" max="7" required>' .
+                                '<input  type="number" name="score1" required min="0" max="7"><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
                                 '</div>' .
                                 '<div class"form-group">' .
                                 '<label for="formGroupExampleInput2">3e set</label>' .
-                                '<input  type="number" name="troisiemeSetGauche" required min="0" max="7"><span> - </span><input  type="number" name="troisiemeSetDroite" min="0" max="7" required>' .
+                                '<input  type="number" name="score1" required min="0" max="7"><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
                                 '</div>' .
                                 '<div class"form-group">' .
                                 '<label for="formGroupExampleInput2">4e set</label>' .
-                                '<input  type="number" name="quatriemeSetGauche" required min="0" max="7"><span> - </span><input  type="number" name="quatriemeSetDroite" min="0" max="7" required>' .
+                                '<input  type="number" name="score1" required min="0" max="7"><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
                                 '</div>' .
                                 '<div class"form-group">' .
                                 '<label for="formGroupExampleInput2">5e set</label>' .
-                                '<input  type="number" name="cinquiemeSetGauche" required min="0" max="7"><span> - </span><input  type="number" name="cinquiemeSetDroite" min="0" max="7" required>' .
+                                '<input  type="number" name="score1" required min="0" max="7"><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
                                 '</div>';
                         } else {
                             echo '<div class"form-group">' .
                                 '<label for="formGroupExampleInput2">1er set</label>' .
-                                '<input  type="number" name="premierSetGauche" required min="0" ><span> - </span><input  type="number" name="premierSetDroite" min="0" max="7" required>' .
+                                '<input  type="number" name="score1" required min="0" ><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
                                 '</div>' .
                                 '<div class"form-group">' .
                                 '<label for="formGroupExampleInput2">2e set</label>' .
-                                '<input  type="number" name="deuxiemeSetGauche" required min="0" ><span> - </span><input  type="number" name="deuxiemeSetDroite" min="0" max="7" required>' .
+                                '<input  type="number" name="score1" required min="0" ><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
                                 '</div>' .
                                 '<div class"form-group">' .
                                 '<label for="formGroupExampleInput2">3e set</label>' .
-                                '<input  type="number" name="troisiemeSetGauche" required min="0" ><span> - </span><input  type="number" name="troisiemeSetDroite" min="0" max="7" required>' .
+                                '<input  type="number" name="score1" required min="0" ><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
                                 '</div>' .
                                 '<div class"form-group">' .
                                 '<label for="formGroupExampleInput2">4e set</label>' .
-                                '<input  type="number" name="quatriemeSetGauche" required min="0" ><span> - </span><input  type="number" name="quatriemeSetDroite" min="0" max="7" required>' .
+                                '<input  type="number" name="score1" required min="0" ><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
                                 '</div>' .
                                 '<div class"form-group">' .
                                 '<label for="formGroupExampleInput2">5e set</label>' .
-                                '<input  type="number" name="cinquiemeSetGauche" required min="0" ><span> - </span><input  type="number" name="cinquiemeSetDroite" min="0" max="7" required>' .
+                                '<input  type="number" name="score1" required min="0" ><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
                                 '</div>';
                         }
                     }
@@ -241,7 +260,7 @@ $joueursImpair = $_SESSION['tableauImpair'];
                         '<button type="button" class="close" data-dismiss="modal">&times;</button>' .
                         '</div>' .
                         '<div class="modal-body">' .
-                        '<form action methode="POST">' .
+                        '<form action method="POST">' .
                         '<div class="form-group">' .
                         '<label for="exampleSelect1">Choix Terrain</label>' .
                         '<select class="form-control" name="terrains">';
@@ -252,13 +271,13 @@ $joueursImpair = $_SESSION['tableauImpair'];
                         '</div>' .
                         '<div class="form-group">' .
                         '<label for="formGroupExampleInput2">Date du match</label>' .
-                        '<input class="form-control" type="date" name="dateMatch" required min="' . $categorie['dateDebut'] . '" max="' . $categorie['dateFin'] . '" >' .
+                        '<input class="form-control" type="date" name="dateMatch" required min="' . $tournois['dateDebut'] . '" max="' . $tournois['dateFin'] . '" >' .
                         '</div>' .
                         '<div class"form-group">' .
                         '<label for="formGroupExampleInput2">Heure du match</label>' .
                         '<input class="form-control" type="time" name="heureMatch" required>' .
                         '</div>';
-                    if ($categorie['nbSet'] == 2) {
+                    if ($categorie['nbSets'] == 2) {
                         if ($categorie['jeuDecisif']) {
                             echo '<div class"form-group">' .
                                 '<label for="formGroupExampleInput2">1er set</label>' .
@@ -349,51 +368,51 @@ $joueursImpair = $_SESSION['tableauImpair'];
             <ul class="round round-2">
                 <li class="spacer">&nbsp;</li>
 
-                <li class="game game-top winner">Lousville <span>82</span></li>
+                <li class="game game-top winner"> <span></span></li>
                 <li class="game game-spacer">&nbsp;</li>
-                <li class="game game-bottom ">Colo St <span>56</span></li>
+                <li class="game game-bottom "> <span></span></li>
 
                 <li class="spacer">&nbsp;</li>
 
-                <li class="game game-top winner">Oregon <span>74</span></li>
+                <li class="game game-top winner"> <span></span></li>
                 <li class="game game-spacer">&nbsp;</li>
-                <li class="game game-bottom ">Saint Louis <span>57</span></li>
+                <li class="game game-bottom ">  <span></span></li>
 
                 <li class="spacer">&nbsp;</li>
 
-                <li class="game game-top ">Memphis <span>48</span></li>
+                <li class="game game-top "> <span></span></li>
                 <li class="game game-spacer">&nbsp;</li>
-                <li class="game game-bottom winner">Mich St <span>70</span></li>
+                <li class="game game-bottom winner">  <span></span></li>
 
                 <li class="spacer">&nbsp;</li>
 
-                <li class="game game-top ">Creighton <span>50</span></li>
+                <li class="game game-top "> <span></span></li>
                 <li class="game game-spacer">&nbsp;</li>
-                <li class="game game-bottom winner">Duke <span>66</span></li>
+                <li class="game game-bottom winner"> <span></span></li>
 
                 <li class="spacer">&nbsp;</li>
             </ul>
             <ul class="round round-3">
                 <li class="spacer">&nbsp;</li>
 
-                <li class="game game-top winner">Lousville <span>77</span></li>
+                <li class="game game-top winner"> <span></span></li>
                 <li class="game game-spacer">&nbsp;</li>
-                <li class="game game-bottom ">Oregon <span>69</span></li>
+                <li class="game game-bottom "> <span></span></li>
 
                 <li class="spacer">&nbsp;</li>
 
-                <li class="game game-top ">Mich St <span>61</span></li>
+                <li class="game game-top ">  <span></span></li>
                 <li class="game game-spacer">&nbsp;</li>
-                <li class="game game-bottom winner">Duke <span>71</span></li>
+                <li class="game game-bottom winner"> <span></span></li>
 
                 <li class="spacer">&nbsp;</li>
             </ul>
             <ul class="round round-4">
                 <li class="spacer">&nbsp;</li>
 
-                <li class="game game-top winner">Lousville <span>85</span></li>
+                <li class="game game-top winner"> <span></span></li>
                 <li class="game game-spacer">&nbsp;</li>
-                <li class="game game-bottom ">Duke <span>63</span></li>
+                <li class="game game-bottom "> <span></span></li>
 
                 <li class="spacer">&nbsp;</li>
             </ul>
@@ -420,11 +439,7 @@ $joueursImpair = $_SESSION['tableauImpair'];
         </div>
     </div>
     <!-- Footer-->
-    <footer class="py-5 bg-dark">
-        <div class="container">
-            <p class="m-0 text-center text-white">Copyright &copy; Your Website 2021</p>
-        </div>
-    </footer>
+
     <!-- Bootstrap core JS-->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
