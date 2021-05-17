@@ -3,19 +3,19 @@ INSERT INTO tennis_tpi.joueurs
 
 VALUES
 
-(17,	Kiki, Bertens,	NED,	1991-12-10, 0)
-(18,	Johanna, Konta,	GBR,	1991-05-17, 0)
-(19,	Maria, Sakkari,	GRE,	1995-07-25, 0)
-(20,	Karolina, Muchova,	CZE,	1996-08-21, 0)
-(21,	Marketa, Vondrousova,	CZE,	1999-06-28, 0)
-(22,	Elena, Rybakina,	KAZ,	1999-06-17, 0)
-(23,	Madison, Keys,	USA,	1995-02-17, 0)
-(24,	Ons, Jabeur,	TUN,	1994-08-28, 0)
-(25,	Petra, Martic,	CRO,	1991-01-19, 0)
-(26,	Angelique, Kerber,	GER,	1988-01-18, 0)
-(27,	Alison, Riske,	USA,	1990-07-03, 0)
-(28,	Veronika, Kudermetova,	RUS,	1997-04-24, 0)
-(29,	Anett, Kontaveit,	EST,	1995-12-24, 0)
-(30,	Anastasia, Pavlyuchenkova,	RUS	1991-07-03, 0)
-(31,	Jessica, Pegula,	USA,	1994-02-24, 0)
-(32,	Dayana, Yastremska,	UKR,	2000-05-1, 0)
+(17,	'Kiki', 'Bertens',	'NED',	'1991-12-10', 0),
+(18,	'Johanna', 'Konta',	'GBR',	'1991-05-17', 0),
+(19,	'Maria', 'Sakkari',	'GRE',	'1995-07-25', 0),
+(20,	'Karolina', 'Muchova',	'CZE',	'1996-08-21', 0),
+(21,	'Marketa', 'Vondrousova',	'CZE',	'1999-06-28', 0),
+(22,	'Elena', 'Rybakina',	'KAZ',	'1999-06-17', 0),
+(23,	'Madison', 'Keys',	'USA',	'1995-02-17', 0),
+(24,	'Ons', 'Jabeur',	'TUN',	'1994-08-28', 0),
+(25,	'Petra', 'Martic',	'CRO',	'1991-01-19', 0),
+(26,	'Angelique', 'Kerber',	'GER',	'1988-01-18', 0),
+(27,	'Alison', 'Riske',	'USA',	'1990-07-03', 0),
+(28,	'Veronika', 'Kudermetova',	'RUS',	'1997-04-24', 0),
+(29,	'Anett', 'Kontaveit',	'EST',	'1995-12-24', 0),
+(30,	'Anastasia', 'Pavlyuchenkova',	'RUS',	'1991-07-03', 0),
+(31,	'Jessica', 'Pegula',	'USA',	'1994-02-24', 0),
+(32,	'Dayana', 'Yastremska',	'UKR',	'2000-05-1', 0);
