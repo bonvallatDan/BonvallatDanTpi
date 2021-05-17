@@ -238,7 +238,7 @@
 | Nom         | 6: Planifier les matches                                     |
 | ----------- | ------------------------------------------------------------ |
 | Description | En tant qu'utilisateur je peux planifier la date des matches |
-| Priorité    | I: Important +                                               |
+| Priorité    | B: Bloquant X                                               |
 
 | Nom         | 7: Rechercher un joueur                                                                         |
 | ----------- | ----------------------------------------------------------------------------------------------- |
@@ -289,7 +289,7 @@
 
 > Quand un utilisateur appuie sur le bouton supprimé, le tournois est supprimé.
 
-> Un bouton copier permet de 
+> Un bouton copier permet de copier le tournois sur lequel l'utilisateur a cliqué et de le recréer 
 
 > Lorsque l'utilisateur clique sur le bouton joueurs d'un tournois dans la page index, il sera redirigé sur la page joueurs.php ou un tableau s'affichera avec les joueurs du tounois. Il pourra aussi faire des recherches de joueurs par le nom ou le prénom
 
@@ -300,9 +300,10 @@
 > Sur la page modification.php l'utilisateur peut modifier un ou plusieurs des champs du formulaire. Une fois qu'il appuie sur le bouton modifier, les données seront envoyées dans la base de données et vont remplacer les anciennes données. L'utilisateur sera redirigé sur la page index.php.
 > Lorsque l'utilisateur appuie sur le bouton supprimé, les données du tournois vont être envoyées sur une page supprimer.php afin de supprimer les données de la base de données. L'utilisateur ne change pas de page.
 > Lorsque l'utilisateur clique sur le bouton voir, il sera redirigé sur la page tournois.php. Sur cette page l'utilisateur pourra entrer les données des matches comme la date de la rencontre et les points des matches.
-> Il pourra aussi télécharger la fiche du matche.
 
 > Lorsque l'utilisateur clique sur le bouton copier d'un tournois, un nouveau tournois sera créé avec les mêmes informations que le tournois dont l'utilisateur à cliqué sur le bouton copier
+
+> Lorsque l'utilisateur clique sur le bouton joueurs d'un tournois, il sera emener sur la page joueurs.php ou sera affiché tous les joueurs du tournois dans un tableau, sur cette page l'utilisateur peut effectuer des recherches sur les différents joueurs du tournois. La recherche permet de rechercher les joueurs par leur nom ou prénom
 
 
 ### 6.3. Mesure de sécurité
@@ -664,7 +665,50 @@ function redirection($chemin)
 }
 ```
 > Pour chaque match, l'utiisateur peut entrer la date du match, l'heure du match, sur quel terrain ce déroule le match et le résultat des sets.
-> Après avoir enregistrer les informations du match, l'utilisateur peut télécharger les données du match en pdf.
+```php
+//vérifie que le bouton est set
+if (isset($_POST['ajouter'])) {
+    //filtrage des données
+    
+    $choixTerrain = filter_input(INPUT_POST, 'terrains', FILTER_SANITIZE_STRING);
+    $dateMatch = filter_input(INPUT_POST, 'dateMatch', FILTER_SANITIZE_STRING);
+    $heureMatch = filter_input(INPUT_POST, 'heureMatch', FILTER_SANITIZE_STRING);
+    $idMatch = filter_input(INPUT_POST, 'idMatch', FILTER_VALIDATE_INT);
+    $joueur1 = filter_input(INPUT_POST, 'joueur1', FILTER_VALIDATE_INT);
+    $joueur2 = filter_input(INPUT_POST, 'joueur2', FILTER_VALIDATE_INT);
+    insertMatch(intval($choixTerrain), $dateMatch, $heureMatch, intval($idMatch), intval($joueur1));
+}
+```
+> Ce morceau de code récupère les données entrée par l'utilisateur et les envoie dans la base de donnée
+> La fonction insertMatch permet d'inserer les données dans la table matches
+```php
+function insertMatch($choixTerrain, $dateMatch, $heureMatch, $idMatch, $vainqueur)
+{
+  static $ps = null;
+  $sql = "UPDATE `tennis_tpi`.`matches` SET ";
+  $sql .= "`idTerrain` = :ID_TERRAIN , ";
+  $sql .= "`date` = :DATE_MATCH , ";
+  $sql .= "`heure` = :HEURE_MATCH , ";
+  $sql .= "`vainqueur` = :VAINQUEUR ";
+  $sql .= "WHERE (`idMatch` = :ID_MATCH)";
+  if ($ps == null) {
+    $ps = tennis_database()->prepare($sql);
+  }
+  $answer = false;
+  try {
+    $ps->bindParam(':ID_TERRAIN', $choixTerrain, PDO::PARAM_INT);
+    $ps->bindParam(':DATE_MATCH', $dateMatch, PDO::PARAM_STR);
+    $ps->bindParam(':HEURE_MATCH', $heureMatch, PDO::PARAM_STR);
+    $ps->bindParam(':ID_MATCH', $idMatch, PDO::PARAM_INT);
+    $ps->bindParam(':VAINQUEUR', $vainqueur, PDO::PARAM_INT);
+
+    $answer = $ps->execute();
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
+  return $answer;
+}
+```
 
 #### 7.0.5. Page Joueur
 > Sur la page tournois il y a un lien qui permet de revenir a la page index. Le lien ce trouve sur le mot "Tennis" qui est le titre de la page. Dans le lien la méthode de redirection est utilisé.
@@ -675,7 +719,36 @@ function redirection($chemin)
   exit();
 }
 ```
-A COMPLETER !!!
+> Lorsque l'utilisateur effectue une recherche, une fonction est appelé
+> La fonction permet de rechercher les joueurs par leur nom ou prénom depuis le mot entré par l'utilisateur.
+ ```php
+$joueurs = getPlayerByParameter($categorie['genre'], $categorie['nbParticipants']);
+
+
+function getPlayerByParameter($genre, $nbJoueurs)
+{
+  static $ps = null;
+  $sql = 'SELECT idJoueur, prenom, nom, dateNaissance, nationalite, genre, classementATP FROM tennis_tpi.joueurs';
+  $sql .= ' WHERE genre = :GENRE';
+  $sql .= ' LIMIT :NB_JOUEURS';
+
+  if ($ps == null) {
+    $ps = tennis_database()->prepare($sql);
+  }
+  $answer = false;
+  try {
+    $ps->bindParam(':GENRE', $genre, PDO::PARAM_INT);
+    $ps->bindParam(':NB_JOUEURS', $nbJoueurs, PDO::PARAM_INT);
+
+    if ($ps->execute())
+      $answer = $ps->fetchAll(PDO::FETCH_ASSOC);
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
+
+  return $answer;
+}
+```
 
 ### 7.1. Technologies utilisées
 > Les technologies qui sont utilisé dans ce projet sont:
