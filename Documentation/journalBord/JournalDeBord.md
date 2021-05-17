@@ -420,4 +420,52 @@ unset($joueursImpair[array_key_last($joueursImpair)])
 > On a discuté de mon tpi et de mon avancement
 
 ### Heure: 16:10
-> Je n'ai pas trouvö l'erreur alors j'ai refais le code et ça fonctionne
+> Je n'ai pas trouvé l'erreur alors j'ai refais le code et ça fonctionne
+
+## Date: 17.05.2021
+### Heure: 07:40
+
+> Le week-end du 15 au 16 mai, j'ai envoyé un mail aux experts pour les prévenir de mon retard sur mon projet
+> Après avoir discuté avec un des experts par mail, nous nous sommes appelé
+> Nous avons discuté de l'état de mon tpi
+> Nous allons faire une visioconférence a 09:00 car il y a un soucis de complexité avec mon tpi
+
+### Heure: 07:54
+> Je fais une fiche, que les experts mon demandés, sur les fonctionnalitées de mon site
+
+### Heure: 08:05
+> J'envoie la fiche
+
+### Heure: 08:14
+> Je corrige les petits problèmes de mon code
+
+### Heure: 08:48
+> Je continue la page tournois.php
+
+### Heure: 09:00
+> Rdv avec les experts en visioconférence. Nous avons discuté du tpi et les experts ont prit des décisions sur certains points du tpi suivant ma situation.
+> Des points du cahier des chargres ont été supprimé
+
+### Heure: 9:40
+> Après le rdv avec les experts mon formateur est venu dans ma classe afin de discuter de mon tpi. Je lui ai transimit ce que j'avais discuté avec les experts.
+
+### Heure: 10:05
+> Après le rdv avec mon formateur, j'ai demandé de l'aide au prof de la classe afin de pouvoir avancer sur le problème de planification des matches
+
+### Heure: 10:36
+> Je modifie ma base de données par rapport à ce que le prof a dit
+> Je supprime la table joue et je rajoute idJoueur1, idJoueur2 et vainqueur dans la table match
+
+### Heure: 10:43
+> Après avoir modifier la base de données je continue la planification des matches
+
+### Heure: 15:29
+> Je peux récupérer dans un tableau les joueurs qui ont passé le 1er tour
+
+### Heure: 16:14
+> Je continue la doc
+
+### Heure: 16:22
+> Je continue créer la doc utilisateur
+
+
