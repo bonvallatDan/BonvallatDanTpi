@@ -468,4 +468,20 @@ unset($joueursImpair[array_key_last($joueursImpair)])
 ### Heure: 16:22
 > Je continue créer la doc utilisateur
 
+## Date: 18.05.2021
+### Heure: 07:50
+> Je continue la planification des matches
 
+### Heure: 11:13
+> J'ai réussi a afficher les quarts
+> Pour l'instant je teste sans donner des points
+> C'est tout le temps le même joueurs qui gagne
+
+### Heure: 11:28
+> J'ai essayé de faire la même chose pour les demi et la final mais l'affichage reste celui des quarts
+> Je pars en pause et je regarde quand je rentre
+
+### Heure: 16:23
+> J'ai demandé de l'aide à plusique camarade mais il y a un problème d'affichage
+> Dans la base de données les bonnes informations sont enregistrées mais l'affichage ne suit pas
+> Tous fonctionne jusqu'a la final
