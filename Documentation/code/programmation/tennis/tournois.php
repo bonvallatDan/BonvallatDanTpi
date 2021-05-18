@@ -4,6 +4,9 @@ require_once "asset/php/inc.all.php";
 //creation de la seesion
 if (!isset($_SESSION)) {
     session_start();
+    $_SESSION['quart'] = null;
+    $_SESSION['demi'] = null;
+    $_SESSION['final'] = null;
 }
 
 // creation des variables
@@ -66,27 +69,33 @@ if (isset($_POST['ajouter'])) {
     
 }
 $vainqueurs = [];
-$vainqueurs = recupVainqueur(intval($tournois['idTournois']), $idTourSuite);
+
+$vainqueurs = recupVainqueur(intval($tournois['idTournois']), $_SESSION['idTour']);
 if ($vainqueurs[count($vainqueurs) - 1]['vainqueur'] != null && $vainqueurs != array()) {
     $prochainTour = prochainTour($vainqueurs);
 
     if (count($prochainTour) == 4) {
         $prochainTour = prochainTour($vainqueurs);
         $tableauQuart = $prochainTour;
+        $_SESSION['quart'] = $tableauQuart;
         $idTourSuite = 3;
+        $_SESSION['idTour'] = $idTourSuite;
     } else if (count($prochainTour) == 2) {
 
         $prochainTour = prochainTour($vainqueurs);
 
         $tableauDemi = $prochainTour;
+        $_SESSION['demi'] = $tableauDemi;
         $idTourSuite = 4;
+        $_SESSION['idTour'] = $idTourSuite;
     } else if (count($prochainTour) == 1) {
 
         $prochainTour = prochainTour($vainqueurs);
 
         $tableauFinal = $prochainTour;
+        $_SESSION['final'] = $tableauFinal;
         $idTourSuite = 5;
-        finale($tableauQuart, $idTour, $terrains, $tournois, $categorie, $modal);
+        $_SESSION['idTour'] = $idTourSuite;
     }
 }
 
@@ -396,23 +405,19 @@ if ($vainqueurs[count($vainqueurs) - 1]['vainqueur'] != null && $vainqueurs != a
             </ul>
             <ul class="round round-2">
                 <?php
-                quart($tableauQuart, $idTourSuite, $terrains, $tournois, $categorie, $modal);
+                    quart($_SESSION['quart'], $_SESSION['idTour'], $terrains, $tournois, $categorie, $modal);
                 ?>
 
             </ul>
             <ul class="round round-3">
                 <?php
-                demi($tableauQuart, $idTourSuite, $terrains, $tournois, $categorie, $modal);
+                    demi($_SESSION['demi'], $_SESSION['idTour'], $terrains, $tournois, $categorie, $modal);
                 ?>
             </ul>
             <ul class="round round-4">
-                <li class="spacer">&nbsp;</li>
-
-                <li class="game game-top winner"> <span></span></li>
-                <li class="game game-spacer">&nbsp;</li>
-                <li class="game game-bottom "> <span></span></li>
-
-                <li class="spacer">&nbsp;</li>
+            <?php
+                finale($_SESSION['final'], $_SESSION['idTour'], $terrains, $tournois, $categorie, $modal);
+            ?>
             </ul>
         </main>
         <!-- Modal -->
