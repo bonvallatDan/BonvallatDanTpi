@@ -70,8 +70,7 @@ if (isset($_POST['creer'])) {
                     if (isset($_POST['recherche'])) {
                         $chaine = recherche($word);
                         foreach ($chaine as $unMot) {
-                            echo "<div class=tournois><p>" . $unMot['nom'] . "</p><p>" . $unMot['dateDebut'] . "</p>
-                            <a class=delete name=supprimer href=$cheminSupprimer?idTournois=" . (int)$unMot["idTournois"] . "&idCategorie=" . (int)$unMot["idCategorie"] . ">Supprimer</a>";
+                            echo "<div class=tournois><p>" . $unMot['nom'] . "</p><p>" . $unMot['dateDebut'] . "</p>";
                             if ($unMot['dateDebut'] <= date('Y-m-d')) {
                                 echo "<a class=look name=voir href=$cheminVoir?idTournois=" . (int)$unMot["idTournois"] . ">Voir</a>
                             <a class=player name=jouers href=$cheminJoueur?idTournois=" . (int)$unMot["idTournois"] . ">Joueurs</a>
@@ -79,6 +78,7 @@ if (isset($_POST['creer'])) {
                             </div>";
                             } else {
                                 echo "<a class=edit name=modifier href=$cheminModification?idTournois=" . (int)$unMot["idTournois"] . ">Modifier</a>
+                                <a class=delete name=supprimer href=$cheminSupprimer?idTournois=" . (int)$tournois["idTournois"] . "&idCategorie=" . (int)$tournois["idCategorie"] . ">Supprimer</a>
                             <a class=look name=voir href=$cheminVoir?idTournois=" . (int)$unMot["idTournois"] . ">Voir</a>
                             <a class=player name=jouers href=$cheminJoueur?idTournois=" . (int)$unMot["idTournois"] . ">Joueurs</a>
                             <a class=copy name=copier href=$cheminCopier?idTournois=" . (int)$unMot["idTournois"] . ">Copier</a>
@@ -88,8 +88,7 @@ if (isset($_POST['creer'])) {
                         unset($_POST['recherche']);
                     } else {
                         foreach ($infoTournois as $tournois) {
-                            echo "<div class=tournois><p>" . $tournois['nom'] . "</p><p>" . $tournois['dateDebut'] . "</p>
-                            <a class=delete name=supprimer href=$cheminSupprimer?idTournois=" . (int)$tournois["idTournois"] . "&idCategorie=" . (int)$tournois["idCategorie"] . ">Supprimer</a>";
+                            echo "<div class=tournois><p>" . $tournois['nom'] . "</p><p>" . $tournois['dateDebut'] . "</p>";
                             if ($tournois['dateDebut'] <= date('Y-m-d')) {
                                 echo "<a class=look name=voir href=$cheminVoir?idTournois=" . (int)$tournois["idTournois"] . ">Voir</a>
                             <a class=player name=jouers href=$cheminJoueur?idTournois=" . (int)$tournois["idTournois"] . ">Joueurs</a>
@@ -97,6 +96,7 @@ if (isset($_POST['creer'])) {
                             </div>";
                             } else {
                                 echo "<a class=edit name=modifier href=$cheminModification?idTournois=" . (int)$tournois["idTournois"] . ">Modifier</a>
+                                <a class=delete name=supprimer href=$cheminSupprimer?idTournois=" . (int)$tournois["idTournois"] . "&idCategorie=" . (int)$tournois["idCategorie"] . ">Supprimer</a>
                             <a class=look name=voir href=$cheminVoir?idTournois=" . (int)$tournois["idTournois"] . ">Voir</a>
                             <a class=player name=jouers href=$cheminJoueur?idTournois=" . (int)$tournois["idTournois"] . ">Joueurs</a>
                             <a class=copy name=copier href=$cheminCopier?idTournois=" . (int)$tournois["idTournois"] . ">Copier</a>

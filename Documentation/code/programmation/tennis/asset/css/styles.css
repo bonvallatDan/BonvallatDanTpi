@@ -90,6 +90,7 @@ body {
 
 .delete {
     float: right;
+    padding-right: 20px;
 }
 
 .edit {

@@ -21,7 +21,6 @@ $dateMatch = "";
 $heureMatch = "";
 $score1 = "";
 $score2 = "";
-$nomTour = "";
 
 
 //filtage des données
@@ -52,21 +51,47 @@ $terrains = getTerrain();
 $joueursPair = $_SESSION['tableauPair'];
 $joueursImpair = $_SESSION['tableauImpair'];
 
-$bob = recupVainqueurHuitieme();
 
 
 //vérifie que le bouton est set
 if (isset($_POST['ajouter'])) {
     //filtrage des données
-    
     $choixTerrain = filter_input(INPUT_POST, 'terrains', FILTER_SANITIZE_STRING);
     $dateMatch = filter_input(INPUT_POST, 'dateMatch', FILTER_SANITIZE_STRING);
     $heureMatch = filter_input(INPUT_POST, 'heureMatch', FILTER_SANITIZE_STRING);
     $idMatch = filter_input(INPUT_POST, 'idMatch', FILTER_VALIDATE_INT);
     $joueur1 = filter_input(INPUT_POST, 'joueur1', FILTER_VALIDATE_INT);
     $joueur2 = filter_input(INPUT_POST, 'joueur2', FILTER_VALIDATE_INT);
-    insertMatch(intval($choixTerrain), $dateMatch, $heureMatch, intval($idMatch), intval($joueur1));
+    insertMatch(intval($choixTerrain), $dateMatch, $heureMatch, intval($tournois['idTournois']), intval($idMatch), intval($joueur1));
+    
 }
+$vainqueurs = [];
+$vainqueurs = recupVainqueur(intval($tournois['idTournois']), $idTourSuite);
+if ($vainqueurs[count($vainqueurs) - 1]['vainqueur'] != null && $vainqueurs != array()) {
+    $prochainTour = prochainTour($vainqueurs);
+
+    if (count($prochainTour) == 4) {
+        $prochainTour = prochainTour($vainqueurs);
+        $tableauQuart = $prochainTour;
+        $idTourSuite = 3;
+    } else if (count($prochainTour) == 2) {
+
+        $prochainTour = prochainTour($vainqueurs);
+
+        $tableauDemi = $prochainTour;
+        $idTourSuite = 4;
+    } else if (count($prochainTour) == 1) {
+
+        $prochainTour = prochainTour($vainqueurs);
+
+        $tableauFinal = $prochainTour;
+        $idTourSuite = 5;
+        finale($tableauQuart, $idTour, $terrains, $tournois, $categorie, $modal);
+    }
+}
+
+
+
 ?>
 
 
@@ -114,16 +139,12 @@ if (isset($_POST['ajouter'])) {
         <main id="tournament">
             <ul class="round round-1">
                 <?php
-                if ((count($joueursPair) + count($joueursImpair)) == 8)
-                {
-                    $idTour = 2;
-                }
                 foreach ($joueursImpair as $joueur) {
-                    if (empty(verifJoueurExist(intval($joueur['0']['idJoueur']), intval($joueur['1']['idJoueur']), intval($idTour), intval($tournois['idTournois']))))
-                    {
-                        insertJoueurMatch(intval($joueur['0']['idJoueur']), intval($joueur['1']['idJoueur']), intval($idTour), intval($tournois['idTournois']));
+                    if (empty(verifMatchNotNull(intval($joueur['0']['idJoueur']), intval($joueur['1']['idJoueur']), $tournois['idTournois'], $idTour = 2))) {
+                        insertJoueurMatch($joueur['0']['idJoueur'], $joueur['1']['idJoueur'], $tournois['idTournois'], $idTour = 2);
                     }
-                    $idMatch = recupIdMatch(intval($joueur['0']['idJoueur']), intval($joueur['1']['idJoueur']), intval($idTour));
+
+                    $idMatch = recupIdMatch($joueur['0']['idJoueur'], $joueur['1']['idJoueur'], $idTour = 2);
                     echo
                     '<a data-target=#myModal' . $modal . ' data-toggle=modal href=#>' .
                         '<li class="game game-top winner">' . $joueur['0']['nom'] . ' <span>79</span></li>' .
@@ -140,9 +161,9 @@ if (isset($_POST['ajouter'])) {
                         '</div>' .
                         '<form action method="POST">' .
                         '<div class="modal-body">' .
-                        '<input type="text" name="idMatch" value="'.$idMatch['idMatch'].'" style="visibility: hidden">'.
-                        '<input type="text" name="joueur1" value="'.$joueur['0']['idJoueur'].'" style="visibility: hidden">'.
-                        '<input type="text" name="joueur2" value="'.$joueur['1']['idJoueur'].'" style="visibility: hidden">'.
+                        '<input  type="text" name="joueur1" style="visibility:hidden" value="' . $joueur['0']['idJoueur'] . '">' .
+                        '<input  type="text" name="joueur2" style="visibility:hidden" value="' . $joueur['1']['idJoueur'] . '">' .
+                        '<input  type="text" name="idMatch" style="visibility:hidden" value="' . $idMatch['idMatch'] . '">' .
                         '<div class="form-group">' .
                         '<label for="exampleSelect1">Choix Terrain</label>' .
                         '<select class="form-control" name="terrains">';
@@ -245,6 +266,11 @@ if (isset($_POST['ajouter'])) {
                     $modal++;
                 }
                 foreach ($joueursPair as $joueur) {
+                    if (empty(verifMatchNotNull(intval($joueur['0']['idJoueur']), intval($joueur['1']['idJoueur']), $tournois['idTournois'], $idTour))) {
+                        insertJoueurMatch($joueur['0']['idJoueur'], $joueur['1']['idJoueur'], $tournois['idTournois'], $idTour = 2);
+                    }
+
+                    $idMatch = recupIdMatch($joueur['0']['idJoueur'], $joueur['1']['idJoueur'], $idTour = 2);
                     echo
                     '<a data-target=#myModal' . $modal . ' data-toggle=modal href=#>' .
                         '<li class="game game-top winner">' . $joueur['0']['nom'] . ' <span>79</span></li>' .
@@ -261,6 +287,9 @@ if (isset($_POST['ajouter'])) {
                         '</div>' .
                         '<div class="modal-body">' .
                         '<form action method="POST">' .
+                        '<input  type="text" name="joueur1" style="visibility:hidden" value="' . $joueur['0']['idJoueur'] . '">' .
+                        '<input  type="text" name="joueur2" style="visibility:hidden" value="' . $joueur['1']['idJoueur'] . '">' .
+                        '<input  type="text" name="idMatch" style="visibility:hidden" value="' . $idMatch['idMatch'] . '">' .
                         '<div class="form-group">' .
                         '<label for="exampleSelect1">Choix Terrain</label>' .
                         '<select class="form-control" name="terrains">';
@@ -366,46 +395,15 @@ if (isset($_POST['ajouter'])) {
 
             </ul>
             <ul class="round round-2">
-                <li class="spacer">&nbsp;</li>
+                <?php
+                quart($tableauQuart, $idTourSuite, $terrains, $tournois, $categorie, $modal);
+                ?>
 
-                <li class="game game-top winner"> <span></span></li>
-                <li class="game game-spacer">&nbsp;</li>
-                <li class="game game-bottom "> <span></span></li>
-
-                <li class="spacer">&nbsp;</li>
-
-                <li class="game game-top winner"> <span></span></li>
-                <li class="game game-spacer">&nbsp;</li>
-                <li class="game game-bottom ">  <span></span></li>
-
-                <li class="spacer">&nbsp;</li>
-
-                <li class="game game-top "> <span></span></li>
-                <li class="game game-spacer">&nbsp;</li>
-                <li class="game game-bottom winner">  <span></span></li>
-
-                <li class="spacer">&nbsp;</li>
-
-                <li class="game game-top "> <span></span></li>
-                <li class="game game-spacer">&nbsp;</li>
-                <li class="game game-bottom winner"> <span></span></li>
-
-                <li class="spacer">&nbsp;</li>
             </ul>
             <ul class="round round-3">
-                <li class="spacer">&nbsp;</li>
-
-                <li class="game game-top winner"> <span></span></li>
-                <li class="game game-spacer">&nbsp;</li>
-                <li class="game game-bottom "> <span></span></li>
-
-                <li class="spacer">&nbsp;</li>
-
-                <li class="game game-top ">  <span></span></li>
-                <li class="game game-spacer">&nbsp;</li>
-                <li class="game game-bottom winner"> <span></span></li>
-
-                <li class="spacer">&nbsp;</li>
+                <?php
+                demi($tableauQuart, $idTourSuite, $terrains, $tournois, $categorie, $modal);
+                ?>
             </ul>
             <ul class="round round-4">
                 <li class="spacer">&nbsp;</li>
@@ -448,3 +446,5 @@ if (isset($_POST['ajouter'])) {
 </body>
 
 </html>
+<?php
+?>

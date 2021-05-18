@@ -501,15 +501,17 @@ function trieJoueur($tableauJoueurs)
 function organisationMatch($joueursPair, $joueursImpair, $nbJoueurs)
 {
   //Création des variables 
-  $tableauPairTemp = [];
-  $tableauImpairTemp = [];
   $tableauPair = [];
+  $tableauPairTemp = [];
   $tableauImpair = [];
+  $tableauImpairTemp = [];
 
   //Vérifie le nombre de joueurs par tournois
   if ($nbJoueurs == 16) {
 
-    $longueur = count($joueursImpair) / 4;
+
+
+    $longueur = $nbJoueurs / 4;
     //compte le nombre de joueurs dont le numéro de classement est
     //un chiffre pair
     for ($i = 0; $i < $longueur; $i++) {
@@ -524,7 +526,6 @@ function organisationMatch($joueursPair, $joueursImpair, $nbJoueurs)
     array_push($tableauPair, $tableauPairTemp[3]);
     array_push($tableauPair, $tableauPairTemp[2]);
     array_push($tableauPair, $tableauPairTemp[1]);
-  
 
     //compte le nombre de joueurs dont le numéro de classement est
     //un chiffre impair
@@ -536,12 +537,11 @@ function organisationMatch($joueursPair, $joueursImpair, $nbJoueurs)
       array_push($tableauImpairTemp, $impair);
       unset($impair);
     }
+
     array_push($tableauImpair, $tableauImpairTemp[0]);
     array_push($tableauImpair, $tableauImpairTemp[3]);
     array_push($tableauImpair, $tableauImpairTemp[2]);
     array_push($tableauImpair, $tableauImpairTemp[1]);
-
-
   } else {
     $longueur = count($joueursImpair) / 2;
     //compte le nombre de joueurs dont le numéro de classement est
@@ -563,7 +563,6 @@ function organisationMatch($joueursPair, $joueursImpair, $nbJoueurs)
     array_push($tableauPair, $tableauPairTemp[6]);
     array_push($tableauPair, $tableauPairTemp[1]);
 
-
     //compte le nombre de joueurs dont le numéro de classement est
     //un chiffre impair
     for ($i = 0; $i < $longueur; $i++) {
@@ -582,7 +581,6 @@ function organisationMatch($joueursPair, $joueursImpair, $nbJoueurs)
     array_push($tableauImpair, $tableauImpairTemp[2]);
     array_push($tableauImpair, $tableauImpairTemp[6]);
     array_push($tableauImpair, $tableauImpairTemp[1]);
-
   }
   $_SESSION['tableauPair'] = $tableauPair;
   $_SESSION['tableauImpair'] = $tableauImpair;
@@ -705,36 +703,32 @@ function rechercheJoueur($motRecherche, $nbJoueurs, $genre)
   return $answer;
 }
 
-
 /**
- * Insert les informations d'un match dans la tables matches
+ * Insert les données dans la table matches
  *
  * @param [int] $choixTerrain
  * @param [string] $dateMatch
  * @param [string] $heureMatch
- * @param [int] $idTournois
- * @param [int] $idMatch
- * @param [int] $idTour
- * @param [int] $vainqueur
  * @return array
  */
-function insertMatch($choixTerrain, $dateMatch, $heureMatch, $idMatch, $vainqueur)
+function insertMatch($choixTerrain, $dateMatch, $heureMatch, $idTournois, $idMatch, $vainqueur)
 {
   static $ps = null;
   $sql = "UPDATE `tennis_tpi`.`matches` SET ";
-  $sql .= "`idTerrain` = :ID_TERRAIN , ";
+  $sql .= "`idTerrain` = :CHOIX_TERRAIN , ";
   $sql .= "`date` = :DATE_MATCH , ";
   $sql .= "`heure` = :HEURE_MATCH , ";
   $sql .= "`vainqueur` = :VAINQUEUR ";
-  $sql .= "WHERE (`idMatch` = :ID_MATCH)";
+  $sql .= "WHERE `idTournois` = :ID_TOURNOIS AND `idMatch` = :ID_MATCH";
   if ($ps == null) {
     $ps = tennis_database()->prepare($sql);
   }
   $answer = false;
   try {
-    $ps->bindParam(':ID_TERRAIN', $choixTerrain, PDO::PARAM_INT);
+    $ps->bindParam(':CHOIX_TERRAIN', $choixTerrain, PDO::PARAM_INT);
     $ps->bindParam(':DATE_MATCH', $dateMatch, PDO::PARAM_STR);
     $ps->bindParam(':HEURE_MATCH', $heureMatch, PDO::PARAM_STR);
+    $ps->bindParam(':ID_TOURNOIS', $idTournois, PDO::PARAM_INT);
     $ps->bindParam(':ID_MATCH', $idMatch, PDO::PARAM_INT);
     $ps->bindParam(':VAINQUEUR', $vainqueur, PDO::PARAM_INT);
 
@@ -746,20 +740,23 @@ function insertMatch($choixTerrain, $dateMatch, $heureMatch, $idMatch, $vainqueu
 }
 
 
-
-function recupIdMatch($idJoueur1, $idJoueur2, $idTour)
+/**
+ * Retourne le dernier id des matches
+ * @return array
+ */
+function recupIdMatch($joueur1, $joueur2, $idTour)
 {
   static $ps = null;
-  $sql = 'SELECT idMatch FROM tennis_tpi.matches ';
-  $sql .= 'WHERE idJoueur1 = :ID_JOUEUR1 AND idJoueur2 = :ID_JOUEUR2 AND idTour = :ID_TOUR';
+  $sql = 'SELECT idMatch FROM tennis_tpi.matches';
+  $sql .= ' WHERE idJoueur1 = :JOUEUR1 AND idJoueur2 = :JOUEUR2 AND idTour = :ID_TOUR';
 
   if ($ps == null) {
     $ps = tennis_database()->prepare($sql);
   }
   $answer = false;
   try {
-    $ps->bindParam(':ID_JOUEUR1', $idJoueur1, PDO::PARAM_INT);
-    $ps->bindParam(':ID_JOUEUR2', $idJoueur2, PDO::PARAM_INT);
+    $ps->bindParam(':JOUEUR1', $joueur1, PDO::PARAM_INT);
+    $ps->bindParam(':JOUEUR2', $joueur2, PDO::PARAM_INT);
     $ps->bindParam(':ID_TOUR', $idTour, PDO::PARAM_INT);
     if ($ps->execute())
       $answer = $ps->fetch(PDO::FETCH_ASSOC);
@@ -800,32 +797,62 @@ function insertSets($score1, $score2)
 }
 
 
-
-
-
-
 /**
- * Insert l'id des joueurs dans la table matches
+ * Récupère les joueurs et le gangant du tour qui est en paramètre
  *
- * @param [int] $idJoueur1
- * @param [int] $idJoueur2
- * @param [int] $idTour
+ * @param int $idTournois
+ * @param int $idTour
  * @return array
  */
-function insertJoueurMatch($idJoueur1, $idJoueur2, $idTour, $idTournois)
+function recupVainqueur($idTournois, $idTour)
 {
+  if ($idTour == null)
+    $idTour = 2;
   static $ps = null;
-  $sql = "INSERT INTO `tennis_tpi`.`matches` (`idJoueur1`, `idJoueur2`, `idTour`, `idTournois`) ";
-  $sql .= "VALUES (:ID_JOUEUR1, :ID_JOUEUR2, :ID_TOUR, :ID_TOURNOIS)";
+  $sql = 'SELECT vainqueur FROM tennis_tpi.matches';
+  $sql .= ' WHERE idTournois = :ID_TOURNOIS AND idTour = :ID_TOUR ORDER BY idMatch ASC';
+
   if ($ps == null) {
     $ps = tennis_database()->prepare($sql);
   }
   $answer = false;
   try {
-    $ps->bindParam(':ID_JOUEUR1', $idJoueur1, PDO::PARAM_INT);
-    $ps->bindParam(':ID_JOUEUR2', $idJoueur2, PDO::PARAM_INT);
-    $ps->bindParam(':ID_TOUR', $idTour, PDO::PARAM_INT);
     $ps->bindParam(':ID_TOURNOIS', $idTournois, PDO::PARAM_INT);
+    $ps->bindParam(':ID_TOUR', $idTour, PDO::PARAM_INT);
+
+    if ($ps->execute())
+      $answer = $ps->fetchAll(PDO::FETCH_ASSOC);
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
+
+  return $answer;
+}
+
+
+/**
+ * Insert les id des joueurs ainsi que du tournois et du tour dans un match
+ *
+ * @param int $joueur1
+ * @param int $joueur2
+ * @param int $idTournois
+ * @param int $idTour
+ * @return array
+ */
+function insertJoueurMatch($joueur1, $joueur2, $idTournois, $idTour)
+{
+  static $ps = null;
+  $sql = "INSERT INTO `tennis_tpi`.`matches` (`idJoueur1`, `idJoueur2`, `idTournois`, `idTour`) ";
+  $sql .= "VALUES (:JOUEUR1, :JOUEUR2, :ID_TOURNOIS, :ID_TOUR)";
+  if ($ps == null) {
+    $ps = tennis_database()->prepare($sql);
+  }
+  $answer = false;
+  try {
+    $ps->bindParam(':JOUEUR1', $joueur1, PDO::PARAM_INT);
+    $ps->bindParam(':JOUEUR2', $joueur2, PDO::PARAM_INT);
+    $ps->bindParam(':ID_TOURNOIS', $idTournois, PDO::PARAM_INT);
+    $ps->bindParam(':ID_TOUR', $idTour, PDO::PARAM_INT);
 
     $answer = $ps->execute();
   } catch (PDOException $e) {
@@ -835,30 +862,30 @@ function insertJoueurMatch($idJoueur1, $idJoueur2, $idTour, $idTournois)
 }
 
 
-
 /**
- * Vérifie que les joueurs existent dans la table matches
+ * Effectue un select pour voir s'il y a des éléments dans la table en fonction des id des joueurs, du tournois et du tour
  *
- * @param [int] $idJoueur1
- * @param [int] $idJoueur2
- * @param [int] $idTour
+ * @param int $joueur1
+ * @param int $joueur2
+ * @param int $idTournois
+ * @param int $idTour
  * @return array
  */
-function verifJoueurExist($idJoueur1, $idJoueur2, $idTour, $idTournois)
+function verifMatchNotNull($joueur1, $joueur2, $idTournois, $idTour)
 {
   static $ps = null;
-  $sql = 'SELECT idJoueur1, idJoueur2, idTour, idTournois FROM tennis_tpi.matches';
-  $sql .= ' WHERE idJoueur1 = :ID_JOUEUR1 AND idJoueur2 = :ID_JOUEUR2 AND idTour = :ID_TOUR AND idTournois = :ID_TOURNOIS';
+  $sql = 'SELECT idJoueur1, idJoueur2, idTour FROM tennis_tpi.matches';
+  $sql .= ' WHERE idJoueur1 = :JOUEUR1 AND idJoueur2 = :JOUEUR2 AND idTournois = :ID_TOURNOIS AND idTour = :ID_TOUR';
 
   if ($ps == null) {
     $ps = tennis_database()->prepare($sql);
   }
   $answer = false;
   try {
-    $ps->bindParam(':ID_JOUEUR1', $idJoueur1, PDO::PARAM_INT);
-    $ps->bindParam(':ID_JOUEUR2', $idJoueur2, PDO::PARAM_INT);
-    $ps->bindParam(':ID_TOUR', $idTour, PDO::PARAM_INT);
+    $ps->bindParam(':JOUEUR1', $joueur1, PDO::PARAM_INT);
+    $ps->bindParam(':JOUEUR2', $joueur2, PDO::PARAM_INT);
     $ps->bindParam(':ID_TOURNOIS', $idTournois, PDO::PARAM_INT);
+    $ps->bindParam(':ID_TOUR', $idTour, PDO::PARAM_INT);
 
     if ($ps->execute())
       $answer = $ps->fetchAll(PDO::FETCH_ASSOC);
@@ -870,30 +897,531 @@ function verifJoueurExist($idJoueur1, $idJoueur2, $idTour, $idTournois)
 }
 
 
-
-
-/**
- * Fonction qui retourne tous les joueurs vainqueurs des huitième
- *
- * @return array
- */
-function recupVainqueurHuitieme()
+function recupPlayerById($joueur)
 {
   static $ps = null;
-  $sql = 'SELECT vainqueur FROM tennis_tpi.matches';
-  $sql .= ' WHERE idJoueur1 = vainqueur AND idTour = 2 OR idJoueur2 = vainqueur AND idTour = 2';
+  $sql = 'SELECT * FROM tennis_tpi.joueurs';
+  $sql .= ' WHERE idJoueur = :JOUEUR';
 
   if ($ps == null) {
     $ps = tennis_database()->prepare($sql);
   }
   $answer = false;
   try {
+    $ps->bindParam(':JOUEUR', $joueur, PDO::PARAM_INT);
 
     if ($ps->execute())
-      $answer = $ps->fetchAll(PDO::FETCH_ASSOC);
+      $answer = $ps->fetch(PDO::FETCH_ASSOC);
   } catch (PDOException $e) {
     echo $e->getMessage();
   }
 
   return $answer;
+}
+
+
+/**
+ * Rentre les joueurs dans le prochain tour
+ *
+ * @param array $vainqueurs
+ * @return array
+ */
+function prochainTour($vainqueurs)
+{
+  $tableauProchainTour = [];
+  for ($i = 0; $i < count($vainqueurs); $i += 2) {
+    $joueur1 = recupPlayerById($vainqueurs[$i]['vainqueur']);
+    $joueur2 = recupPlayerById($vainqueurs[$i + 1]['vainqueur']);
+    array_push($tableauProchainTour, array($joueur1, $joueur2));
+  }
+  return $tableauProchainTour;
+}
+
+
+/**
+ * Effectue graphiquement les quarts
+ *
+ * @param array $tableauQuart
+ * @param int $idTour
+ * @param array $terrains
+ * @param array $tournois
+ * @param array $categorie
+ * @param int $modal
+ * @return void
+ */
+function quart($tableauQuart, $idTour, $terrains, $tournois, $categorie, $modal)
+{
+  if ($tableauQuart == null || count($tableauQuart) != 4 || $tableauQuart['3']['1'] == null) {
+    echo '
+    <li class="spacer">&nbsp;</li>
+
+                <li class="game game-top winner"> <span></span></li>
+                <li class="game game-spacer">&nbsp;</li>
+                <li class="game game-bottom "> <span></span></li>
+
+                <li class="spacer">&nbsp;</li>
+
+                <li class="game game-top winner"> <span></span></li>
+                <li class="game game-spacer">&nbsp;</li>
+                <li class="game game-bottom "> <span></span></li>
+
+                <li class="spacer">&nbsp;</li>
+
+                <li class="game game-top "> <span></span></li>
+                <li class="game game-spacer">&nbsp;</li>
+                <li class="game game-bottom winner"> <span></span></li>
+
+                <li class="spacer">&nbsp;</li>
+
+                <li class="game game-top "> <span></span></li>
+                <li class="game game-spacer">&nbsp;</li>
+                <li class="game game-bottom winner"> <span></span></li>
+
+                <li class="spacer">&nbsp;</li>
+    ';
+  } else {
+    foreach ($tableauQuart as $matchQuart) {
+      if (empty(verifMatchNotNull(intval($matchQuart['0']['idJoueur']), intval($matchQuart['1']['idJoueur']), $tournois['idTournois'], $idTour))) {
+        insertJoueurMatch($matchQuart['0']['idJoueur'], $matchQuart['1']['idJoueur'], $tournois['idTournois'], $idTour);
+      }
+
+      $idMatch = recupIdMatch($matchQuart['0']['idJoueur'], $matchQuart['1']['idJoueur'], $idTour);
+      echo
+      '<a data-target=#myModal' . $modal . ' data-toggle=modal href=#>' .
+        '<li class="game game-top winner">' . $matchQuart['0']['nom'] . ' <span>79</span></li>' .
+        '<li class="game game-spacer">&nbsp;</li>' .
+        '<li class="game game-bottom">' . $matchQuart['1']['nom'] . '<span>48</span></li>' .
+        '</a>' .
+        '<li class=spacer>&nbsp;</li>' .
+        '<div class="modal fade" id="myModal' . $modal . '" role="dialog">' .
+        '<div class="modal-dialog">' .
+        '<div class="modal-content">' .
+        '<div class="modal-header">' .
+        '<h4 class="modal-title">' . $matchQuart['0']['prenom'] . ' ' . $matchQuart['0']['nom'] . ' vs ' . $matchQuart['1']['prenom'] . ' ' . $matchQuart['1']['nom'] . '</h4>' .
+        '<button type="button" class="close" data-dismiss="modal">&times;</button>' .
+        '</div>' .
+        '<form action method="POST">' .
+        '<div class="modal-body">' .
+        '<input  type="text" name="joueur1" style="visibility:hidden" value="' . $matchQuart['0']['idJoueur'] . '">' .
+        '<input  type="text" name="joueur2" style="visibility:hidden" value="' . $matchQuart['1']['idJoueur'] . '">' .
+        '<input  type="text" name="idMatch" style="visibility:hidden" value="' . $idMatch['idMatch'] . '">' .
+        '<div class="form-group">' .
+        '<label for="exampleSelect1">Choix Terrain</label>' .
+        '<select class="form-control" name="terrains">';
+      foreach ($terrains as $unTerrain) {
+        echo "<option value=" . $unTerrain['idTerrain'] . ">" . $unTerrain['nom'] . " - " . $unTerrain['lieu'] . "</option>";
+      }
+      echo '</select>' .
+        '</div>' .
+        '<div class="form-group">' .
+        '<label for="formGroupExampleInput2">Date du match</label>' .
+        '<input class="form-control" type="date" name="dateMatch" required " >' .
+        '</div>' .
+        '<div class"form-group">' .
+        '<label for="formGroupExampleInput2">Heure du match</label>' .
+        '<input class="form-control" type="time" name="heureMatch" required>' .
+        '</div>';
+      if ($categorie['nbSets'] == 2) {
+        if ($categorie['jeuDecisif']) {
+          echo '<div class"form-group">' .
+            '<label for="formGroupExampleInput2">1er set</label>' .
+            '<input  type="number" name="score1" required min="0" max="7"><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+            '</div>' .
+            '<div class"form-group">' .
+            '<label for="formGroupExampleInput2">2e set</label>' .
+            '<input  type="number" name="score1" required min="0" max="7"><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+            '</div>' .
+            '<div class"form-group">' .
+            '<label for="formGroupExampleInput2">3e set</label>' .
+            '<input  type="number" name="score1" required min="0" max="7"><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+            '</div>';
+        } else {
+          echo '<div class"form-group">' .
+            '<label for="formGroupExampleInput2">1er set</label>' .
+            '<input  type="number" name="score1" required min="0" ><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+            '</div>' .
+            '<div class"form-group">' .
+            '<label for="formGroupExampleInput2">2e set</label>' .
+            '<input  type="number" name="score1" required min="0" ><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+            '</div>' .
+            '<div class"form-group">' .
+            '<label for="formGroupExampleInput2">3e set</label>' .
+            '<input  type="number" name="score1" required min="0" ><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+            '</div>';
+        }
+      } else {
+        if ($categorie['jeuDecisif']) {
+          echo '<div class"form-group">' .
+            '<label for="formGroupExampleInput2">1er set</label>' .
+            '<input  type="number" name="score1" required min="0" max="7"><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+            '</div>' .
+            '<div class"form-group">' .
+            '<label for="formGroupExampleInput2">2e set</label>' .
+            '<input  type="number" name="score1" required min="0" max="7"><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+            '</div>' .
+            '<div class"form-group">' .
+            '<label for="formGroupExampleInput2">3e set</label>' .
+            '<input  type="number" name="score1" required min="0" max="7"><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+            '</div>' .
+            '<div class"form-group">' .
+            '<label for="formGroupExampleInput2">4e set</label>' .
+            '<input  type="number" name="score1" required min="0" max="7"><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+            '</div>' .
+            '<div class"form-group">' .
+            '<label for="formGroupExampleInput2">5e set</label>' .
+            '<input  type="number" name="score1" required min="0" max="7"><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+            '</div>';
+        } else {
+          echo '<div class"form-group">' .
+            '<label for="formGroupExampleInput2">1er set</label>' .
+            '<input  type="number" name="score1" required min="0" ><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+            '</div>' .
+            '<div class"form-group">' .
+            '<label for="formGroupExampleInput2">2e set</label>' .
+            '<input  type="number" name="score1" required min="0" ><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+            '</div>' .
+            '<div class"form-group">' .
+            '<label for="formGroupExampleInput2">3e set</label>' .
+            '<input  type="number" name="score1" required min="0" ><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+            '</div>' .
+            '<div class"form-group">' .
+            '<label for="formGroupExampleInput2">4e set</label>' .
+            '<input  type="number" name="score1" required min="0" ><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+            '</div>' .
+            '<div class"form-group">' .
+            '<label for="formGroupExampleInput2">5e set</label>' .
+            '<input  type="number" name="score1" required min="0" ><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+            '</div>';
+        }
+      }
+      echo '</div>' .
+        '<div class="modal-footer">' .
+        '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' .
+        '<input class="btn btn-primary" type="submit" name="ajouter" value="Ajouter">' .
+        '</form>' .
+        '</div>' .
+        '</div>' .
+
+        '</div>' .
+        '</div>';
+      $modal++;
+    }
+  }
+}
+
+
+
+
+
+/**
+ * Effectue graphiquement les demis
+ *
+ * @param array $tableauDemi
+ * @param int $idTour
+ * @param array $terrains
+ * @param array $tournois
+ * @param array $categorie
+ * @param int $modal
+ * @return void
+ */
+function demi($tableauDemi, $idTour, $terrains, $tournois, $categorie, $modal)
+{
+  if ($tableauDemi == null || count($tableauDemi) != 2 || $tableauDemi['1']['1'] == null) {
+    echo '
+      <li class="spacer">&nbsp;</li>
+  
+                  <li class="game game-top winner"> <span></span></li>
+                  <li class="game game-spacer">&nbsp;</li>
+                  <li class="game game-bottom "> <span></span></li>
+  
+                  <li class="spacer">&nbsp;</li>
+  
+                  <li class="game game-top winner"> <span></span></li>
+                  <li class="game game-spacer">&nbsp;</li>
+                  <li class="game game-bottom "> <span></span></li>
+  
+                  <li class="spacer">&nbsp;</li>
+  
+                  <li class="game game-top "> <span></span></li>
+                  <li class="game game-spacer">&nbsp;</li>
+                  <li class="game game-bottom winner"> <span></span></li>
+  
+                  <li class="spacer">&nbsp;</li>
+  
+                  <li class="game game-top "> <span></span></li>
+                  <li class="game game-spacer">&nbsp;</li>
+                  <li class="game game-bottom winner"> <span></span></li>
+  
+                  <li class="spacer">&nbsp;</li>
+      ';
+  } else {
+    foreach ($tableauDemi as $matchDemi) {
+      if (empty(verifMatchNotNull(intval($matchDemi['0']['idJoueur']), intval($matchDemi['1']['idJoueur']), $tournois['idTournois'], $idTour))) {
+        insertJoueurMatch($matchDemi['0']['idJoueur'], $matchDemi['1']['idJoueur'], $tournois['idTournois'], $idTour);
+      }
+
+      $idMatch = recupIdMatch($matchDemi['0']['idJoueur'], $matchDemi['1']['idJoueur'], $idTour);
+      echo
+      '<a data-target=#myModal' . $modal . ' data-toggle=modal href=#>' .
+        '<li class="game game-top winner">' . $matchDemi['0']['nom'] . ' <span>79</span></li>' .
+        '<li class="game game-spacer">&nbsp;</li>' .
+        '<li class="game game-bottom">' . $matchDemi['1']['nom'] . '<span>48</span></li>' .
+        '</a>' .
+        '<li class=spacer>&nbsp;</li>' .
+        '<div class="modal fade" id="myModal' . $modal . '" role="dialog">' .
+        '<div class="modal-dialog">' .
+        '<div class="modal-content">' .
+        '<div class="modal-header">' .
+        '<h4 class="modal-title">' . $matchDemi['0']['prenom'] . ' ' . $matchDemi['0']['nom'] . ' vs ' . $matchDemi['1']['prenom'] . ' ' . $matchDemi['1']['nom'] . '</h4>' .
+        '<button type="button" class="close" data-dismiss="modal">&times;</button>' .
+        '</div>' .
+        '<form action method="POST">' .
+        '<div class="modal-body">' .
+        '<input  type="text" name="joueur1" style="visibility:hidden" value="' . $matchDemi['0']['idJoueur'] . '">' .
+        '<input  type="text" name="joueur2" style="visibility:hidden" value="' . $matchDemi['1']['idJoueur'] . '">' .
+        '<input  type="text" name="idMatch" style="visibility:hidden" value="' . $idMatch['idMatch'] . '">' .
+        '<div class="form-group">' .
+        '<label for="exampleSelect1">Choix Terrain</label>' .
+        '<select class="form-control" name="terrains">';
+      foreach ($terrains as $unTerrain) {
+        echo "<option value=" . $unTerrain['idTerrain'] . ">" . $unTerrain['nom'] . " - " . $unTerrain['lieu'] . "</option>";
+      }
+      echo '</select>' .
+        '</div>' .
+        '<div class="form-group">' .
+        '<label for="formGroupExampleInput2">Date du match</label>' .
+        '<input class="form-control" type="date" name="dateMatch" required " >' .
+        '</div>' .
+        '<div class"form-group">' .
+        '<label for="formGroupExampleInput2">Heure du match</label>' .
+        '<input class="form-control" type="time" name="heureMatch" required>' .
+        '</div>';
+      if ($categorie['nbSets'] == 2) {
+        if ($categorie['jeuDecisif']) {
+          echo '<div class"form-group">' .
+            '<label for="formGroupExampleInput2">1er set</label>' .
+            '<input  type="number" name="score1" required min="0" max="7"><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+            '</div>' .
+            '<div class"form-group">' .
+            '<label for="formGroupExampleInput2">2e set</label>' .
+            '<input  type="number" name="score1" required min="0" max="7"><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+            '</div>' .
+            '<div class"form-group">' .
+            '<label for="formGroupExampleInput2">3e set</label>' .
+            '<input  type="number" name="score1" required min="0" max="7"><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+            '</div>';
+        } else {
+          echo '<div class"form-group">' .
+            '<label for="formGroupExampleInput2">1er set</label>' .
+            '<input  type="number" name="score1" required min="0" ><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+            '</div>' .
+            '<div class"form-group">' .
+            '<label for="formGroupExampleInput2">2e set</label>' .
+            '<input  type="number" name="score1" required min="0" ><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+            '</div>' .
+            '<div class"form-group">' .
+            '<label for="formGroupExampleInput2">3e set</label>' .
+            '<input  type="number" name="score1" required min="0" ><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+            '</div>';
+        }
+      } else {
+        if ($categorie['jeuDecisif']) {
+          echo '<div class"form-group">' .
+            '<label for="formGroupExampleInput2">1er set</label>' .
+            '<input  type="number" name="score1" required min="0" max="7"><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+            '</div>' .
+            '<div class"form-group">' .
+            '<label for="formGroupExampleInput2">2e set</label>' .
+            '<input  type="number" name="score1" required min="0" max="7"><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+            '</div>' .
+            '<div class"form-group">' .
+            '<label for="formGroupExampleInput2">3e set</label>' .
+            '<input  type="number" name="score1" required min="0" max="7"><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+            '</div>' .
+            '<div class"form-group">' .
+            '<label for="formGroupExampleInput2">4e set</label>' .
+            '<input  type="number" name="score1" required min="0" max="7"><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+            '</div>' .
+            '<div class"form-group">' .
+            '<label for="formGroupExampleInput2">5e set</label>' .
+            '<input  type="number" name="score1" required min="0" max="7"><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+            '</div>';
+        } else {
+          echo '<div class"form-group">' .
+            '<label for="formGroupExampleInput2">1er set</label>' .
+            '<input  type="number" name="score1" required min="0" ><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+            '</div>' .
+            '<div class"form-group">' .
+            '<label for="formGroupExampleInput2">2e set</label>' .
+            '<input  type="number" name="score1" required min="0" ><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+            '</div>' .
+            '<div class"form-group">' .
+            '<label for="formGroupExampleInput2">3e set</label>' .
+            '<input  type="number" name="score1" required min="0" ><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+            '</div>' .
+            '<div class"form-group">' .
+            '<label for="formGroupExampleInput2">4e set</label>' .
+            '<input  type="number" name="score1" required min="0" ><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+            '</div>' .
+            '<div class"form-group">' .
+            '<label for="formGroupExampleInput2">5e set</label>' .
+            '<input  type="number" name="score1" required min="0" ><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+            '</div>';
+        }
+      }
+      echo '</div>' .
+        '<div class="modal-footer">' .
+        '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' .
+        '<input class="btn btn-primary" type="submit" name="ajouter" value="Ajouter">' .
+        '</form>' .
+        '</div>' .
+        '</div>' .
+
+        '</div>' .
+        '</div>';
+      $modal++;
+    }
+  }
+}
+
+
+/**
+ * Effectue graphiquement la final
+ *
+ * @param array $tableauFinal
+ * @param int $idTour
+ * @param array $terrains
+ * @param array $tournois
+ * @param array $categorie
+ * @param int $modal
+ * @return void
+ */
+function finale($tableauFinal, $idTour, $terrains, $tournois, $categorie, $modal)
+{
+  foreach ($tableauFinal as $matchFinal) {
+    if (empty(verifMatchNotNull(intval($matchFinal['0']['idJoueur']), intval($matchFinal['1']['idJoueur']), $tournois['idTournois'], $idTour))) {
+      insertJoueurMatch($matchFinal['0']['idJoueur'], $matchFinal['1']['idJoueur'], $tournois['idTournois'], $idTour);
+    }
+
+    $idMatch = recupIdMatch($matchFinal['0']['idJoueur'], $matchFinal['1']['idJoueur'], $idTour);
+    echo
+    '<a data-target=#myModal' . $modal . ' data-toggle=modal href=#>' .
+      '<li class="game game-top winner">' . $matchFinal['0']['nom'] . ' <span>79</span></li>' .
+      '<li class="game game-spacer">&nbsp;</li>' .
+      '<li class="game game-bottom">' . $matchFinal['1']['nom'] . '<span>48</span></li>' .
+      '</a>' .
+      '<li class=spacer>&nbsp;</li>' .
+      '<div class="modal fade" id="myModal' . $modal . '" role="dialog">' .
+      '<div class="modal-dialog">' .
+      '<div class="modal-content">' .
+      '<div class="modal-header">' .
+      '<h4 class="modal-title">' . $matchFinal['0']['prenom'] . ' ' . $matchFinal['0']['nom'] . ' vs ' . $matchFinal['1']['prenom'] . ' ' . $matchFinal['1']['nom'] . '</h4>' .
+      '<button type="button" class="close" data-dismiss="modal">&times;</button>' .
+      '</div>' .
+      '<form action method="POST">' .
+      '<div class="modal-body">' .
+      '<input  type="text" name="joueur1" style="visibility:hidden" value="' . $matchFinal['0']['idJoueur'] . '">' .
+      '<input  type="text" name="joueur2" style="visibility:hidden" value="' . $matchFinal['1']['idJoueur'] . '">' .
+      '<input  type="text" name="idMatch" style="visibility:hidden" value="' . $idMatch['idMatch'] . '">' .
+      '<div class="form-group">' .
+      '<label for="exampleSelect1">Choix Terrain</label>' .
+      '<select class="form-control" name="terrains">';
+    foreach ($terrains as $unTerrain) {
+      echo "<option value=" . $unTerrain['idTerrain'] . ">" . $unTerrain['nom'] . " - " . $unTerrain['lieu'] . "</option>";
+    }
+    echo '</select>' .
+      '</div>' .
+      '<div class="form-group">' .
+      '<label for="formGroupExampleInput2">Date du match</label>' .
+      '<input class="form-control" type="date" name="dateMatch" required " >' .
+      '</div>' .
+      '<div class"form-group">' .
+      '<label for="formGroupExampleInput2">Heure du match</label>' .
+      '<input class="form-control" type="time" name="heureMatch" required>' .
+      '</div>';
+    if ($categorie['nbSets'] == 2) {
+      if ($categorie['jeuDecisif']) {
+        echo '<div class"form-group">' .
+          '<label for="formGroupExampleInput2">1er set</label>' .
+          '<input  type="number" name="score1" required min="0" max="7"><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+          '</div>' .
+          '<div class"form-group">' .
+          '<label for="formGroupExampleInput2">2e set</label>' .
+          '<input  type="number" name="score1" required min="0" max="7"><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+          '</div>' .
+          '<div class"form-group">' .
+          '<label for="formGroupExampleInput2">3e set</label>' .
+          '<input  type="number" name="score1" required min="0" max="7"><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+          '</div>';
+      } else {
+        echo '<div class"form-group">' .
+          '<label for="formGroupExampleInput2">1er set</label>' .
+          '<input  type="number" name="score1" required min="0" ><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+          '</div>' .
+          '<div class"form-group">' .
+          '<label for="formGroupExampleInput2">2e set</label>' .
+          '<input  type="number" name="score1" required min="0" ><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+          '</div>' .
+          '<div class"form-group">' .
+          '<label for="formGroupExampleInput2">3e set</label>' .
+          '<input  type="number" name="score1" required min="0" ><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+          '</div>';
+      }
+    } else {
+      if ($categorie['jeuDecisif']) {
+        echo '<div class"form-group">' .
+          '<label for="formGroupExampleInput2">1er set</label>' .
+          '<input  type="number" name="score1" required min="0" max="7"><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+          '</div>' .
+          '<div class"form-group">' .
+          '<label for="formGroupExampleInput2">2e set</label>' .
+          '<input  type="number" name="score1" required min="0" max="7"><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+          '</div>' .
+          '<div class"form-group">' .
+          '<label for="formGroupExampleInput2">3e set</label>' .
+          '<input  type="number" name="score1" required min="0" max="7"><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+          '</div>' .
+          '<div class"form-group">' .
+          '<label for="formGroupExampleInput2">4e set</label>' .
+          '<input  type="number" name="score1" required min="0" max="7"><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+          '</div>' .
+          '<div class"form-group">' .
+          '<label for="formGroupExampleInput2">5e set</label>' .
+          '<input  type="number" name="score1" required min="0" max="7"><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+          '</div>';
+      } else {
+        echo '<div class"form-group">' .
+          '<label for="formGroupExampleInput2">1er set</label>' .
+          '<input  type="number" name="score1" required min="0" ><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+          '</div>' .
+          '<div class"form-group">' .
+          '<label for="formGroupExampleInput2">2e set</label>' .
+          '<input  type="number" name="score1" required min="0" ><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+          '</div>' .
+          '<div class"form-group">' .
+          '<label for="formGroupExampleInput2">3e set</label>' .
+          '<input  type="number" name="score1" required min="0" ><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+          '</div>' .
+          '<div class"form-group">' .
+          '<label for="formGroupExampleInput2">4e set</label>' .
+          '<input  type="number" name="score1" required min="0" ><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+          '</div>' .
+          '<div class"form-group">' .
+          '<label for="formGroupExampleInput2">5e set</label>' .
+          '<input  type="number" name="score1" required min="0" ><span> - </span><input  type="number" name="score2" min="0" max="7" required>' .
+          '</div>';
+      }
+    }
+    echo '</div>' .
+      '<div class="modal-footer">' .
+      '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' .
+      '<input class="btn btn-primary" type="submit" name="ajouter" value="Ajouter">' .
+      '</form>' .
+      '</div>' .
+      '</div>' .
+
+      '</div>' .
+      '</div>';
+    $modal++;
+  }
 }

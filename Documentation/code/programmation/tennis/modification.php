@@ -135,7 +135,7 @@ if (isset($_POST['modification'])) {
                         </fieldset>
                         <div class="form-group">
                             <label for="formGroupExampleInput2">Dotation</label>
-                            <input class="form-control" type="dotation"  name="dotation" value=<?= $categorie['dotation']?>>
+                            <input class="form-control" type="dotation" value=<?= $categorie['dotation']?> name="dotation">
                         </div>
                         <div class="form-group">
                             <label for="exampleSelect1">Nombre de joueurs</label>
