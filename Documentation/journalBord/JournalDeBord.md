@@ -489,3 +489,6 @@ unset($joueursImpair[array_key_last($joueursImpair)])
 ## Date: 19.05.2021
 ### Heure: 07:30
 > Je termine ma documentation
+
+### Heure: 15:31
+> Continuation doc utilisateur
