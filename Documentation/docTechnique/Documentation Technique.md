@@ -27,11 +27,6 @@
   - [6.2. Description des fonctionnalités](#62-description-des-fonctionnalités)
   - [6.3. Mesure de sécurité](#63-mesure-de-sécurité)
 - [7. Analyse Organique](#7-analyse-organique)
-    - [7.0.1. Page index](#701-page-index)
-    - [7.0.2. Page Creation](#702-page-creation)
-    - [7.0.3. Page Modification](#703-page-modification)
-    - [7.0.4. Page Tournois](#704-page-tournois)
-    - [7.0.5. Page Joueur](#705-page-joueur)
   - [7.1. Technologies utilisées](#71-technologies-utilisées)
   - [7.2. Environnement](#72-environnement)
   - [7.3. Description de la base de données](#73-description-de-la-base-de-données)
@@ -41,6 +36,8 @@
   - [8.2. Plan de test](#82-plan-de-test)
   - [8.3. Rapport de test](#83-rapport-de-test)
 - [9. Conclusion](#9-conclusion)
+  - [Difficultés rencontrées](#difficultés-rencontrées)
+  - [Amélioration](#amélioration)
 - [10. Bibliographie](#10-bibliographie)
 - [11. Annexes](#11-annexes)
   - [11.1. Planning Prévisionnel](#111-planning-prévisionnel)
@@ -238,7 +235,7 @@
 | Nom         | 6: Planifier les matches                                     |
 | ----------- | ------------------------------------------------------------ |
 | Description | En tant qu'utilisateur je peux planifier la date des matches |
-| Priorité    | B: Bloquant X                                               |
+| Priorité    | I: Important +                                               |
 
 | Nom         | 7: Rechercher un joueur                                                                         |
 | ----------- | ----------------------------------------------------------------------------------------------- |
@@ -289,7 +286,7 @@
 
 > Quand un utilisateur appuie sur le bouton supprimé, le tournois est supprimé.
 
-> Un bouton copier permet de copier le tournois sur lequel l'utilisateur a cliqué et de le recréer 
+> Un bouton copier permet de 
 
 > Lorsque l'utilisateur clique sur le bouton joueurs d'un tournois dans la page index, il sera redirigé sur la page joueurs.php ou un tableau s'affichera avec les joueurs du tounois. Il pourra aussi faire des recherches de joueurs par le nom ou le prénom
 
@@ -300,10 +297,9 @@
 > Sur la page modification.php l'utilisateur peut modifier un ou plusieurs des champs du formulaire. Une fois qu'il appuie sur le bouton modifier, les données seront envoyées dans la base de données et vont remplacer les anciennes données. L'utilisateur sera redirigé sur la page index.php.
 > Lorsque l'utilisateur appuie sur le bouton supprimé, les données du tournois vont être envoyées sur une page supprimer.php afin de supprimer les données de la base de données. L'utilisateur ne change pas de page.
 > Lorsque l'utilisateur clique sur le bouton voir, il sera redirigé sur la page tournois.php. Sur cette page l'utilisateur pourra entrer les données des matches comme la date de la rencontre et les points des matches.
+> Il pourra aussi télécharger la fiche du matche.
 
 > Lorsque l'utilisateur clique sur le bouton copier d'un tournois, un nouveau tournois sera créé avec les mêmes informations que le tournois dont l'utilisateur à cliqué sur le bouton copier
-
-> Lorsque l'utilisateur clique sur le bouton joueurs d'un tournois, il sera emener sur la page joueurs.php ou sera affiché tous les joueurs du tournois dans un tableau, sur cette page l'utilisateur peut effectuer des recherches sur les différents joueurs du tournois. La recherche permet de rechercher les joueurs par leur nom ou prénom
 
 
 ### 6.3. Mesure de sécurité
@@ -311,444 +307,7 @@
 
 
 ## 7. Analyse Organique
-#### 7.0.1. Page index
-> Sur la page index il y a un lien qui permet de revenir a la page index. Le lien ce trouve sur le mot "Tennis" qui est le titre de la page. Dans le lien la méthode de redirection est utilisé.
 
-> Sur la page index ce trouve également un bouton créer qui redirige l'utilisateur sur la page creation.php.
-> Lorsque l'utilisateur appuie sur le bouton, on vérifie que le bouton a été set puis on utilise une fonction avec un paramètre, qui est le chemin d'acces, qui permet de redirectionner l'utilisateur sur la page creation.
-```php
-if (isset($_POST['creer'])) {
-    redirection($cheminCreer);
-}
-```
-```php
-function redirection($chemin)
-{
-  header("Location: $chemin");
-  exit();
-}
-```
-
-> L'utilisateur peut chercher les tournois créés grâce à une barre de recherche ainsi que d'un bouton.
-> A COMPLETER 
-
-> Lorsque l'utilisateur supprime un tournois, l'id du tournois et l'id de la catégorie sont envoyés en get sur une page supprimé ou l'utilisateur n'a pas accès. Sur cette page les id sont d'abord filtés puis entrés dans une fonction afin de récupérer les données du tournois créé et de la catégorie. Après que toutes les données aies été récupérer, deux fonctions vont êtres utilisées pour, d'abord, supprimer les données du tournois puis ensuite supprimer les données de la catégorie. Les fonctions ont pour paramètre l'id du tournois et l'id de la catégorie.
-> Pour finir la page supprimer.php va se rediriger sur la page index avec la même fonction de redirection
-```php
-$cheminSupprimer?idTournois=" . (int)$tournois["idTournois"] . "&idCategorie=" . (int)$tournois["idCategorie"]
-```
-```php
-$idTournois = filter_input(INPUT_GET, 'idTournois', FILTER_VALIDATE_INT);
-$idCategorie = filter_input(INPUT_GET, 'idCategorie', FILTER_VALIDATE_INT);
-```
-```php
-deleteTournois($idTournois);
-deleteCategorie($idCategorie);
-```
-```php
-function deleteTournois($idTournois)
-{
-  static $ps = null;
-  $sql = "DELETE FROM `tennis_tpi`.`tournois` WHERE (`idTournois` = :ID_TOURNOIS);";
-  if ($ps == null) {
-    $ps = tennis_database()->prepare($sql);
-  }
-  $answer = false;
-  try {
-    $ps->bindParam(':ID_TOURNOIS', intval($idTournois), PDO::PARAM_INT);
-    $ps->execute();
-    $answer = ($ps->rowCount() > 0);
-  } catch (PDOException $e) {
-    echo $e->getMessage();
-  }
-  return $answer;
-}
-```
-```php
-function deleteCategorie($idCategorie)
-{
-  static $ps = null;
-  $sql = "DELETE FROM `tennis_tpi`.`categories` WHERE (`idCategorie` = :ID_CATEGORIE);";
-  if ($ps == null) {
-    $ps = tennis_database()->prepare($sql);
-  }
-  $answer = false;
-  try {
-    $ps->bindParam(':ID_CATEGORIE', intval($idCategorie), PDO::PARAM_INT);
-    $ps->execute();
-    $answer = ($ps->rowCount() > 0);
-  } catch (PDOException $e) {
-    echo $e->getMessage();
-  }
-  return $answer;
-}
-```
-```php
-redirection($cheminIndex);
-```
-```php
-function redirection($chemin)
-{
-  header("Location: $chemin");
-  exit();
-}
-```
-> Lorsque l'utilisateur modifie un tournois, on passe en get l'id du tournois sur la page modification.php et on redirige l'utilisateur grâce à un lien sur cette même page.
-```php
-$cheminModification?idTournois=" . (int)$tournois["idTournois"]
-```
-> Quand l'utilisateur accède à la page tournois.php, on passe l'id du tournois en get et on le redirige grace à un lien sur la page tournois.php.
-```php
-$cheminVoir?idTournois=" . (int)$tournois["idTournois"]
-```
-#### 7.0.2. Page Creation
-> Sur la page creation il y a un lien qui permet de revenir a la page index. Le lien ce trouve sur le mot "Tennis" qui est le titre de la page. Dans le lien la méthode de redirection est utilisé.
-```php
-function redirection($chemin)
-{
-  header("Location: $chemin");
-  exit();
-}
-```
-> Lorsque l'utilisateur appuie sur le bouton pour créer le tournois après avoir remplit le formulaire, on vérifie d'abord que le bouton aie été activé puis les données sont filtrées et stockées dans des variables. Après que les données soient filtrées, des méthodes sont utilisées pour inserer les données dans la base de données. Les fonctions ont pour paramètre les variables dont les données ont été stocké précedement. Après avoir inserer les données dans la base de données, l'utilisateur sera redirigé sur la page index à l'aide de la fonction de redirection.
-```php
-if (isset($_POST['creer'])) {
-}
-```
-```php
-$nomTournois = filter_input(INPUT_POST, 'nomTournois', FILTER_SANITIZE_STRING);
-$nomPays = filter_input(INPUT_POST, 'nomPays', FILTER_SANITIZE_STRING);
-$nomVille = filter_input(INPUT_POST, 'nomVille', FILTER_SANITIZE_STRING);
-$dateDebut = filter_input(INPUT_POST, 'dateDebut', FILTER_SANITIZE_STRING);
-$dateFin = filter_input(INPUT_POST, 'dateFin', FILTER_SANITIZE_STRING);
-$genre = filter_input(INPUT_POST, 'genreTournois', FILTER_SANITIZE_STRING);
-$dotation = filter_input(INPUT_POST, 'dotation', FILTER_VALIDATE_INT);
-$nbJoueursFiltre = filter_input(INPUT_POST, 'nbJoueurs', FILTER_SANITIZE_STRING);
-$nbSetsFiltre = filter_input(INPUT_POST, 'nbSets', FILTER_SANITIZE_STRING);
-$jeuDecisif = filter_input(INPUT_POST, 'jeuDecisif', FILTER_SANITIZE_STRING);
-    if ($jeuDecisif != 1)
-    {
-        $jeuDecisif = 0;
-    }
-$surface = filter_input(INPUT_POST, 'surface', FILTER_SANITIZE_STRING);
-$typeTournois = filter_input(INPUT_POST, 'typeTournois', FILTER_SANITIZE_STRING);
-```
-```php
-insertCategorie($genre, $dotation, $surface, $typeTournois, $jeuDecisif, $nbSetsFiltre, $nbJoueursFiltre);
-$idCategorie = recupIdCategorie();
-insertTournois($nomTournois, $nomPays, $nomVille, $dateDebut, $dateFin, $idCategorie["idCategorie"]);
-```
-```php
-function insertCategorie($genre, $dotation, $surface, $typeTournois, $jeuDecisif, $nbSet, $nbParticipant)
-{
-  static $ps = null;
-  $sql = "INSERT INTO `tennis_tpi`.`categories` (`genre`, `dotation`, `idSurface`, `idType`, `jeuDecisif`, `nbSet`, `nbParticipant`) ";
-  $sql .= "VALUES (:GENRE, :DOTATION, :ID_SURFACE, :ID_TYPE, :JEU_DECISIF, :NB_SET, :NB_PARTICIPANT)";
-  if ($ps == null) {
-    $ps = tennis_database()->prepare($sql);
-  }
-  $answer = false;
-  try {
-    $ps->bindParam(':GENRE', $genre, PDO::PARAM_BOOL);
-    $ps->bindParam(':DOTATION', $dotation, PDO::PARAM_INT);
-    $ps->bindParam(':ID_SURFACE', $surface, PDO::PARAM_INT);
-    $ps->bindParam(':ID_TYPE', $typeTournois, PDO::PARAM_INT);
-    $ps->bindParam(':JEU_DECISIF', $jeuDecisif, PDO::PARAM_BOOL);
-    $ps->bindParam(':NB_SET', $nbSet, PDO::PARAM_INT);
-    $ps->bindParam(':NB_PARTICIPANT', $nbParticipant, PDO::PARAM_INT);
-
-    $answer = $ps->execute();
-  } catch (PDOException $e) {
-    echo $e->getMessage();
-  }
-  return $answer;
-}
-```
-```php
-function recupIdCategorie()
-{
-  static $ps = null;
-  $sql = 'SELECT idCategorie ';
-  $sql .= 'FROM tennis_tpi.categories ';
-  $sql .= 'ORDER BY idCategorie ';
-  $sql .= 'DESC LIMIT 1';
-
-  if ($ps == null) {
-    $ps = tennis_database()->prepare($sql);
-  }
-  $answer = false;
-  try {
-    if ($ps->execute())
-      $answer = $ps->fetch(PDO::FETCH_ASSOC);
-  } catch (PDOException $e) {
-    echo $e->getMessage();
-  }
-
-  return $answer;
-}
-```
-```php
-function insertTournois($nom, $pays, $ville, $dateDebut, $dateFin, $idCategorie)
-{
-  static $ps = null;
-  $sql = "INSERT INTO `tennis_tpi`.`tournois` (`nom`, `pays`, `ville`, `dateDebut`, `dateFin`, `idCategorie`) ";
-  $sql .= "VALUES (:NOM, :PAYS, :VILLE, :DATE_DEBUT, :DATE_FIN, :ID_CATEGORIE)";
-  if ($ps == null) {
-    $ps = tennis_database()->prepare($sql);
-  }
-  $answer = false;
-  try {
-    $ps->bindParam(':NOM', $nom, PDO::PARAM_STR);
-    $ps->bindParam(':PAYS', $pays, PDO::PARAM_STR);
-    $ps->bindParam(':VILLE', $ville, PDO::PARAM_STR);
-    $ps->bindParam(':DATE_DEBUT', $dateDebut, PDO::PARAM_STR);
-    $ps->bindParam(':DATE_FIN', $dateFin, PDO::PARAM_STR);
-    $ps->bindParam(':ID_CATEGORIE', intval($idCategorie), PDO::PARAM_INT);
-
-    $answer = $ps->execute();
-  } catch (PDOException $e) {
-    echo $e->getMessage();
-  }
-  return $answer;
-}
-```
-```php
-function redirection($chemin)
-{
-  header("Location: $chemin");
-  exit();
-}
-```
-#### 7.0.3. Page Modification
- > Sur la page modification il y a un lien qui permet de revenir a la page index. Le lien ce trouve sur le mot "Tennis" qui est le titre de la page. Dans le lien la méthode de redirection est utilisé.
-```php
-function redirection($chemin)
-{
-  header("Location: $chemin");
-  exit();
-}
-```
-> Lorsque l'utilisateur appuie sur le bouton pour modifier le tournois après avoir modifier le formulaire, on vérifie d'abord que le bouton aie été activé puis les données sont filtrées et stockées dans des variables. Après que les données soient filtrées, des méthodes sont utilisées pour modifier les données dans la base de données. Les fonctions ont pour paramètre les variables dont les données ont été stocké précedement. Après avoir modifier les données dans la base de données, l'utilisateur sera redirigé sur la page index à l'aide de la fonction de redirection.
-```php
-if (isset($_POST['modifier'])) {
-}
-```
-```php
-//filtrage des inputs
-    $nomTournois = filter_input(INPUT_POST, 'nomTournois', FILTER_SANITIZE_STRING);
-    $nomPays = filter_input(INPUT_POST, 'nomPays', FILTER_SANITIZE_STRING);
-    $nomVille = filter_input(INPUT_POST, 'nomVille', FILTER_SANITIZE_STRING);
-    $dateDebut = filter_input(INPUT_POST, 'dateDebut', FILTER_SANITIZE_STRING);
-    $dateFin = filter_input(INPUT_POST, 'dateFin', FILTER_SANITIZE_STRING);
-    $genre = filter_input(INPUT_POST, 'genreTournois', FILTER_SANITIZE_STRING);
-    $dotation = filter_input(INPUT_POST, 'dotation', FILTER_VALIDATE_INT);
-    $nbJoueursFiltre = filter_input(INPUT_POST, 'nbJoueurs', FILTER_SANITIZE_STRING);
-    $nbSetsFiltre = filter_input(INPUT_POST, 'nbSets', FILTER_SANITIZE_STRING);
-    $jeuDecisif = filter_input(INPUT_POST, 'jeuDecisif', FILTER_SANITIZE_STRING);
-    if ($jeuDecisif != 1)
-    {
-        $jeuDecisif = 0;
-    }
-    $surface = filter_input(INPUT_POST, 'surface', FILTER_SANITIZE_STRING);
-    $typeTournois = filter_input(INPUT_POST, 'typeTournois', FILTER_SANITIZE_STRING);
-```
-```php
-$idCategorie = recupIdCategorie();
-updateCategorie($genre, $dotation, $surface, $typeTournois, $jeuDecisif, $nbSetsFiltre, $nbJoueursFiltre, $idCategorie['idCategorie']);
-updateTournois($nomTournois, $nomPays, $nomVille, $dateDebut, $dateFin, $idCategorie['idCategorie'], $idTournois);
-```
-```php
-function recupIdCategorie()
-{
-  static $ps = null;
-  $sql = 'SELECT idCategorie ';
-  $sql .= 'FROM tennis_tpi.categories ';
-  $sql .= 'ORDER BY idCategorie ';
-  $sql .= 'DESC LIMIT 1';
-
-  if ($ps == null) {
-    $ps = tennis_database()->prepare($sql);
-  }
-  $answer = false;
-  try {
-    if ($ps->execute())
-      $answer = $ps->fetch(PDO::FETCH_ASSOC);
-  } catch (PDOException $e) {
-    echo $e->getMessage();
-  }
-
-  return $answer;
-}
-```
-```php
-function updateCategorie($genre, $dotation, $idSurface, $idType, $jeuDecisif, $nbSet, $nbParticipant, $idCategorie)
-{
-  static $ps = null;
-
-  $sql = "UPDATE `tennis_tpi`.`categories` SET ";
-  $sql .= "`genre` = :GENRE, ";
-  $sql .= "`dotation` = :DOTATION, ";
-  $sql .= "`idSurface` = :ID_SURFACE, ";
-  $sql .= "`idType` = :ID_TYPE, ";
-  $sql .= "`jeuDecisif` = :JEU_DECISIF, ";
-  $sql .= "`nbSet` = :NB_SET, ";
-  $sql .= "`nbParticipant` = :NB_PARTICIPANT ";
-  $sql .= "WHERE (`idCategorie` = :ID_CATEGORIE)";
-  if ($ps == null) {
-    $ps = tennis_database()->prepare($sql);
-  }
-  $answer = false;
-  try {
-    $ps->bindParam(':GENRE', intval($genre), PDO::PARAM_INT);
-    $ps->bindParam(':DOTATION', intval($dotation), PDO::PARAM_INT);
-    $ps->bindParam(':ID_SURFACE', intval($idSurface), PDO::PARAM_INT);
-    $ps->bindParam(':ID_TYPE', intval($idType), PDO::PARAM_INT);
-    $ps->bindParam(':JEU_DECISIF', intval($jeuDecisif), PDO::PARAM_INT);
-    $ps->bindParam(':NB_SET', intval($nbSet), PDO::PARAM_INT);
-    $ps->bindParam(':NB_PARTICIPANT', intval($nbParticipant), PDO::PARAM_INT);
-    $ps->bindParam(':ID_CATEGORIE', intval($idCategorie), PDO::PARAM_INT);
-    $ps->execute();
-    $answer = ($ps->rowCount() > 0);
-  } catch (PDOException $e) {
-    echo $e->getMessage();
-  }
-  return $answer;
-}
-```
-```php
-function updateTournois($nom, $pays, $ville, $dateDebut, $dateFin, $idCategorie, $idTournois)
-{
-  static $ps = null;
-
-  $sql = "UPDATE `tennis_tpi`.`tournois` SET ";
-  $sql .= "`nom` = :NOM, ";
-  $sql .= "`pays` = :PAYS, ";
-  $sql .= "`ville` = :VILLE, ";
-  $sql .= "`dateDebut` = :DATE_DEBUT, ";
-  $sql .= "`dateFin` = :DATE_FIN, ";
-  $sql .= "`idCategorie` = :ID_CATEGORIE ";
-  $sql .= "WHERE (`idTournois` = :ID_TOURNOIS)";
-  if ($ps == null) {
-    $ps = tennis_database()->prepare($sql);
-  }
-  $answer = false;
-  try {
-    $ps->bindParam(':NOM', $nom, PDO::PARAM_STR);
-    $ps->bindParam(':PAYS', $pays, PDO::PARAM_STR);
-    $ps->bindParam(':VILLE', $ville, PDO::PARAM_STR);
-    $ps->bindParam(':DATE_DEBUT', $dateDebut, PDO::PARAM_STR);
-    $ps->bindParam(':DATE_FIN', $dateFin, PDO::PARAM_STR);
-    $ps->bindParam(':ID_CATEGORIE', intval($idCategorie), PDO::PARAM_INT);
-    $ps->bindParam(':ID_TOURNOIS', intval($idTournois), PDO::PARAM_INT);
-    $ps->execute();
-    $answer = ($ps->rowCount() > 0);
-  } catch (PDOException $e) {
-    echo $e->getMessage();
-  }
-  return $answer;
-}
-```
-```php
-function redirection($chemin)
-{
-  header("Location: $chemin");
-  exit();
-}
-```
-#### 7.0.4. Page Tournois
- > Sur la page tournois il y a un lien qui permet de revenir a la page index. Le lien ce trouve sur le mot "Tennis" qui est le titre de la page. Dans le lien la méthode de redirection est utilisé.
-```php
-function redirection($chemin)
-{
-  header("Location: $chemin");
-  exit();
-}
-```
-> Pour chaque match, l'utiisateur peut entrer la date du match, l'heure du match, sur quel terrain ce déroule le match et le résultat des sets.
-```php
-//vérifie que le bouton est set
-if (isset($_POST['ajouter'])) {
-    //filtrage des données
-    
-    $choixTerrain = filter_input(INPUT_POST, 'terrains', FILTER_SANITIZE_STRING);
-    $dateMatch = filter_input(INPUT_POST, 'dateMatch', FILTER_SANITIZE_STRING);
-    $heureMatch = filter_input(INPUT_POST, 'heureMatch', FILTER_SANITIZE_STRING);
-    $idMatch = filter_input(INPUT_POST, 'idMatch', FILTER_VALIDATE_INT);
-    $joueur1 = filter_input(INPUT_POST, 'joueur1', FILTER_VALIDATE_INT);
-    $joueur2 = filter_input(INPUT_POST, 'joueur2', FILTER_VALIDATE_INT);
-    insertMatch(intval($choixTerrain), $dateMatch, $heureMatch, intval($idMatch), intval($joueur1));
-}
-```
-> Ce morceau de code récupère les données entrée par l'utilisateur et les envoie dans la base de donnée
-> La fonction insertMatch permet d'inserer les données dans la table matches
-```php
-function insertMatch($choixTerrain, $dateMatch, $heureMatch, $idMatch, $vainqueur)
-{
-  static $ps = null;
-  $sql = "UPDATE `tennis_tpi`.`matches` SET ";
-  $sql .= "`idTerrain` = :ID_TERRAIN , ";
-  $sql .= "`date` = :DATE_MATCH , ";
-  $sql .= "`heure` = :HEURE_MATCH , ";
-  $sql .= "`vainqueur` = :VAINQUEUR ";
-  $sql .= "WHERE (`idMatch` = :ID_MATCH)";
-  if ($ps == null) {
-    $ps = tennis_database()->prepare($sql);
-  }
-  $answer = false;
-  try {
-    $ps->bindParam(':ID_TERRAIN', $choixTerrain, PDO::PARAM_INT);
-    $ps->bindParam(':DATE_MATCH', $dateMatch, PDO::PARAM_STR);
-    $ps->bindParam(':HEURE_MATCH', $heureMatch, PDO::PARAM_STR);
-    $ps->bindParam(':ID_MATCH', $idMatch, PDO::PARAM_INT);
-    $ps->bindParam(':VAINQUEUR', $vainqueur, PDO::PARAM_INT);
-
-    $answer = $ps->execute();
-  } catch (PDOException $e) {
-    echo $e->getMessage();
-  }
-  return $answer;
-}
-```
-
-#### 7.0.5. Page Joueur
-> Sur la page tournois il y a un lien qui permet de revenir a la page index. Le lien ce trouve sur le mot "Tennis" qui est le titre de la page. Dans le lien la méthode de redirection est utilisé.
- ```php
- function redirection($chemin)
-{
-  header("Location: $chemin");
-  exit();
-}
-```
-> Lorsque l'utilisateur effectue une recherche, une fonction est appelé
-> La fonction permet de rechercher les joueurs par leur nom ou prénom depuis le mot entré par l'utilisateur.
- ```php
-$joueurs = getPlayerByParameter($categorie['genre'], $categorie['nbParticipants']);
-
-
-function getPlayerByParameter($genre, $nbJoueurs)
-{
-  static $ps = null;
-  $sql = 'SELECT idJoueur, prenom, nom, dateNaissance, nationalite, genre, classementATP FROM tennis_tpi.joueurs';
-  $sql .= ' WHERE genre = :GENRE';
-  $sql .= ' LIMIT :NB_JOUEURS';
-
-  if ($ps == null) {
-    $ps = tennis_database()->prepare($sql);
-  }
-  $answer = false;
-  try {
-    $ps->bindParam(':GENRE', $genre, PDO::PARAM_INT);
-    $ps->bindParam(':NB_JOUEURS', $nbJoueurs, PDO::PARAM_INT);
-
-    if ($ps->execute())
-      $answer = $ps->fetchAll(PDO::FETCH_ASSOC);
-  } catch (PDOException $e) {
-    echo $e->getMessage();
-  }
-
-  return $answer;
-}
-```
 
 ### 7.1. Technologies utilisées
 > Les technologies qui sont utilisé dans ce projet sont:
@@ -768,6 +327,16 @@ function getPlayerByParameter($genre, $nbJoueurs)
 > Apache2 est un serveur qui permet de faire le lien entre la base de donnée et le site web
 > * wsl
 > Wsl est une couche de compatibilité permettant d'executer des executable Linux sur Windows
+
+> Pour ce qui est de la template du site et du design, plusieurs outils.
+> * Bootstrap
+> Framework CSS permettant de dévlopper responsive. Bootstrap aide aussi au dévloppement du design en ayant déjà des composants préfait. J'ai donc utilisé quelque composant pour la création de mon site (pour les fomrulaire, principalement).
+> * Start Bootstrap
+> Template bootstrap gratuite. J'ai donc choisit une template pour mon site sur ce site.
+> * CodePen
+> Site web sur lequel la communauté peut partager du code HTML, CSS et JavaScript. Sur ce site, j'ai trouvé la template de mon tournoi dont le code HTML et CSS ont été partagé par un utilisateur.
+
+
 ### 7.2. Environnement
 
 > Pour la plupart des technologies utilisé, j'utilise Visual Studio Code.
@@ -780,7 +349,7 @@ function getPlayerByParameter($genre, $nbJoueurs)
 La base de données compte 12 tables dont deux tables qui contiennent juste les id deux deux autres tables.
 Les tables sont :
 > * matches
-> Contient les informations des matches, lié avec la table tournois, tours, scores, joue, terrains
+> Contient les informations des matches, lié avec la table tournois, tours, scores, joueur, terrains
 > * tournois
 > Contient les informations du tournois comme son nom ou encore l'endroit ou il se trouve. Lié avec la table matches et categories.
 > * categories
@@ -796,53 +365,79 @@ Les tables sont :
 > * scores
 > Contient les id de la tables matches et la table sets. Lié avec la table sets et matches.
 > * sets
-> Contient le score d'un set. Lié avec la table scores et la table jeu_decisif
-> * jeu_decisif
-> Contient les points du jeu decisif. Lié avec la table set
-> * joue
-> Contient les id de la table matches et joueurs. Lié avec la table matches et joueurs.
+> Contient le score d'un set. Lié avec la table scores 
 > * joueurs
-> Contient les informations des joueurs du tournois. Lié avec la table joue.
+> Contient les informations des joueurs du tournois. Lié avec la table matches.
 #### 7.3.1. Modèle logique de données
+
+![bdd](imageCode/bdd.PNG)
+
+> Voici ce que donne la base de donnée à la fin du projet.
 
 ## 8. Tests
 Pour réaliser ce projet, j'ai écris des protocoles de test pour simuler une utilisation du site par un quelconque utilisateur.  
 ### 8.1. Environnement des tests
 Les test ont été effectué sur les naviguateur Google Chrome et Mozilla Firefox.
-Les test ont été effectué sur un ordinateur utilisant Wo
+Les test ont été effectué sur un ordinateur utilisant Windows
 
 ### 8.2. Plan de test
 
-| N°  | Description du test                                                                | Résultat attendu                                                                                                                                       |
-| --- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 1   | L'utilisateur a remplit le formulaire de création et a cliqué sur le bouton validé | Les données ont été envoyé à la base de données, un tournois a été créé, l'utilisateur est redirigé sur la page principale et le tournois créé apparet |
-| 2   |                                                                                    L'utilisateur a remplit le formulaire de modification et a cliqué sur le bouton modifier |Les données sont envoyé à la base de données, le tournois est modifier, l'utilisateur es redirigé sur la page principale et le tournois a été modifié                                                                                                                                                        |
-| 3   |                                                                                    L'utilisateur clique sur le bouton supprimé d'un tournois|                                                                              Les données du tournois sont traitées dans la base de données, les données sont supprimées, la page se recharge et le tournois a disparu                                                                          |
-| 4   |                                                                                    L'utilisateur clique sur le bouton copier d'un tournois|                                                                              Les données du tournois sont traitées dans la base de données, les données sont recréé avec un nouvel id, la page se recharge et un nouveau tournois apparait|
-| 5   |                                                                                    L'utilisateur clique sur le bouton joueurs d'un tournois|                                                                              L'utilisateur est redirigé sur la page joueurs. Un tableau des joueurs du tournois apparait                                                                         |
-| 6   |                                                                                    L'utilisateur cherche un mot dans la barre de recheche de la page pricipale et clique sur le bouton |                                                                              Tous les tounrois où leur nom contient le groupe de mot choisit par l'utilisateur apparaissent                                                                          |
-| 7   |                                                                                    L'utilisateur cherche un mot dans la barre de recheche de la page joueur et clique sur le bouton |                                                                              Tous les joueurs où leur nom et prénom contient le groupe de mot choisit par l'utilisateur apparaissent                                                                          |
-| 8   |                                                                                    L'utilisateur clique sur le bouton voir d'un tournois |                                                                              L'utilisateur est redirigé sur la page tournois, un tournois apparait avec le premier tour déjà complété (matches)|      
-| 9   |                                                                                    L'utilisateur clique sur le bouton valider du formulaire d'un match dans la page tournois |                                                                              Les informations sont envoyées dans la base de données, le joueur ayant gagné le match passe au prochain tour                                                                            |
-| 10   |                                                                                    L'utilisateur clique sur le mot "Tennis" dans la barre de navigation d'une page  |                                                                              L'utilisateur va directement être redirigé sur la page principale du site                                                                            |
+| N°  | Description du test                                                                                         | Résultat attendu                                                                                                                                              |
+| --- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | L'utilisateur a remplit le formulaire de création et a cliqué sur le bouton validé                          | Les données ont été envoyé à la base de données, un tournois a été créé, l'utilisateur est redirigé sur la page principale et le tournois créé apparait       |
+| 2   | L'utilisateur a remplit le formulaire de modification et a cliqué sur le bouton modifier                    | Les données sont envoyé à la base de données, le tournois est modifier, l'utilisateur es redirigé sur la page principale et le tournois a été modifié         |
+| 3   | L'utilisateur clique sur le bouton supprimé d'un tournois                                                   | Les données du tournois sont traitées dans la base de données, les données sont supprimées, la page se recharge et le tournois a disparu                      |
+| 4   | L'utilisateur clique sur le bouton copier d'un tournois                                                     | Les données du tournois sont traitées dans la base de données, les données sont recréé avec un nouvel id, la page se recharge et un nouveau tournois apparait |
+| 5   | L'utilisateur clique sur le bouton joueurs d'un tournois                                                    | L'utilisateur est redirigé sur la page joueurs. Un tableau des joueurs du tournois apparait                                                                   |
+| 6   | L'utilisateur cherche un mot dans la barre de recheche de la page pricipale et clique sur le bouton         | Tous les tournois où leur nom contient le groupe de mot choisit par l'utilisateur apparaissent                                                                |
+| 7   | L'utilisateur cherche un mot dans la barre de recheche de la page joueur et clique sur le bouton            | Tous les joueurs où leur nom et prénom contient le groupe de mot choisit par l'utilisateur apparaissent                                                       |
+| 8   | L'utilisateur clique sur le bouton voir d'un tournois                                                       | L'utilisateur est redirigé sur la page tournois, un tournois apparait avec le premier tour déjà complété (matches)                                            |
+| 9   | L'utilisateur clique sur le bouton valider du formulaire d'un match dans la page tournois                   | Les informations sont envoyées dans la base de données, le joueur ayant gagné le match passe au prochain tour                                                 |
+| 10  | L'utilisateur clique sur le mot "Tennis" dans la barre de navigation d'une page                             | L'utilisateur va directement être redirigé sur la page principale du site                                                                                     |
+| 11  | L'utilisateur clique sur le bouton téléchargé du formualaire après avoir entré les informations des matches | Un pdf avec les informations du match sera téléchargé pour l'utilisateur                                                                                      |
 
 ### 8.3. Rapport de test
 
 OK -> le test fonctionne / NOK -> le test ne fonctionne pas
 
-| N°  | Résultat obtenu                                    | Validation      |
-| --- | -------------------------------------------------- | --------------- |
-| 1   | Test magnifique cil est vraiment trop bien ce test | OK (26.04.2021) |
-| 2   |                                                    |                 |
-|     |                                                    |                 |
 
+| N°  | Description du test                                                                                         | Résultat obtenu                                                                                                                                                                                                                                                                                                                                                             |
+| --- | ----------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | L'utilisateur a remplit le formulaire de création et a cliqué sur le bouton validé                          | Les données sont envoyées dans la base de données et l'utilisateur est renvoyé sur la page principale (OK)                                                                                                                                                                                                                                                                  |
+| 2   | L'utilisateur a remplit le formulaire de modification et a cliqué sur le bouton modifier                    | Les données sont bien envoyées dans la base de données, le tournois est bien modifier et l'utilisateur est redirigé sur la page pricipale (OK)                                                                                                                                                                                                                              |
+| 3   | L'utilisateur clique sur le bouton supprimé d'un tournois                                                   | Les données du tournoi sont traitées dans la base de données, les données sont supprimées. La page se recharche et le tournoi a disparu (OK)                                                                                                                                                                                                                                |
+| 4   | L'utilisateur clique sur le bouton copier d'un tournois                                                     | Les données du tournois sont traitées dans la base de données, les données sont recréé avec un nouvel id, la page se recharge et un nouveau tournois apparait                                                                                                                                                                                                               |
+| 5   | L'utilisateur clique sur le bouton joueurs d'un tournois                                                    | L'utilisateur est redirigé sur la page joueur, un tableau des joueurs du tournois apparait avec toutes les informations de chaque joueur (OK)                                                                                                                                                                                                                               |
+| 6   | L'utilisateur cherche un mot dans la barre de recheche de la page pricipale et clique sur le bouton         | Le mot entré par l'utilisateur fait apparaitre tous les tournois, avec toutes leurs informations, qui contiennent le mot entré par l'utilisateur dans leur nom de touroi (OK)                                                                                                                                                                                               |
+| 7   | L'utilisateur cherche un mot dans la barre de recheche de la page joueur et clique sur le bouton            | Le mot entré par l'utilisateur fait apparaitre tous les joueurs, avec toutes leurs informations, qui contiennent le mot entré par l'utilisateur dans leur nom ou prémom (OK)                                                                                                                                                                                                |
+| 8   | L'utilisateur clique sur le bouton voir d'un tournois                                                       | L'utilisateur est redirigé sur la page tournois, le tournoi apparait avec le premier tour déjà complété (matches) (OK)                                                                                                                                                                                                                                                      |
+| 9   | L'utilisateur clique sur le bouton valider du formulaire d'un match dans la page tournois                   | La date, le terrain et l'heure sont envoyés dans la base de données. Les sets ne sont pas envoyés dans la base de données. C'est que le joueur 1 qui passe les tours à chaque fois, le joueur 1 est toujours le vainqueur. L'utilisateur ne peut ajouter les données de la finale. Le reste des tours est fonctionnel pour l'ajout de la date, l'heure et le terrain. (NOK) |
+| 10  | L'utilisateur clique sur le mot "Tennis" dans la barre de navigation d'une page                             | L'utilisateur est directement redirigé sur la page principale (OK)                                                                                                                                                                                                                                                                                                          |
+| 11  | L'utilisateur clique sur le bouton téléchargé du formualaire après avoir entré les informations des matches | La fonctionnalité n'a pas été devloppé (NOK)                                                                                                                                                                                                                                                                                                                                |
 ## 9. Conclusion
+### Difficultés rencontrées
+> Je n'ai pas spécialement rencontré de difficulté pour la plupart des fonctionnalités sauf lorsque j'ai du commencé la planification des matches. Quand j'ai commencé la planification des matches je n'avais pas encore créé toutes les fonctions qui étaient demandées dans le cahier des charges. La planification a pris beaucoup plus de temps que prévu, elle n'est d'ailleurs toujours pas terminé. Je ne m'étais pas rendu compte du temps que cette tâche allait me prendre. Dès lors que j'ai compris que je n'arriverais pas à faire tout ce qui est demandé dans le cahier des charges, j'ai envoyé un mail aux experts ainsi qu'a mon fomrateur afin de les prévenirs des difficultés que je rencontrais. Ils m'ont aidé et ont supprimé la plupart des tâches que je n'avais pas encore réalisé, mise à part la planification.
+
+> Lorsque j'ai contacté les experts afin de les prévenir des difficultés que je rencontrais, j'ai été informé, en retour, qu'il y avait eu un problème avec les demandes du cahier des charges. Il y avait trop de tâche à faire. Cela m'a donc motiver à finir au mieux mon tpi. 
+
+### Amélioration
+> Il y a, évidement, la planification des matches à finir et à rendre fonctionnel.
+> Il y faut aussi mettre des restrictions sur les pages afin que l'utilisateur créer des erreurs.
+> Améliorer le coté graphique du site 
 
 ## 10. Bibliographie
 
+> * [Bootstrap](https://getbootstrap.com)
+> * [Start Bootstrap](https://startbootstrap.com)
+> * [CodePen - Tournament Bracket](https://blog.codepen.io/2018/02/16/need-make-tournament-bracket/)
+
 ## 11. Annexes
+[DOCUMENTATION UTILISATEUR <!-- omit in toc -->](../docUtilisateur/Documentation%20Utilisateur.pdf)
+[Journal de bord](../journalBord/JournalDeBord.pdf)
+
 
 ### 11.1. Planning Prévisionnel
+![Planning Prévisionnel](../planPrévisionnel/PlanPrévisionnel.jpg)
 
 ### 11.2. Planning Effectif
 
