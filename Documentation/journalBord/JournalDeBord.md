@@ -485,3 +485,7 @@ unset($joueursImpair[array_key_last($joueursImpair)])
 > J'ai demandé de l'aide à plusique camarade mais il y a un problème d'affichage
 > Dans la base de données les bonnes informations sont enregistrées mais l'affichage ne suit pas
 > Tous fonctionne jusqu'a la final
+
+## Date: 19.05.2021
+### Heure: 07:30
+> Je termine ma documentation
