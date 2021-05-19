@@ -38,6 +38,8 @@
 - [9. Conclusion](#9-conclusion)
   - [Difficultés rencontrées](#difficultés-rencontrées)
   - [Amélioration](#amélioration)
+  - [Bilan personnel](#bilan-personnel)
+  - [Remerciement](#remerciement)
 - [10. Bibliographie](#10-bibliographie)
 - [11. Annexes](#11-annexes)
   - [11.1. Planning Prévisionnel](#111-planning-prévisionnel)
@@ -60,6 +62,10 @@
 
 ## 3. Résumé du cahier des charges
 > Je dois réaliser un site web en adequation avec le cahier des charges qui m'a été fourni
+> Le site web doit permettre à un utilisateur de créer, modifier, copier, supprimer un tournois de tennis.
+> L'utilisateur peut voir les joueurs du tournoi choisit ainsi que d'effectuer des recherches.
+> L'utilisateur peut aussi faire des recherches de tournoi.
+> Le site web permet de visualiser les matches d'un tournoi, sur chaque match l'utilisateur peut rentrer les résultats des matches.
 
 ### 3.1. Organisation
 
@@ -282,13 +288,14 @@
 ![pageModification](imageCode/pageModification2.PNG)
 
 > Lorsque l'utilisateur clique sur le bouton voir d'un tournois sur la page index.php, il sera envoyé sur la page tournois.php. C'est sur cette page qu'aura lieu les matches et ou l'utilisateur entre le score des différents matches.
-> METTRE IMAGE !!!!
+![tournois](imageCode/tournois.PNG)
 
 > Quand un utilisateur appuie sur le bouton supprimé, le tournois est supprimé.
 
-> Un bouton copier permet de 
+> Un bouton copier permet de recréer un tournoi identique à celui dont l'utilisateur a cliqué
 
-> Lorsque l'utilisateur clique sur le bouton joueurs d'un tournois dans la page index, il sera redirigé sur la page joueurs.php ou un tableau s'affichera avec les joueurs du tounois. Il pourra aussi faire des recherches de joueurs par le nom ou le prénom
+> Lorsque l'utilisateur clique sur le bouton joueurs d'un tournois dans la page index, il sera redirigé sur la page joueurs.php ou un tableau s'affichera avec les joueurs du tounois. Il pourra aussi faire des recherches de joueurs par le nom ou le prénom.
+![joueurs](imageCode/joueurs.PNG)
 
 ### 6.2. Description des fonctionnalités
 > Sur la page index l'utilisateur peut rechercher un tournois. Il doit juste entré un mot dans la barre de recherche et à appuyer sur le bouton recherche et les tournois vont apparaîtres du plus au moins pertinent.
@@ -296,6 +303,8 @@
 > Sur la parge creation, l'utilisateur peut rentrer différentes données dans les champs du formulaire. Il peut ensuite cliquer sur le bouton créer qui va envoyer les données dans la base de données et l'utilisateur sera redirigé sur la page index.
 > Sur la page modification.php l'utilisateur peut modifier un ou plusieurs des champs du formulaire. Une fois qu'il appuie sur le bouton modifier, les données seront envoyées dans la base de données et vont remplacer les anciennes données. L'utilisateur sera redirigé sur la page index.php.
 > Lorsque l'utilisateur appuie sur le bouton supprimé, les données du tournois vont être envoyées sur une page supprimer.php afin de supprimer les données de la base de données. L'utilisateur ne change pas de page.
+> Lorsque l'utilisateur clique sur le bouton copier, un deuxième tournoi, identique à celui dont l'utilisateur a cliquer précédement, sera créé.
+> Si l'utilisateur clique sur le bouton joueurs d'un tournoi, il sera redirigé sur une page ou les joueurs du tournoi seront affiché. Sur cette page il pourra effectuer des recherches par rapport au nom et prénom des joueurs.
 > Lorsque l'utilisateur clique sur le bouton voir, il sera redirigé sur la page tournois.php. Sur cette page l'utilisateur pourra entrer les données des matches comme la date de la rencontre et les points des matches.
 > Il pourra aussi télécharger la fiche du matche.
 
@@ -375,10 +384,10 @@ Les tables sont :
 > Voici ce que donne la base de donnée à la fin du projet.
 
 ## 8. Tests
-Pour réaliser ce projet, j'ai écris des protocoles de test pour simuler une utilisation du site par un quelconque utilisateur.  
+> Pour réaliser ce projet, j'ai écris des protocoles de test pour simuler une utilisation du site par un quelconque utilisateur.  
 ### 8.1. Environnement des tests
-Les test ont été effectué sur les naviguateur Google Chrome et Mozilla Firefox.
-Les test ont été effectué sur un ordinateur utilisant Windows
+> Les tests ont été effectué sur les naviguateur Google Chrome et Mozilla Firefox.
+> Les tests ont été effectué sur un ordinateur utilisant Windows
 
 ### 8.2. Plan de test
 
@@ -398,7 +407,7 @@ Les test ont été effectué sur un ordinateur utilisant Windows
 
 ### 8.3. Rapport de test
 
-OK -> le test fonctionne / NOK -> le test ne fonctionne pas
+> OK -> le test fonctionne / NOK -> le test ne fonctionne pas
 
 
 | N°  | Description du test                                                                                         | Résultat obtenu                                                                                                                                                                                                                                                                                                                                                             |
@@ -425,6 +434,20 @@ OK -> le test fonctionne / NOK -> le test ne fonctionne pas
 > Il y faut aussi mettre des restrictions sur les pages afin que l'utilisateur créer des erreurs.
 > Améliorer le coté graphique du site 
 
+### Bilan personnel
+> J'ai beaucoup aimé faire ce travail car je suis fier du resultat du projet que j'ai réalisé.
+> Réaliser ce travail était ma pricipale motivation, plus que de réussir le tpi.
+> J'ai fais ce que j'ai pu et je suis content de ce que le projet est devenu.
+> Le seul point ou je suis un peu déçu, c'est le fait que je n'ai pas réussi à réaliser la planification des matches.
+> Je suis même assez content d'avoir rencontré le problème que j'ai eu car c'est une expérience qui fait que je suis d'autent plus fier de ce que j'ai réalisé.
+
+### Remerciement
+
+> Je tiens à remercier:
+> * Mr Bergeret pour m'avoir suivi durant mon TPI
+> * Mr Vanini pour avoir entendu le problème que j'ai rencontré et de m'avoir aidé
+> * Mr Strazzeri pour avoir entendu le problème que j'ai rencontré et de m'avoir aidé
+
 ## 10. Bibliographie
 
 > * [Bootstrap](https://getbootstrap.com)
@@ -433,6 +456,7 @@ OK -> le test fonctionne / NOK -> le test ne fonctionne pas
 
 ## 11. Annexes
 [DOCUMENTATION UTILISATEUR <!-- omit in toc -->](../docUtilisateur/Documentation%20Utilisateur.pdf)
+
 [Journal de bord](../journalBord/JournalDeBord.pdf)
 
 
@@ -440,6 +464,8 @@ OK -> le test fonctionne / NOK -> le test ne fonctionne pas
 ![Planning Prévisionnel](../planPrévisionnel/PlanPrévisionnel.jpg)
 
 ### 11.2. Planning Effectif
+![Planning Effectif](../planEffectif/planEffectif.PNG)
 
 ### 11.3. Code Source
 
+[Code Source](codeSource.pdf)
