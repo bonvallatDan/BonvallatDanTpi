@@ -9,6 +9,7 @@ if (!isset($_SESSION)) {
     $_SESSION['final'] = null;
 }
 
+
 // creation des variables
 $cheminIndex = "index.php";
 $joueurs = getPlayer();
