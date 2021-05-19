@@ -39,6 +39,10 @@ $modal = $_SESSION['modal'];
 
 //utilisation de méthode
 trieJoueur($joueurs);
+
+
+
+
 $tournois = recupTournoisInfoById($idTournois);
 $categorie = recupCategorieInfoById($tournois['idCategorie']);
 if ($categorie['genre'] == 1) {
@@ -70,7 +74,10 @@ if (isset($_POST['ajouter'])) {
 }
 $vainqueurs = [];
 
+//Récupère les vainqueurs en fonction de l'id du tournoi et de l'id du tour
 $vainqueurs = recupVainqueur(intval($tournois['idTournois']), $_SESSION['idTour']);
+
+// Vérifie que la dernière valeur du tableau est pas null et que le tableau est pas vide
 if ($vainqueurs[count($vainqueurs) - 1]['vainqueur'] != null && $vainqueurs != array()) {
     $prochainTour = prochainTour($vainqueurs);
 

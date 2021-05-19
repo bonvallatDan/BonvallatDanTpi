@@ -522,6 +522,7 @@ function organisationMatch($joueursPair, $joueursImpair, $nbJoueurs)
       unset($pair);
     }
 
+    // Ajoute les pairs de match dans le bonne ordre
     array_push($tableauPair, $tableauPairTemp[0]);
     array_push($tableauPair, $tableauPairTemp[3]);
     array_push($tableauPair, $tableauPairTemp[2]);
@@ -538,6 +539,7 @@ function organisationMatch($joueursPair, $joueursImpair, $nbJoueurs)
       unset($impair);
     }
 
+    // Ajoute les pairs de match dans le bonne ordre
     array_push($tableauImpair, $tableauImpairTemp[0]);
     array_push($tableauImpair, $tableauImpairTemp[3]);
     array_push($tableauImpair, $tableauImpairTemp[2]);
@@ -554,6 +556,7 @@ function organisationMatch($joueursPair, $joueursImpair, $nbJoueurs)
       unset($pair);
     }
 
+    // Ajoute les pairs de match dans le bonne ordre
     array_push($tableauPair, $tableauPairTemp[0]);
     array_push($tableauPair, $tableauPairTemp[7]);
     array_push($tableauPair, $tableauPairTemp[4]);
@@ -573,6 +576,7 @@ function organisationMatch($joueursPair, $joueursImpair, $nbJoueurs)
       unset($impair);
     }
 
+    // Ajoute les pairs de match dans le bonne ordre
     array_push($tableauImpair, $tableauImpairTemp[0]);
     array_push($tableauImpair, $tableauImpairTemp[7]);
     array_push($tableauImpair, $tableauImpairTemp[4]);
@@ -582,6 +586,7 @@ function organisationMatch($joueursPair, $joueursImpair, $nbJoueurs)
     array_push($tableauImpair, $tableauImpairTemp[6]);
     array_push($tableauImpair, $tableauImpairTemp[1]);
   }
+  // Stock dans la session les tableaux
   $_SESSION['tableauPair'] = $tableauPair;
   $_SESSION['tableauImpair'] = $tableauImpair;
 }
