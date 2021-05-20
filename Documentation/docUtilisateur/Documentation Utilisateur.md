@@ -6,18 +6,19 @@
 ## Tables des matières <!-- omit in toc -->
 - [1. Introduction](#1-introduction)
 - [2. Navigation](#2-navigation)
+- [Installation](#installation)
 - [3. Fonctionnalités](#3-fonctionnalités)
   - [3.1. Recherche de tournois](#31-recherche-de-tournois)
   - [3.2. Création](#32-création)
-  - [3.3. Modification](#33-moidification)
+  - [3.3. Modification](#33-modification)
   - [3.4. Recherche de joueur](#34-recherche-de-joueur)
-  - [3.5. Planification des matches](#35-planification-des-matches)
-  - [3.7. Redirection page principale](#37-redirection-page-pricipale)
+  - [3.5. Planification des matchs](#35-planification-des-matchs)
+  - [3.7. Redirection page principale](#37-redirection-page-principale)
   - [3.8. Suppression d'un tournois](#38-suppression-dun-tournois)
   - [3.9. Copier](#39-copier)
 - [4. Pages](#4-pages)
   - [4.1. Page index](#41-page-index)
-  - [4.2. Page Création](#42-page-creation)
+  - [4.2. Page Création](#42-page-création)
   - [4.3. Page Modification](#43-page-modification)
   - [4.4. Page Joueur](#44-page-joueur)
   - [4.5. Page Tournois](#45-page-tournois)
@@ -26,6 +27,10 @@
 > Le site ***Tennis*** permet de créer, modifier, supprimer des tournois. L'utilisateur peut visualiser un tournois ainsi qu'enregistrer les données des matchs et de télécharger le résultat des matchs
 ## 2. Navigation
 > Lorsque l'utilisateur arrive sur le site, il a accès à la page création. Lorsqu'un tournois est créé, l'utilisateur a accès à trois nouvelles pages. Il peut naviguer à travers les pages modifications, joueurs et tournois (permet de visualiser le tournois).
+
+## Installation
+> Il faut importer la base de données qui se trouve dans les dossiers 
+> Le mot de passe est Bonval22
 
 ## 3. Fonctionnalités
 ### 3.1. Recherche de tournois
