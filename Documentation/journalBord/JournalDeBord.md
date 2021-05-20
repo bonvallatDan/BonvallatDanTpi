@@ -492,3 +492,10 @@ unset($joueursImpair[array_key_last($joueursImpair)])
 
 ### Heure: 15:31
 > Continuation doc utilisateur
+
+## Date: 20.05.2021
+### Heure: 07:34
+> Création du résumé
+
+### Heure: 09:04
+> Je peaufine la doc technique ainsi que la doc utilisateur 
