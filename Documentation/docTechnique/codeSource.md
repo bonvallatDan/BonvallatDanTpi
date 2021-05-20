@@ -987,11 +987,15 @@ require_once "asset/php/inc.all.php";
 //creation de la seesion
 if (!isset($_SESSION)) {
     session_start();
-    $_SESSION['quart'] = null;
-    $_SESSION['demi'] = null;
-    $_SESSION['final'] = null;
 }
 
+if($_SESSION['idTour'] >= 5)
+{
+    unset($_SESSION['idTour']);
+    unset($_SESSION['quart']);
+    unset($_SESSION['demi']);
+    unset($_SESSION['final']);
+}
 
 // creation des variables
 $cheminIndex = "index.php";
@@ -1023,10 +1027,6 @@ $modal = $_SESSION['modal'];
 
 //utilisation de méthode
 trieJoueur($joueurs);
-
-
-
-
 $tournois = recupTournoisInfoById($idTournois);
 $categorie = recupCategorieInfoById($tournois['idCategorie']);
 if ($categorie['genre'] == 1) {
@@ -1058,10 +1058,7 @@ if (isset($_POST['ajouter'])) {
 }
 $vainqueurs = [];
 
-//Récupère les vainqueurs en fonction de l'id du tournoi et de l'id du tour
 $vainqueurs = recupVainqueur(intval($tournois['idTournois']), $_SESSION['idTour']);
-
-// Vérifie que la dernière valeur du tableau est pas null et que le tableau est pas vide
 if ($vainqueurs[count($vainqueurs) - 1]['vainqueur'] != null && $vainqueurs != array()) {
     $prochainTour = prochainTour($vainqueurs);
 
